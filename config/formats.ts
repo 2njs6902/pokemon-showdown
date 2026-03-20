@@ -17,7 +17,16 @@ New sections will be added to the bottom of the specified column.
 The column value will be ignored for repeat sections.
 */
 
+import { Formats as Rejuvenation                } from '../data/mods/rejuvenation/formats';
+
 export const Formats: import('../sim/dex-formats').FormatList = [
+
+	// Rejuv
+	///////////////////////////////////////////////////////////////////
+	{
+		section: "Rejuvenation",
+	},
+	...Rejuvenation,
 
 	// S/V Singles
 	///////////////////////////////////////////////////////////////////
