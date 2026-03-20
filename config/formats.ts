@@ -17,8 +17,6 @@ New sections will be added to the bottom of the specified column.
 The column value will be ignored for repeat sections.
 */
 
-import { Formats as Rejuvenation                } from '../data/mods/rejuvenation/formats';
-
 export const Formats: import('../sim/dex-formats').FormatList = [
 
 	// Rejuv
@@ -26,7 +24,28 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		section: "Rejuvenation",
 	},
-	...Rejuvenation,
+	{
+		name: "Rejuvenation",
+		desc: `Unofficial Rejuvenation Mod for Pokemon Showdown`,
+		mod: 'rejuvenation',
+		ruleset: ['Standard NatDex'],
+		banlist: [
+			'Slowpoke-Galar', 'Slowbro-Galar', 'Magikarp', 'Gyrados', 'Articuno', 'Articuno-Galar', 'Zapdos', 'Zapdos-Galar',
+			'Moltres', 'Moltres-Galar', 'Dratini', 'Dragonair', 'Dragonite', 'Mewtwo', 'Mew', 'Slowking-Galar', 'Raikou', 'Entei',
+			'Suicune', 'Larvitar', 'Pupitar', 'Tyranitar', 'Lugia', 'Ho-Oh', 'Celebi', 'Bagon', 'Shelgon', 'Salamence', 'Regirock',
+			'Regice', 'Registeel', 'Latias', 'Latios', 'Kyogre', 'Groundon', 'Rayquaza', 'Jirachi', 'Deoxys', 'Shellos-East', 'Gastrodon-East',
+			'Uxie', 'Mespirit', 'Azelf', 'Dialga', 'Palkia', 'Heatran', 'Regigigas', 'Giratina', 'Giritina-Origin', 'Cresselia', 'Manaphy', 
+			'Darkrai', 'Shaymin', 'Arceus', 'Victini', 'Drilbur', 'Excadrill', 'Darumaka-Galar', 'Darmanitan-Galar', 'Ferroseed', 'Ferrothorn',
+			'Cobalion', 'Terrakion', 'Virizion', 'Tornadus', 'Thundurus', 'Reshiram', 'Zekrom', 'Landorus', 'Kyurem', 'Keldeo', 'Meloetta', 
+			'Genesect', 'Honedge', 'Doublade', 'Aegislash', 'Hawlucha', 'Xerneas', 'Yveltal', 'Diancie', 'Hoopa', 'Volcanion', 'Jangmo-o',
+			'Hakamo-o', 'Kommo-o', 'Tapu Koko', 'Tapu Lele', 'Tapu Bulu', 'Tapu Fini', 'Cosmog', 'Cosmeon', 'Solgaleo', 'Lunala', 'Nihilego',
+			'Buzzwhole', 'Pheromosa', 'Xurkitree', 'Celesteela', 'Kartana', 'Guzzlord', 'Necrozma', 'Magearna', 'Marshadow', 'Poipole', 
+			'Naganadel', 'Stakataka', 'Blacephalon', 'Zeraora', 'Meltan', 'Melmetal', 'Eiscue', 'dracozolt', 'arctozolt', 'dracovish',
+			'arctovish', 'duraludon', 'duraludongmax', 'dreepy', 'drakloak', 'dragapult', 'zacian', 'zaciancrowned', 'zamazenta',
+			'zamazentacrowned', 'eternatus', 'eternatuseternamax', 'kubfu', 'urshifu', 'urshifurapidstrike', 'zarude', 'regieleki',
+			'regidrago', 'glastrier', 'spectrier', 'calyrex',
+		],
+	},
 
 	// S/V Singles
 	///////////////////////////////////////////////////////////////////
