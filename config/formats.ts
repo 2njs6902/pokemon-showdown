@@ -25,7 +25,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		section: "Rejuvenation",
 	},
 	{
-		name: "Rejuvenation",
+		name: "[Gen 8] Rejuvenation",
 		desc: `Unofficial Rejuvenation Mod for Pokemon Showdown`,
 		mod: 'rejuvenation',
 		ruleset: ['Standard NatDex'],
