@@ -1,6 +1,6 @@
 export const Moves: {[moveid: string]: ModdedMoveData} = {
 	irritation: {
-		num: -6902,
+		num: 6902,
 		accuracy: 100,
 		basePower: 60,
 		basePowerCallback(pokemon, target, move) {
@@ -22,7 +22,7 @@ export const Moves: {[moveid: string]: ModdedMoveData} = {
 		contestType: "Clever",
 	},	
 	slashandburn: {
-		num: -6901,
+		num: 6903,
 		accuracy: 90,
 		basePower: 90,
 		category: "Physical",
