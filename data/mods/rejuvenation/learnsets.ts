@@ -75,9 +75,8 @@ export const Learnsets: {[speciesid: string]: ModdedLearnsetData} = {
             workup: ["8M"],
             worryseed: ["8L31", "8T"],
         },
-        encounters: [
-            {generation: 1, level: 5},
-        ],
+        eventData: [],
+        encounters: [],
     },
     ivysaur: {
         learnset: {
