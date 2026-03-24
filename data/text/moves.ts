@@ -1,4 +1,14 @@
 export const MovesText: { [id: IDEntry]: MoveText } = {
+	irritation: {
+		name: "Irritation",
+		desc: "Power doubles if the target has a non-volatile status condition.",
+		shortDesc: "Power doubles if the target has a status ailment.",
+	},
+	slashandburn: {
+		name: "Slash and Burn",
+		desc: "Has a 10% chance to burn the target.",
+		shortDesc: "10% chance to burn the target.",
+	},
 	"10000000voltthunderbolt": {
 		name: "10,000,000 Volt Thunderbolt",
 		desc: "Has a very high chance for a critical hit.",

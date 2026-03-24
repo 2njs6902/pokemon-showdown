@@ -37,7 +37,7 @@ export const Learnsets: {[speciesid: string]: ModdedLearnsetData} = {
             lightscreen: ["8M"],
             magicalleaf: ["8M", "8E"],
             naturepower: ["8M", "8E"],
-            outrage: ["8V", "8T"],
+            outrage: ["8T"],
             petaldance: ["8E"],
             poisonpowder: ["8L13"],
             powerwhip: ["8E"],
