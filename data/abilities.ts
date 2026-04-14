@@ -40,6 +40,122 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		rating: 0.1,
 		num: 0,
 	},
+	inexorable: {
+		onBasePowerPriority: 21, //Same as analytic (for now)
+		onBasePower(basePower, pokemon, target, move) {
+			if (move.type !== 'Dragon') return;
+
+			let boosted = true;
+			for (const target of this.getAllActive()) {
+				if (target === pokemon) continue;
+				// If the target pokemon moves BEFORE us, then you arent the first pokemon and therefore break
+				if (this.queue.willMove(target) && !this.queue.willMove(pokemon)) {
+					boosted = false;
+					break;
+				}
+			}
+			if (boosted) {
+				this.debug('Inexorable boost');
+				return this.chainModify([5325, 4096]);
+			}
+		},
+		flags: {},
+		name: "Inexorable",
+		rating: 4, //Fealt it was fitting
+		num: 6902,
+	},
+	lunaridol: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Ice') {
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			let mod = 1;
+
+			// Weather boost
+			if (this.field.isWeather(['hail', 'snowscape'])) {
+				mod *= 1.5;
+			}
+
+			// Ice move boost
+			if (move.type === 'Ice') {
+				mod *= 1.5;
+			}
+
+			if (mod !== 1) {
+				return this.chainModify(mod);
+			}
+		},
+		flags: {},
+		name: "Lunar Idol",
+		rating: 5,
+		num: 6903,
+	},
+	solaridol: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, pokemon, defender, move) {
+			let mod = 1;
+
+			// Weather boost
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				mod *= 1.5;
+			}
+
+			// Ice move boost
+			if (move.type === 'Fire') {
+				mod *= 1.5;
+			}
+
+			if (mod !== 1) {
+				return this.chainModify(mod);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			if (move.type === 'Fire') {
+				return this.chainModify(1.5);
+			}
+		},
+		flags: {},
+		name: "Solar Idol",
+		rating: 5,
+		num: 6904,
+	},
+	reflector: {
+		onStart(pokemon) {
+			// Get opposing Pokémon (singles or doubles)
+			let target = pokemon.foes()[0];
+
+			// Optional: better doubles targeting (direct opposite like stated on wiki)
+			if (this.gameType === 'doubles') {
+				target = pokemon.foes().find(foe => foe.position === pokemon.position) || pokemon.foes()[0];
+			}
+
+			if (!target) return;
+
+			const types = target.getTypes();
+			let typeToCopy;
+
+			if (types.length > 1) {
+				typeToCopy = types[1]; // secondary
+			} else {
+				typeToCopy = types[0]; // primary
+			}
+
+			// If already has the type, do nothing
+			if (pokemon.hasType(typeToCopy)) return;
+
+			this.add('-ability', pokemon, 'Reflector', '[of] ' + target);
+			pokemon.addType(typeToCopy);
+		},
+		flags: {},
+		name: "Reflector",
+		rating: 3,
+		num: 6905,
+	},
 	adaptability: {
 		onModifySTAB(stab, source, target, move) {
 			if (move.forceSTAB || source.hasType(move.type)) {
@@ -4013,7 +4129,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 	screencleaner: {
 		onStart(pokemon) {
 			let activated = false;
-			for (const sideCondition of ['reflect', 'lightscreen', 'auroraveil']) {
+			for (const sideCondition of ['reflect', 'lightscreen', 'auroraveil', 'arenitewall']) {
 				for (const side of [pokemon.side, ...pokemon.side.foeSidesWithConditions()]) {
 					if (side.getSideCondition(sideCondition)) {
 						if (!activated) {

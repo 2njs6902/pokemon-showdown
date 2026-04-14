@@ -9,6 +9,81 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		desc: "Has a 10% chance to burn the target.",
 		shortDesc: "10% chance to burn the target.",
 	},
+	wakeupshock: {
+		name: "Wake-Up Shock",
+		desc: "If the target is sleeping, this move has double the power and causes the target to wake up.",
+		shortDesc: "Inflicts big damage on a sleeping target. Wakes the target up.",
+	},
+	vileassault: {
+		name: "Vile Assault",
+		desc: "If the target Pokémon is switched out on the turn Vile Assault is used, the move's power doubles, and it will immediately be used before the target is switched out.",
+		shortDesc: "If a foe is switching out, hits it at 2x power.",
+	},
+	stackingshot: {
+		name: "Stacking Shot",
+		desc: "Stacking Shot starts with a base power of 40. Every time Stacking Shot is used successively, its power will double, up to a maximum of 160. If Stacking Shot misses, the user is switched out, or a different move is used the power will reset to normal. Using Fury Cutter doesn't reset Stacking Shot's power and every previous use of Stacking Shot is taken into account for Fury Cutter's power, and in reverse every use of Fury Cutter is taken into account for Stacking Shot's power (e.g. if a Pokémon uses Stacking Shot 3 times in a row and then uses Fury Cutter, both moves will have the maximum power of 160).",
+		shortDesc: "The user attacks in quick jabs. It becomes stronger the more it's used.",
+	},
+	etherealtempest: {
+		name: "Ethereal Tempest",
+		desc: "Deluge has negative priority and if the target had already damaged the user in the same turn, Deluge's power is doubled to 120.",
+		shortDesc: "20% chance to paralyze the target.",
+	},
+	deluge: {
+		name: "Deluge",
+		desc: "Deluge has negative priority and if the target had already damaged the user in the same turn, Deluge's power is doubled to 120.",
+		shortDesc: "Power doubles if user is damaged by the target.",
+	},
+	arenitewall: {
+		name: "Deluge",
+		desc: "For 5 turns, the user and its party members take 0.5x damage from super effective attacks, or 0.66x damage if in a Double Battle; Stacks with Reflect, Light Screen or Aurora Veil but only one of those 3 may apply to any given attack. Critical hits and Infiltrator do NOT ignore this effect. It is removed from the user's side if the user or an ally is successfully hit by Brick Break, Psychic Fangs, or Defog. Brick Break and Psychic Fangs remove the effect before damage is calculated. Lasts for 8 turns if the user is holding Light Clay. Fails unless the weather is Sandstorm.",
+		shortDesc: "For 5 turns, damage from super effective moves to allies halved. Sandstorm only.",
+		start: "  Arenite Wall made [TEAM] stronger against super effective moves!",
+		end: "  [TEAM]'s Arenite Wall wore off!",
+	},
+	quicksilverspear: {
+		name: "Quicksilver Spear",
+		desc: "Quicksilver Spear traps all Pokémon it hits, as well as dropping speed by 1 stage.",
+		shortDesc: "Traps and drops speed by 1.",
+	},
+	poisonsweep: {
+		name: "Poison Sweep",
+		desc: "Poison Sweep deals damage and has a 30% chance to drop the target's Speed by 1 stage.",
+		shortDesc: "Drops speed by 1.",
+	},
+	mudbarrage: {
+		name: "Mud Barrage",
+		desc: "Hits two to five times. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times. If the user is holding Loaded Dice, this move will hit 4-5 times.",
+		shortDesc: "Hits 2-5 times in one turn.",
+		gen8: {
+			desc: "Hits two to five times. Has a 35% chance to hit two or three times and a 15% chance to hit four or five times. If one of the hits breaks the target's substitute, it will take damage for the remaining hits. If the user has the Skill Link Ability, this move will always hit five times.",
+		},
+	},
+	mirrorbeam: {
+		name: "Mirror Beam",
+		desc: "This move's type depends on the user's secondary type. If the user's primary type is typeless, this move's type is the user's secondary type if it has one, otherwise the added type from Forest's Curse or Trick-or-Treat. This move is typeless if the user's type is typeless alone.",
+		shortDesc: "Type varies based on the user's secondary type.",
+	},
+	magmadrift: {
+		name: "Magma Drift",
+		desc: "Damage doubles if the target is using Dive.",
+		shortDesc: "Hits adjacent Pokemon. Double damage on Dive.",
+	},
+	hexingslash: {
+		name: "Hexing Slash",
+		desc: "The user recovers 1/2 the HP lost by the target, rounded half up. If Big Root is held by the user, the HP recovered is 1.3x normal, rounded half down. Also has a 30% chance to poison the target.",
+		shortDesc: "User recovers 50% of the damage dealt, 30% chance to poison.",
+	},
+	hoarfrostmoon: {
+		name: "Hoarfrost Moon",
+		desc: "Has a 50% chance to raise the user's Special Attack by 1 stage.",
+		shortDesc: "50% chance to raise the user's Sp. Atk by 1.",
+	},
+	solarflare: {
+		name: "Solare Flare",
+		desc: "Has a 50% chance to raise the user's Attack by 1 stage.",
+		shortDesc: "50% chance to raise the user's Atk by 1.",
+	},
 	"10000000voltthunderbolt": {
 		name: "10,000,000 Volt Thunderbolt",
 		desc: "Has a very high chance for a critical hit.",
@@ -1447,7 +1522,7 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	dive: {
 		name: "Dive",
-		desc: "This attack charges on the first turn and executes on the second. On the first turn, the user avoids all attacks other than Surf and Whirlpool but takes double damage from them, and is also unaffected by weather. If the user is holding a Power Herb, the move completes in one turn.",
+		desc: "This attack charges on the first turn and executes on the second. On the first turn, the user avoids all attacks other than Surf, Whirlpool and Magma Drift but takes double damage from them, and is also unaffected by weather. If the user is holding a Power Herb, the move completes in one turn.",
 		shortDesc: "Dives underwater turn 1, strikes turn 2.",
 		gen4: {
 			desc: "This attack charges on the first turn and executes on the second. On the first turn, the user avoids all attacks other than Surf and Whirlpool, which have doubled power when used against it, and is also unaffected by weather. If the user is holding a Power Herb, the move completes in one turn.",

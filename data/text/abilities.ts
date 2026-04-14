@@ -3,6 +3,21 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "No Ability",
 		shortDesc: "Does nothing.",
 	},
+	inexorable: {
+		name: "Inexorable",
+		desc: "The power of this Pokemon's Dragon moves are multiplied by 1.5 if it is the first to move in a turn.",
+		shortDesc: "This Pokemon's Dragon moves have 1.5x power if it is the first to move in a turn.",
+	},
+	lunaridol: {
+		name: "Lunar Idol",
+		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Ice moves by 1.5. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
+		shortDesc: "Grants Levitate. Ice moves have 1.5x power. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
+	},
+	solaridol: {
+		name: "Solar Idol",
+		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Fire moves by 1.5. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
+		shortDesc: "Grants Levitate. Fire moves have 1.5x power. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
+	},
 	adaptability: {
 		name: "Adaptability",
 		desc: "This Pokemon's moves that match one of its types have a same-type attack bonus (STAB) of 2 instead of 1.5.",
@@ -1563,7 +1578,7 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	},
 	screencleaner: {
 		name: "Screen Cleaner",
-		shortDesc: "On switch-in, the effects of Aurora Veil, Light Screen, and Reflect end for both sides.",
+		shortDesc: "On switch-in, the effects of Arenite Wall, Aurora Veil, Light Screen, and Reflect end for both sides.",
 	},
 	seedsower: {
 		name: "Seed Sower",
