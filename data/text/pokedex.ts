@@ -239,8 +239,14 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	paras: {
 		name: "Paras",
 	},
+	parasaevium: {
+		name: "Paras-Aevian",
+	},
 	parasect: {
 		name: "Parasect",
+	},
+	parasectaevium: {
+		name: "Parasect-Aevian",
 	},
 	venonat: {
 		name: "Venonat",
@@ -596,6 +602,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	lapras: {
 		name: "Lapras",
 	},
+	laprasaevium: {
+		name: "Lapras-Aevian",
+	},
 	laprasgmax: {
 		name: "Lapras-Gmax",
 	},
@@ -767,11 +776,20 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	mareep: {
 		name: "Mareep",
 	},
+	mareepaevium: {
+		name: "Mareep-Aevian",
+	},
 	flaaffy: {
+		name: "Flaaffy",
+	},
+	flaaffyaevium: {
 		name: "Flaaffy",
 	},
 	ampharos: {
 		name: "Ampharos",
+	},
+	ampharosaevium: {
+		name: "Ampharos-Aevian",
 	},
 	ampharosmega: {
 		name: "Ampharos-Mega",
@@ -838,6 +856,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	misdreavus: {
 		name: "Misdreavus",
+	},
+	misdreavusaevium: {
+		name: "Misdreavus-Aevian",
 	},
 	unown: {
 		name: "Unown",
@@ -1651,6 +1672,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	mismagius: {
 		name: "Mismagius",
+	},
+	mismagiusaevium: {
+		name: "Mismagius-Aevian",
 	},
 	honchkrow: {
 		name: "Honchkrow",
