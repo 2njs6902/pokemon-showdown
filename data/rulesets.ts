@@ -20,7 +20,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		effectType: 'ValidatorRule',
 		name: 'Rejuvenation Obtainable',
 		desc: "Makes sure the team is possible to obtain in Pokemon rejuvenation.",
-		ruleset: ['Obtainable Moves', 'Obtainable Abilities', 'EV Limit = Auto', 'Obtainable Misc'],
+		ruleset: ['Obtainable Moves', 'Obtainable Abilities', 'EV Limit = Auto', 'Obtainable Misc', '+pokemon:jangmo-oaevium', '+pokemon:hakamo-oaevium', '+pokemon:kommo-oaevium'],
 		banlist: [
 			'Slowpoke-Galar', 'Slowbro-Galar', 'Magikarp', 'Gyarados', 'Articuno', 'Articuno-Galar', 'Zapdos', 'Zapdos-Galar',
 			'Moltres', 'Moltres-Galar', 'Dratini', 'Dragonair', 'Dragonite', 'Mewtwo', 'Mew', 'Slowking-Galar', 'Raikou', 'Entei',
