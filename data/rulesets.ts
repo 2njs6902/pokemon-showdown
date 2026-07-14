@@ -13,12 +13,12 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		name: 'Rejuvenation',
 		desc: "The ruleset for the Pokemon Challanges Discord Rejuvenation Tournament.",
 		ruleset: [
-			'HP Percentage Mod', 'Cancel Mod', 'Team Preview', 'Endless Battle Clause', 'Rejuvenation-Obtainable',
+			'HP Percentage Mod', 'Cancel Mod', 'Team Preview', 'Endless Battle Clause', 'Rejuvenation Obtainable',
 		],
 	},
 	rejuvobtainable: {
 		effectType: 'ValidatorRule',
-		name: 'Rejuvenation-Obtainable',
+		name: 'Rejuvenation Obtainable',
 		desc: "Makes sure the team is possible to obtain in Pokemon rejuvenation.",
 		ruleset: ['Obtainable Moves', 'Obtainable Abilities', 'EV Limit = Auto', 'Obtainable Misc'],
 		banlist: [
