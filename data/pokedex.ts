@@ -3974,7 +3974,7 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 	flaaffyaevium: {
 		num: 180,
 		name: "Flaaffy-Aevian",
-		baseSpecies: "Flaafy",
+		baseSpecies: "Flaaffy",
 		forme: "Aevian",
 		types: ["Ice", "Electric"],
 		baseStats: { hp: 70, atk: 55, def: 60, spa: 80, spd: 50, spe: 45 },
@@ -11647,7 +11647,7 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 	lampentaevium: {
 		num: 608,
 		name: "Lampent-Aevian",
-		baseSpecies: "Lamptet",
+		baseSpecies: "Lampent",
 		forme: "Aevian",
 		types: ["Ghost", "Electric"],
 		baseStats: { hp: 60, atk: 40, def: 60, spa: 95, spd: 60, spe: 55 },
