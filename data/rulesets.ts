@@ -16,7 +16,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			'HP Percentage Mod', 'Cancel Mod', 'Team Preview', 'Endless Battle Clause', 'Rejuvenation Obtainable',
 		],
 	},
-	rejuvobtainable: {
+	rejuvenationobtainable: {
 		effectType: 'ValidatorRule',
 		name: 'Rejuvenation Obtainable',
 		desc: "Makes sure the team is possible to obtain in Pokemon rejuvenation.",
