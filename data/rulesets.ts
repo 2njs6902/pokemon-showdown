@@ -11,9 +11,31 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 	rejuvenation: {
 		effectType: 'ValidatorRule',
 		name: 'Rejuvenation',
-		desc: "The ruleset for the Rejuvenation mod",
+		desc: "The ruleset for the Pokemon Challanges Discord Rejuvenation Tournament.",
 		ruleset: [
-			'HP Percentage Mod', 'Cancel Mod', 'Team Preview', 'Endless Battle Clause',
+			'HP Percentage Mod', 'Cancel Mod', 'Team Preview', 'Endless Battle Clause', 'Rejuvenation-Obtainable',
+		],
+	},
+	rejuvobtainable: {
+		effectType: 'ValidatorRule',
+		name: 'Rejuvenation-Obtainable',
+		desc: "Makes sure the team is possible to obtain in Pokemon rejuvenation.",
+		ruleset: ['Obtainable Moves', 'Obtainable Abilities', 'EV Limit = Auto', 'Obtainable Misc'],
+		banlist: [
+			'Slowpoke-Galar', 'Slowbro-Galar', 'Magikarp', 'Gyarados', 'Articuno', 'Articuno-Galar', 'Zapdos', 'Zapdos-Galar',
+			'Moltres', 'Moltres-Galar', 'Dratini', 'Dragonair', 'Dragonite', 'Mewtwo', 'Mew', 'Slowking-Galar', 'Raikou', 'Entei',
+			'Suicune', 'Larvitar', 'Pupitar', 'Tyranitar', 'Lugia', 'Ho-Oh', 'Celebi', 'Bagon', 'Shelgon', 'Salamence', 'Regirock',
+			'Regice', 'Registeel', 'Latias', 'Latios', 'Kyogre', 'Groudon', 'Rayquaza', 'Jirachi', 'Deoxys', 'Shellos-East', 'Gastrodon-East',
+			'Uxie', 'Mesprit', 'Azelf', 'Dialga', 'Palkia', 'Heatran', 'Regigigas', 'Giratina', 'Giratina-Origin', 'Cresselia', 'Manaphy',
+			'Darkrai', 'Shaymin', 'Arceus', 'Victini', 'Drilbur', 'Excadrill', 'Darumaka-Galar', 'Darmanitan-Galar', 'Ferroseed', 'Ferrothorn',
+			'Cobalion', 'Terrakion', 'Virizion', 'Tornadus', 'Thundurus', 'Reshiram', 'Zekrom', 'Landorus', 'Kyurem', 'Keldeo', 'Meloetta',
+			'Genesect', 'Honedge', 'Doublade', 'Aegislash', 'Hawlucha', 'Xerneas', 'Yveltal', 'Diancie', 'Hoopa', 'Volcanion', 'Jangmo-o',
+			'Hakamo-o', 'Kommo-o', 'Tapu Koko', 'Tapu Lele', 'Tapu Bulu', 'Tapu Fini', 'Cosmog', 'Cosmoem', 'Solgaleo', 'Lunala', 'Nihilego',
+			'Buzzwole', 'Pheromosa', 'Xurkitree', 'Celesteela', 'Kartana', 'Guzzlord', 'Necrozma', 'Magearna', 'Marshadow', 'Poipole',
+			'Naganadel', 'Stakataka', 'Blacephalon', 'Zeraora', 'Meltan', 'Melmetal', 'Eiscue', 'Dracozolt', 'Arctozolt', 'Dracovish',
+			'Arctovish', 'Duraludon', 'Duraludon-Gmax', 'Dreepy', 'Drakloak', 'Dragapult', 'Zacian', 'Zacian-Crowned', 'Zamazenta',
+			'Zamazenta-Crowned', 'Eternatus', 'Eternatus-Eternamax', 'Kubfu', 'Urshifu', 'Urshifu-Rapid-Strike', 'Zarude', 'Regieleki',
+			'Regidrago', 'Glastrier', 'Spectrier', 'Calyrex',
 		],
 	},
 	standardag: {
