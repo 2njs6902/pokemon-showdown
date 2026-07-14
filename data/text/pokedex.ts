@@ -240,19 +240,19 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Paras",
 	},
 	parasaevium: {
-		name: "Paras-Aevian",
+		name: "Paras-Aevium",
 	},
 	parasaeviumzombie: {
-		name: "Paras-Aevian-Zombie",
+		name: "Paras-Aevium-Zombie",
 	},
 	parasect: {
 		name: "Parasect",
 	},
 	parasectaevium: {
-		name: "Parasect-Aevian",
+		name: "Parasect-Aevium",
 	},
 	parasectaeviumzombie: {
-		name: "Parasect-Aevian-Zombie",
+		name: "Parasect-Aevium-Zombie",
 	},
 	venonat: {
 		name: "Venonat",
@@ -599,8 +599,14 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	magikarp: {
 		name: "Magikarp",
 	},
+	magikarpaevium: {
+		name: "Magikarp-Aevium",
+	},
 	gyarados: {
 		name: "Gyarados",
+	},
+	gyaradosaevium: {
+		name: "Gyarados-Aevium",
 	},
 	gyaradosmega: {
 		name: "Gyarados-Mega",
@@ -609,7 +615,7 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Lapras",
 	},
 	laprasaevium: {
-		name: "Lapras-Aevian",
+		name: "Lapras-Aevium",
 	},
 	laprasgmax: {
 		name: "Lapras-Gmax",
@@ -783,7 +789,7 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Mareep",
 	},
 	mareepaevium: {
-		name: "Mareep-Aevian",
+		name: "Mareep-Aevium",
 	},
 	flaaffy: {
 		name: "Flaaffy",
@@ -795,7 +801,7 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Ampharos",
 	},
 	ampharosaevium: {
-		name: "Ampharos-Aevian",
+		name: "Ampharos-Aevium",
 	},
 	ampharosmega: {
 		name: "Ampharos-Mega",
@@ -864,7 +870,7 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Misdreavus",
 	},
 	misdreavusaevium: {
-		name: "Misdreavus-Aevian",
+		name: "Misdreavus-Aevium",
 	},
 	unown: {
 		name: "Unown",
@@ -1164,13 +1170,13 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Shroomish",
 	},
 	shroomishaevium: {
-		name: "Shroomish-Aevian",
+		name: "Shroomish-Aevium",
 	},
 	breloom: {
 		name: "Breloom",
 	},
 	breloomaevium: {
-		name: "Breloom-Aevian",
+		name: "Breloom-Aevium",
 	},
 	slakoth: {
 		name: "Slakoth",
@@ -1275,7 +1281,7 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Roselia",
 	},
 	roseliaaevium: {
-		name: "Roselia-Aevian",
+		name: "Roselia-Aevium",
 	},
 	gulpin: {
 		name: "Gulpin",
@@ -1389,13 +1395,13 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Feebas",
 	},
 	feebasaevium: {
-		name: "Feebas-Aevian",
+		name: "Feebas-Aevium",
 	},
 	milotic: {
 		name: "Milotic",
 	},
 	miloticaevium: {
-		name: "Milotic-Aevian",
+		name: "Milotic-Aevium",
 	},
 	castform: {
 		name: "Castform",
@@ -1446,13 +1452,13 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Snorunt",
 	},
 	snoruntaevium: {
-		name: "Snorunt-Aevian",
+		name: "Snorunt-Aevium",
 	},
 	glalie: {
 		name: "Glalie",
 	},
 	glalieaevium: {
-		name: "Glalie-Aevian",
+		name: "Glalie-Aevium",
 	},
 	glaliemega: {
 		name: "Glalie-Mega",
@@ -1620,13 +1626,13 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Budew",
 	},
 	budewaevium: {
-		name: "Budew-Aevian",
+		name: "Budew-Aevium",
 	},
 	roserade: {
 		name: "Roserade",
 	},
 	roseradeaevium: {
-		name: "Roserade-Aevian",
+		name: "Roserade-Aevium",
 	},
 	cranidos: {
 		name: "Cranidos",
@@ -1683,19 +1689,19 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Shellos",
 	},
 	shellosaeviumwest: {
-		name: "Shellos-Aevian-West",
+		name: "Shellos-Aevium-West",
 	},
 	shellosaeviumeast: {
-		name: "Shellos-Aevian-East",
+		name: "Shellos-Aevium-East",
 	},
 	gastrodon: {
 		name: "Gastrodon",
 	},
 	gastrodonaeviumwest: {
-		name: "Gastrodon-Aevian-West",
+		name: "Gastrodon-Aevium-West",
 	},
 	gastrodonaeviumeast: {
-		name: "Gastrodon-Aevian-East",
+		name: "Gastrodon-Aevium-East",
 	},
 	ambipom: {
 		name: "Ambipom",
@@ -1719,7 +1725,7 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Mismagius",
 	},
 	mismagiusaevium: {
-		name: "Mismagius-Aevian",
+		name: "Mismagius-Aevium",
 	},
 	honchkrow: {
 		name: "Honchkrow",
@@ -1742,8 +1748,14 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	bronzor: {
 		name: "Bronzor",
 	},
+	bronzoraevium: {
+		name: "Bronzor-Aevium",
+	},
 	bronzong: {
 		name: "Bronzong",
+	},
+	bronzongaevium: {
+		name: "Bronzong-Aevium",
 	},
 	bonsly: {
 		name: "Bonsly",
@@ -1881,7 +1893,7 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Froslass",
 	},
 	froslassaevium: {
-		name: "Froslass-Aevian",
+		name: "Froslass-Aevium",
 	},
 	rotom: {
 		name: "Rotom",
@@ -2082,13 +2094,13 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Munna",
 	},
 	munnaaevium: {
-		name: "Munna-Aevian",
+		name: "Munna-Aevium",
 	},
 	musharna: {
 		name: "Musharna",
 	},
 	musharnaaevium: {
-		name: "Musharna-Aevian",
+		name: "Musharna-Aevium",
 	},
 	pidove: {
 		name: "Pidove",
@@ -2159,11 +2171,20 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	sewaddle: {
 		name: "Sewaddle",
 	},
+	sewaddleaevium: {
+		name: "Sewaddle-Aevium",
+	},
 	swadloon: {
 		name: "Swadloon",
 	},
+	swadloonaevium: {
+		name: "Swadloon-Aevium",
+	},
 	leavanny: {
 		name: "Leavanny",
+	},
+	leavannyaevium: {
+		name: "Leavanny-Aevium",
 	},
 	venipede: {
 		name: "Venipede",
@@ -2242,6 +2263,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	sigilyph: {
 		name: "Sigilyph",
+	},
+	sigilyphaevium: {
+		name: "Sigilyph-Aevium",
 	},
 	yamask: {
 		name: "Yamask",
@@ -2394,19 +2418,19 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Litwick",
 	},
 	litwickaevium: {
-		name: "Litwick-Aevian",
+		name: "Litwick-Aevium",
 	},
 	lampent: {
 		name: "Lampent",
 	},
 	lampentaevium: {
-		name: "Lampent-Aevian",
+		name: "Lampent-Aevium",
 	},
 	chandelure: {
 		name: "Chandelure",
 	},
 	chandelureaevium: {
-		name: "Chandelure-Aevian",
+		name: "Chandelure-Aevium",
 	},
 	axew: {
 		name: "Axew",
@@ -2495,8 +2519,14 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	larvesta: {
 		name: "Larvesta",
 	},
+	larvestaaevium: {
+		name: "Larvesta-Aevium",
+	},
 	volcarona: {
 		name: "Volcarona",
+	},
+	volcaronaaevium: {
+		name: "Volcarona-Aevium",
 	},
 	cobalion: {
 		name: "Cobalion",
@@ -3023,32 +3053,38 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	wimpod: {
 		name: "Wimpod",
 	},
+	wimpodaevium: {
+		name: "Wimpod-Aevium",
+	},
 	golisopod: {
 		name: "Golisopod",
+	},
+	golisopodaevium: {
+		name: "Golisopod-Aevium",
 	},
 	sandygast: {
 		name: "Sandygast",
 	},
 	sandygastaeviumrocky: {
-		name: "Sandygast-Aevian-Rocky",
+		name: "Sandygast-Aevium-Rocky",
 	},
 	sandygastaeviumfiery: {
-		name: "Sandygast-Aevian-Fiery",
+		name: "Sandygast-Aevium-Fiery",
 	},
 	sandygastaeviumicy: {
-		name: "Sandygast-Aevian-Icy",
+		name: "Sandygast-Aevium-Icy",
 	},
 	palossand: {
 		name: "Palossand",
 	},
 	palossandaeviumrocky: {
-		name: "Palossand-Aevian-Rocky",
+		name: "Palossand-Aevium-Rocky",
 	},
 	palossandaeviumfiery: {
-		name: "Palossand-Aevian-Fiery",
+		name: "Palossand-Aevium-Fiery",
 	},
 	palossandaeviumicy: {
-		name: "Palossand-Aevian-Icy",
+		name: "Palossand-Aevium-Icy",
 	},
 	pyukumuku: {
 		name: "Pyukumuku",
@@ -3152,11 +3188,20 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	jangmoo: {
 		name: "Jangmo-o",
 	},
+	jangmooaevium: {
+		name: "Jangmo-o-Aevium",
+	},
 	hakamoo: {
 		name: "Hakamo-o",
 	},
+	hakamooaevium: {
+		name: "Hakamo-o-Aevium",
+	},
 	kommoo: {
 		name: "Kommo-o",
+	},
+	kommooaevium: {
+		name: "Kommo-o-Aevium",
 	},
 	kommoototem: {
 		name: "Kommo-o-Totem",
@@ -3411,7 +3456,7 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 		name: "Toxtricity-Low-Key",
 	},
 	toxtricityaevium: {
-		name: "Toxtricity-Aevian",
+		name: "Toxtricity-Aevium",
 	},
 	toxtricitygmax: {
 		name: "Toxtricity-Gmax",
