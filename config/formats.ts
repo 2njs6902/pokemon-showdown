@@ -28,7 +28,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 8] Rejuvenation",
 		desc: `Unofficial Rejuvenation Mod for Pokemon Showdown`,
 		mod: 'rejuvenation',
-		ruleset: ['Standard AG'],
+		ruleset: ['Rejuvenation'],
 		banlist: [
 			'Slowpoke-Galar', 'Slowbro-Galar', 'Magikarp', 'Gyarados', 'Articuno', 'Articuno-Galar', 'Zapdos', 'Zapdos-Galar',
 			'Moltres', 'Moltres-Galar', 'Dratini', 'Dragonair', 'Dragonite', 'Mewtwo', 'Mew', 'Slowking-Galar', 'Raikou', 'Entei',

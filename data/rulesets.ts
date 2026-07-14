@@ -8,12 +8,20 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 	// Rulesets
 	///////////////////////////////////////////////////////////////////
 
+	rejuvenation: {
+		effectType: 'ValidatorRule',
+		name: 'Rejuvenation',
+		desc: "The ruleset for the Rejuvenation mod",
+		ruleset: [
+			'HP Percentage Mod', 'Cancel Mod', 'Team Preview', 'Endless Battle Clause',
+		],
+	},
 	standardag: {
 		effectType: 'ValidatorRule',
 		name: 'Standard AG',
 		desc: "The minimal ruleset for Anything Goes",
 		ruleset: [
-			'Obtainable', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Endless Battle Clause',
+			'Obtainable', 'Team Preview', 'HP Percentage Mod', 'Cancel Mod', 'Endless Battle Clause', 'Nickname Clause', 'Species Clause', 'OHKO Clause', 'Evasion Moves Clause', 'Evasion Items Clause',
 		],
 	},
 	standard: {
