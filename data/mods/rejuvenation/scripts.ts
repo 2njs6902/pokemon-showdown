@@ -1,10 +1,11 @@
-import {Dex} from '../../../sim/dex';
-export const Scripts: {[k: string]: ModdedBattleScriptsData} = {
+export const Scripts: ModdedBattleScriptsData = {
 	gen: 8,
-	teambuilderConfig: {
-		// for micrometas to only show custom tiers
-		excludeStandardTiers: false,
-		// only to specify the order of custom tiers
-		customTiers: ['rejuvenation'],
-	},	
+	inherit: 'gen8',
+	side: {
+		inherit: true,
+		canDynamaxNow() {
+			// Dynamaxing is not in Rejuvenation
+			return false;
+		},
+	},
 };
