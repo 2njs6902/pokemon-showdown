@@ -21,16 +21,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		name: 'Rejuvenation Obtainable',
 		desc: "Makes sure the team is possible to obtain in Pokemon rejuvenation.",
 		ruleset: ['Obtainable Moves', 'Obtainable Abilities', 'EV Limit = Auto', 'Obtainable Misc', '+pokemon:jangmo-oaevium', '+pokemon:hakamo-oaevium', '+pokemon:kommo-oaevium'],
-		banlist: [
- 'Shellos-East', 'Gastrodon-East',
-'Honedge', 'Doublade', 'Aegislash', 'Hawlucha', 'Xerneas', 'Yveltal', 'Diancie', 'Hoopa', 'Volcanion', 'Jangmo-o',
-			'Hakamo-o', 'Kommo-o', 'Tapu Koko', 'Tapu Lele', 'Tapu Bulu', 'Tapu Fini', 'Cosmog', 'Cosmoem', 'Solgaleo', 'Lunala', 'Nihilego',
-			'Buzzwole', 'Pheromosa', 'Xurkitree', 'Celesteela', 'Kartana', 'Guzzlord', 'Necrozma', 'Magearna', 'Marshadow', 'Poipole',
-			'Naganadel', 'Stakataka', 'Blacephalon', 'Zeraora', 'Meltan', 'Melmetal', 'Eiscue', 'Dracozolt', 'Arctozolt', 'Dracovish',
-			'Arctovish', 'Duraludon', 'Duraludon-Gmax', 'Dreepy', 'Drakloak', 'Dragapult', 'Zacian', 'Zacian-Crowned', 'Zamazenta',
-			'Zamazenta-Crowned', 'Eternatus', 'Eternatus-Eternamax', 'Kubfu', 'Urshifu', 'Urshifu-Rapid-Strike', 'Zarude', 'Regieleki',
-			'Regidrago', 'Glastrier', 'Spectrier', 'Calyrex',
-		],
 	},
 	standardag: {
 		effectType: 'ValidatorRule',
