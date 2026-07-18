@@ -334,7 +334,19 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	paras: {
 		tier: "LC",
 	},
+	parasaevium: {
+		tier: "LC",
+	},
+	parasaeviumzombie: {
+		tier: "LC",
+	},
 	parasect: {
+		tier: "RU",
+	},
+	parasectaevium: {
+		tier: "RU",
+	},
+	parasectaeviumzombie: {
 		tier: "RU",
 	},
 	venonat: {
@@ -891,7 +903,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	magikarp: {
 		tier: "LC",
 	},
+	magikarpaevium: {
+		tier: "LC",
+	},
 	gyarados: {
+		tier: "UU",
+		doublesTier: "(DUU)",
+		natDexTier: "UUBL",
+	},
+	gyaradosaevium: {
 		tier: "UU",
 		doublesTier: "(DUU)",
 		natDexTier: "UUBL",
@@ -902,6 +922,11 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		natDexTier: "UUBL",
 	},
 	lapras: {
+		tier: "ZU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	laprasaevium: {
 		tier: "ZU",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
@@ -1161,10 +1186,19 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	mareep: {
 		tier: "LC",
 	},
+	mareepaevium: {
+		tier: "LC",
+	},
 	flaaffy: {
 		tier: "NFE",
 	},
+	flaaffyaevium: {
+		tier: "NFE",
+	},
 	ampharos: {
+		tier: "RU",
+	},
+	ampharosaevium: {
 		tier: "RU",
 	},
 	ampharosmega: {
@@ -1235,7 +1269,13 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	misdreavus: {
 		tier: "LC",
 	},
+	misdreavusaevium: {
+		tier: "LC",
+	},
 	mismagius: {
+		tier: "RU",
+	},
+	mismagiusaevium: {
 		tier: "RU",
 	},
 	unown: {
@@ -1607,7 +1647,13 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	shroomish: {
 		tier: "LC",
 	},
+	shroomishaevium: {
+		tier: "LC",
+	},
 	breloom: {
+		tier: "UU",
+	},
+	breloomaevium: {
 		tier: "UU",
 	},
 	slakoth: {
@@ -1737,10 +1783,21 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	budew: {
 		tier: "LC",
 	},
+	budewaevium: {
+		tier: "LC",
+	},
 	roselia: {
 		tier: "NFE",
 	},
+	roseliaaevium: {
+		tier: "NFE",
+	},
 	roserade: {
+		tier: "RU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	roseradeaevium: {
 		tier: "RU",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
@@ -1888,7 +1945,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	feebas: {
 		tier: "LC",
 	},
+	feebasaevium: {
+		tier: "LC",
+	},
 	milotic: {
+		tier: "RU",
+		doublesTier: "DUU",
+		natDexTier: "RU",
+	},
+	miloticaevium: {
 		tier: "RU",
 		doublesTier: "DUU",
 		natDexTier: "RU",
@@ -1952,7 +2017,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	snorunt: {
 		tier: "LC",
 	},
+	snoruntaevium: {
+		tier: "LC",
+	},
 	glalie: {
+		tier: "ZU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	glalieaevium: {
 		tier: "ZU",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
@@ -1963,6 +2036,11 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		natDexTier: "RU",
 	},
 	froslass: {
+		tier: "ZU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	froslassaevium: {
 		tier: "ZU",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
@@ -2265,7 +2343,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	bronzor: {
 		tier: "LC",
 	},
+	bronzoraevium: {
+		tier: "LC",
+	},
 	bronzong: {
+		tier: "RU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	bronzongaevium: {
 		tier: "RU",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
@@ -2587,7 +2673,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	munna: {
 		tier: "LC",
 	},
+	munnaaevium: {
+		tier: "LC",
+	},
 	musharna: {
+		tier: "ZU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	musharnaaevium: {
 		tier: "ZU",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
@@ -2686,12 +2780,27 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "Illegal",
 		natDexTier: "LC",
 	},
+	sewaddleaevium: {
+		isNonstandard: "Past",
+		tier: "Illegal",
+		natDexTier: "LC",
+	},
 	swadloon: {
 		isNonstandard: "Past",
 		tier: "Illegal",
 		natDexTier: "NFE",
 	},
+	swadloonaevium: {
+		isNonstandard: "Past",
+		tier: "Illegal",
+		natDexTier: "NFE",
+	},
 	leavanny: {
+		isNonstandard: "Past",
+		tier: "Illegal",
+		natDexTier: "RU",
+	},
+	leavannyaevium: {
 		isNonstandard: "Past",
 		tier: "Illegal",
 		natDexTier: "RU",
@@ -2800,6 +2909,11 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		natDexTier: "RU",
 	},
 	sigilyph: {
+		tier: "NUBL",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	sigilyphaevium: {
 		tier: "NUBL",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
@@ -2997,10 +3111,21 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	litwick: {
 		tier: "LC",
 	},
+	litwickaevium: {
+		tier: "LC",
+	},
 	lampent: {
 		tier: "NFE",
 	},
+	lampentaevium: {
+		tier: "NFE",
+	},
 	chandelure: {
+		tier: "RU",
+		doublesTier: "(DUU)",
+		natDexTier: "UU",
+	},
+	chandelureaevium: {
 		tier: "RU",
 		doublesTier: "(DUU)",
 		natDexTier: "UU",
@@ -3125,7 +3250,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	larvesta: {
 		tier: "LC",
 	},
+	larvestaaevium: {
+		tier: "LC",
+	},
 	volcarona: {
+		tier: "OU",
+		doublesTier: "(DUU)",
+		natDexTier: "OU",
+	},
+	volcaronaaevium: {
 		tier: "OU",
 		doublesTier: "(DUU)",
 		natDexTier: "OU",
@@ -3353,9 +3486,8 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		tier: "Illegal",
 	},
 	aegislashblade: {
-		tier: "UUBL",
-		doublesTier: "(DUU)",
-		natDexTier: "UU",
+		isNonstandard: "Past",
+		tier: "Illegal",
 	},
 	spritzee: {
 		tier: "LC",
@@ -3777,7 +3909,15 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	wimpod: {
 		tier: "LC",
 	},
+	wimpodaevium: {
+		tier: "LC",
+	},
 	golisopod: {
+		tier: "RU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	golisopodaevium: {
 		tier: "RU",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
@@ -3785,7 +3925,31 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	sandygast: {
 		tier: "LC",
 	},
+	sandygastaeviumrocky: {
+		tier: "LC",
+	},
+	sandygastaeviumfiery: {
+		tier: "LC",
+	},
+	sandygastaeviumicy: {
+		tier: "LC",
+	},
 	palossand: {
+		tier: "ZU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	palossandaeviumrocky: {
+		tier: "ZU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	palossandaeviumfiery: {
+		tier: "ZU",
+		doublesTier: "(DUU)",
+		natDexTier: "RU",
+	},
+	palossandaeviumicy: {
 		tier: "ZU",
 		doublesTier: "(DUU)",
 		natDexTier: "RU",
@@ -3928,10 +4092,21 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	jangmoo: {
 		tier: "LC",
 	},
+	jangmooaevium: {
+		tier: "LC",
+	},
 	hakamoo: {
 		tier: "NFE",
 	},
+	hakamoaaevium: {
+		tier: "NFE",
+	},
 	kommoo: {
+		tier: "UUBL",
+		doublesTier: "(DUU)",
+		natDexTier: "OU",
+	},
+	kommooaevium: {
 		tier: "UUBL",
 		doublesTier: "(DUU)",
 		natDexTier: "OU",

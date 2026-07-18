@@ -1,11 +1,11 @@
 export const Scripts: ModdedBattleScriptsData = {
-	gen: 8,
-	inherit: 'gen8',
-	side: {
-		inherit: true,
-		canDynamaxNow() {
-			// Dynamaxing is not in Rejuvenation
-			return false;
-		},
-	},
+	gen: 9,
+	inherit: 'gen9dlc1',
+	// side: {
+	// 	inherit: true,
+	// 	canDynamaxNow() {
+	// 		// Dynamaxing is not in Rejuvenation
+	// 		return false;
+	// 	},
+	// },
 };
