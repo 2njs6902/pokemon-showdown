@@ -26,9 +26,8 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	},
 	{
 		name: "[Gen 9] Rejuvenation DuoType",
-		desc: `Unofficial Rejuvenation Mod for Pokemon Showdown`,
-		mod: 'rejuvenation',
-		ruleset: ['Rejuvenation'],
+		mod: "rejuvenation",
+		ruleset: ["Rejuvenation"],
 	},
 
 	// // S/V Singles
