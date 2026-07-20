@@ -20,9 +20,9 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		effectType: 'ValidatorRule',
 		name: 'Rejuvenation Obtainable',
 		desc: "Makes sure the team is possible to obtain in Pokemon rejuvenation.",
-		ruleset: ['Obtainable Moves', 'Obtainable Abilities', 'EV Limit = Auto', 'Obtainable Misc'],
+		ruleset: ['Obtainable Moves', 'Team Preview Shiny', 'Obtainable Abilities', 'EV Limit = Auto', 'Obtainable Misc'],
 		banlist: ['Unreleased', 'Unobtainable', 'Nonexistent'],
-  		unbanlist: ['move: Hidden Power'],
+  		unbanlist: ['move: Hidden Power', 'move: Frustration'],
 	},
 	standardag: {
 		effectType: 'ValidatorRule',
@@ -660,6 +660,39 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			this.add('clearpoke');
 			for (const pokemon of this.getAllPokemon()) {
 				let details = pokemon.details.replace(', shiny', '')
+					.replace(/(Zacian|Zamazenta)(?!-Crowned)/g, '$1-*'); // Hacked-in Crowned formes will be revealed
+				if (!this.ruleTable.has('speciesrevealclause')) {
+					details = details
+						.replace(/(Greninja|Gourgeist|Pumpkaboo|Xerneas|Silvally|Urshifu|Dudunsparce)(-[a-zA-Z?-]+)?/g, '$1-*');
+				}
+				this.add('poke', pokemon.side.id, details, '');
+			}
+			if (this.ruleTable.has(`teratypepreview`)) {
+				for (const side of this.sides) {
+					let buf = ``;
+					for (const pokemon of side.pokemon) {
+						buf += buf ? ` / ` : `raw|${side.name}'s Tera Types:<br />`;
+						buf += `<psicon pokemon="${pokemon.species.id}" /><psicon type="${pokemon.teraType}" />`;
+					}
+					this.add(`${buf}`);
+				}
+			}
+			this.makeRequest('teampreview');
+		},
+	},
+	teampreviewshiny: {
+		effectType: 'Rule',
+		name: 'Team Preview Shiny',
+		desc: "Allows each player to see the Pok&eacute;mon on their opponent's team before they choose their lead Pok&eacute;mon",
+		onBegin() {
+			if (this.ruleTable.has(`teratypepreview`)) {
+				this.add('rule', 'Tera Type Preview: Tera Types are shown at Team Preview');
+			}
+		},
+		onTeamPreview() {
+			this.add('clearpoke');
+			for (const pokemon of this.getAllPokemon()) {
+				let details = pokemon.details
 					.replace(/(Zacian|Zamazenta)(?!-Crowned)/g, '$1-*'); // Hacked-in Crowned formes will be revealed
 				if (!this.ruleTable.has('speciesrevealclause')) {
 					details = details
