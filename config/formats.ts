@@ -27,7 +27,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 	{
 		name: "[Gen 9] Rejuvenation DuoType",
 		mod: 'rejuvenation',
-		ruleset: ['Rejuvenation'],s
+		ruleset: ['Rejuvenation'],
 	},
 
 	// // S/V Singles
