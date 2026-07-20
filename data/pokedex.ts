@@ -15876,6 +15876,8 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 	jangmooaevium: {
 		num: 782,
 		name: "Jangmo-o-Aevium",
+		baseSpecies: "Jangmo-o",
+		forme: "Aevium",
 		types: ["Dragon", "Poison"],
 		baseStats: { hp: 50, atk: 65, def: 55, spa: 40, spd: 40, spe: 40 },
 		abilities: { 0: "Analytic", 1: "Keen Eye", H: "Overcoat" },
