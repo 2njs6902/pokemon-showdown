@@ -125,36 +125,52 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		num: 6904,
 	},
 	reflector: {
-		onStart(pokemon) {
-			// Get opposing Pokémon (singles or doubles)
-			let target = pokemon.foes()[0];
+	onStart(pokemon) {
+		let target = pokemon.foes()[0];
 
-			// Optional: better doubles targeting (direct opposite like stated on wiki)
-			if (this.gameType === 'doubles') {
-				target = pokemon.foes().find(foe => foe.position === pokemon.position) || pokemon.foes()[0];
-			}
+		if (this.gameType === 'doubles') {
+		target =
+			pokemon.foes().find(foe => foe.position === pokemon.position) ||
+			pokemon.foes()[0];
+		}
 
-			if (!target) return;
+		if (!target) return;
 
-			const types = target.getTypes();
-			let typeToCopy;
+		const originalTypes = [...pokemon.getTypes()];
+		const finalTypes = [...originalTypes];
+		const gainedTypes: string[] = [];
 
-			if (types.length > 1) {
-				typeToCopy = types[1]; // secondary
-			} else {
-				typeToCopy = types[0]; // primary
-			}
+		for (const type of target.getTypes()) {
+		if (!originalTypes.includes(type)) {
+			finalTypes.push(type);
+			gainedTypes.push(type);
+		}
+		}
 
-			// If already has the type, do nothing
-			if (pokemon.hasType(typeToCopy)) return;
+		pokemon.m.reflectorTypes = gainedTypes;
 
-			this.add('-ability', pokemon, 'Reflector', '[of] ' + target);
-			pokemon.addType(typeToCopy);
-		},
-		flags: {},
-		name: "Reflector",
-		rating: 3,
-		num: 6905,
+		this.add('-ability', pokemon, 'Reflector', '[of] ' + target);
+		pokemon.setType(finalTypes);
+	},
+	onSourceModifyDamage(damage, attacker, defender, move) {
+		const gainedTypes =
+		defender.m.reflectorTypes as string[] | undefined;
+
+		if (gainedTypes?.includes(move.type)) {
+		this.debug(`Reflector resisted mirrored ${move.type} typing`);
+		return this.chainModify(0.5);
+		}
+	},
+	onEnd(pokemon) {
+		delete pokemon.m.reflectorTypes;
+	},
+	onSwitchOut(pokemon) {
+		delete pokemon.m.reflectorTypes;
+	},
+	flags: {},
+	name: "Reflector",
+	rating: 3,
+	num: 6905,
 	},
 	adaptability: {
 		onModifySTAB(stab, source, target, move) {
