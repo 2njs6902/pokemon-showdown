@@ -18,6 +18,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Fire moves by 1.5. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
 		shortDesc: "Grants Levitate. Fire moves have 1.5x power. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
 	},
+	reflector: {
+		name: "Reflector",
+		desc: "Mirrors the opponent's types on entry, gaining these types. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used.",
+		shortDesc: "Mirrors the opponent's types on entry. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used"
+	},
 	adaptability: {
 		name: "Adaptability",
 		desc: "This Pokemon's moves that match one of its types have a same-type attack bonus (STAB) of 2 instead of 1.5.",
