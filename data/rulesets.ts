@@ -13,7 +13,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		name: 'Rejuvenation',
 		desc: "The ruleset for the Pokemon Challanges Discord Rejuvenation Tournament.",
 		ruleset: [
-			'HP Percentage Mod', 'Cancel Mod', 'Endless Battle Clause', 'Rejuvenation Obtainable',
+			'HP Percentage Mod', 'Cancel Mod', 'Endless Battle Clause', 'Rejuvenation Obtainable', 'Terastal Clause'
 		],
 	},
 	rejuvenationobtainable: {
