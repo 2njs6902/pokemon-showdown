@@ -151,6 +151,9 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 
 		this.add('-ability', pokemon, 'Reflector', '[of] ' + target);
 		pokemon.setType(finalTypes);
+		if (gainedTypes.length) {
+			this.add('-message', `${pokemon.name} gained the ${gainedTypes.join('/')} type${gainedTypes.length > 1 ? 's' : ''}!`);
+		}
 	},
 	onSourceModifyDamage(damage, attacker, defender, move) {
 		const gainedTypes =
