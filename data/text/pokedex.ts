@@ -1358,6 +1358,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	lunatone: {
 		name: "Lunatone",
 	},
+	lunatonedominantfusion: {
+		name: "Lunatone",
+	},
 	solrock: {
 		name: "Solrock",
 	},
