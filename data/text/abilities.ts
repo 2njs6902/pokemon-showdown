@@ -23,6 +23,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		desc: "Mirrors the opponent's types on entry, gaining these types. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used.",
 		shortDesc: "Mirrors the opponent's types on entry. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used"
 	},
+	pollenflight: {
+		name: "Pollenflight",
+		desc: "Pollen dealing 1/16th HP damage to all non-seeded, non-Grass Type Pokémon is released into the air at the end of the turn. User heals for the damage dealt.",
+		shortDesc: "Deals 1/16th HP damage to all non-seeded, non-Grass Type Pokémon the end of the turn. User heals for the damage dealt."
+	},
 	adaptability: {
 		name: "Adaptability",
 		desc: "This Pokemon's moves that match one of its types have a same-type attack bonus (STAB) of 2 instead of 1.5.",
