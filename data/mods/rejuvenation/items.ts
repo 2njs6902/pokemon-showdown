@@ -18,6 +18,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: 659,
 		gen: 9,
+		isNonstandard: null,
 	},
 	venusauriteg: {
 		name: "Venusaurite G",
@@ -29,6 +30,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: -1000,
 		gen: 9,
-		isNonstandard: "Past",
+		isNonstandard: null,
 	},
 }
