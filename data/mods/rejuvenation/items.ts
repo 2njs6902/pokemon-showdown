@@ -9,10 +9,17 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 	},
 	venusaurite: {
-		inherit: true,
+		name: "Venusaurite",
+		spritenum: 608,
+		megaStone: { "Venusaur": "Venusaur-Mega" },
+		itemUser: ["Venusaur"],
+		onTakeItem(item, source) {
+			return !item.megaStone?.[source.baseSpecies.baseSpecies];
+		},
+		num: 659,
+		gen: 9,
 	},
 	venusauriteg: {
-		inherit: true,
 		name: "Venusaurite G",
 		spritenum: 608,
 		megaStone: { "Venusaur": "Venusaur-Giga" },
@@ -22,5 +29,6 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		num: -1000,
 		gen: 9,
+		isNonstandard: "Past",
 	},
 }
