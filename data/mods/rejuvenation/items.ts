@@ -28,7 +28,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		onTakeItem(item, source) {
 			return !item.megaStone?.[source.baseSpecies.baseSpecies];
 		},
-		num: -1000,
+		num: 6902,
 		gen: 9,
 		isNonstandard: null,
 	},

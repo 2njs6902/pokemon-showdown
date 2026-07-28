@@ -7481,7 +7481,7 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onTakeItem(item, source) {
 			return !item.megaStone?.[source.baseSpecies.baseSpecies];
 		},
-		num: -1000,
+		num: 6902,
 		gen: 9,
 		isNonstandard: "Past",
 	},
