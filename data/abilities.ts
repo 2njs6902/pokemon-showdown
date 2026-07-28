@@ -176,6 +176,51 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 	rating: 3,
 	num: 6905,
 	},
+	pollenflight: {
+		onResidualOrder: 8,
+		onResidualSubOrder: 1,
+		onResidual(pokemon) {
+			if (!pokemon.hp) return;
+
+			let totalDamage = 0;
+			let activated = false;
+
+			for (const target of this.getAllActive()) {
+				if (
+					target === pokemon ||
+					!target.hp ||
+					target.hasType('Grass') ||
+					target.volatiles['leechseed']
+				) {
+					continue;
+				}
+
+				if (!activated) {
+					this.add('-ability', pokemon, 'Pollenflight');
+					activated = true;
+				}
+
+				const damage = this.damage(
+					target.baseMaxhp / 16,
+					target,
+					pokemon,
+					this.dex.abilities.get('pollenflight')
+				);
+
+				if (damage) {
+					totalDamage += damage;
+				}
+			}
+
+			if (totalDamage && pokemon.hp) {
+				this.heal(totalDamage, pokemon, pokemon);
+			}
+		},
+		flags: {},
+		name: "Pollenflight",
+		rating: 3,
+		num: 6906,
+	},
 	adaptability: {
 		onModifySTAB(stab, source, target, move) {
 			if (move.forceSTAB || source.hasType(move.type)) {
