@@ -9,6 +9,8 @@
 import * as path from "path";
 import { FS, Net } from "../../lib";
 
+console.log(__dirname);
+
 const TRAINER_DIR = path.resolve(
     __dirname,
     "../../../pokemon-showdown-client/play.pokemonshowdown.com/sprites/trainers"
