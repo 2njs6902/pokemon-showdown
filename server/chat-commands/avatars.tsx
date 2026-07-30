@@ -730,6 +730,8 @@ export const commands: Chat.ChatCommands = {
 	localavatars(target, room, user) {
 		const avatars = getLocalTrainers();
 
+		console.log("LOCAL AVATARS:", avatars);
+
 		this.sendReply(
 			`|queryresponse|localavatars|${JSON.stringify(avatars)}`
 		);
