@@ -24,6 +24,12 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		banlist: ['Unreleased', 'Unobtainable', 'Nonexistent'],
   		unbanlist: ['move: Hidden Power', 'move: Frustration'],
 	},
+	nonrejuvmons: {
+		effectType: 'ValidatorRule',
+		name: 'Non-Rejuvenation Pokemon',
+		desc: "Bans all Pokemon that are not obtainable in Pokemon Rejuvenation.",
+		banlist: ['Ababo', 'venomicon']
+	},
 	standardag: {
 		effectType: 'ValidatorRule',
 		name: 'Standard AG',
