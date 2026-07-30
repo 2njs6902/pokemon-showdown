@@ -1270,6 +1270,10 @@ export class BattleActions {
 					hitResult = this.battle.field.setTerrain(moveData.terrain, source, move);
 					didSomething = this.combineResults(didSomething, hitResult);
 				}
+				if (moveData.field) {
+					hitResult = this.battle.field.setField(moveData.field, source, move);
+					didSomething = this.combineResults(didSomething, hitResult);
+				}
 				if (moveData.pseudoWeather) {
 					hitResult = this.battle.field.addPseudoWeather(moveData.pseudoWeather, source, move);
 					didSomething = this.combineResults(didSomething, hitResult);

@@ -205,6 +205,29 @@ export const commands: Chat.ChatCommands = {
 		`[number] must be between 5 and 480. Requires: # ~`,
 		`/automodchat off - Turns off automodchat.`,
 	],
+	
+	setfield(target, room, user) {
+		this.canUseConsole();
+		room = this.requireRoom();
+
+		if (!room.battle) {
+			throw new Chat.ErrorMessage(`This command can only be used in a battle room.`);
+		}
+
+		const field = toID(target);
+		if (!field) {
+			return this.parse('/help setfield');
+		}
+
+		void room.battle.stream.write(
+			`>eval this.battle.field.addPseudoWeather('${field}')`
+		);
+
+		this.sendReply(`Field set to "${field}".`);
+	},
+	setfieldhelp: [
+		`/setfield [field] - Starts the specified pseudo-weather in the current battle. Requires: ~ console access.`,
+	],
 
 	ionext() {
 		throw new Chat.ErrorMessage([

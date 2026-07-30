@@ -1,6 +1,73 @@
 // List of flags and their descriptions can be found in sim/dex-moves.ts
+const REJUV_FIELDS = [
+	'junglefield',
+	'ancientruins',
+	'electricterrainfield',
+	'cavefield',
+] as const;
+
 
 export const Moves: import('../sim/dex-moves').MoveDataTable = {
+	concertvenue: {
+		num: 7000,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Concert Venue",
+		pp: 10,
+		priority: 0,
+		flags: {},
+		field: "concertvenue",
+		condition: {
+			duration: 0,
+
+			onStart() {
+				// Remove every other custom field before starting Jungle Field.
+				this.field.clearField();
+
+				this.add('-fieldstart', 'Concert Venue', '[message] Let\'s get HYPED!');
+			},
+
+			onEnd() {
+				this.add('-fieldend', 'Concert Venue', '[message] The hype died down.'
+				);
+			},
+		},
+
+		secondary: null,
+		target: "all",
+		type: "Normal",
+	},
+	forestfield: {
+		num: 7001,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Forest Field",
+		pp: 10,
+		priority: 0,
+		flags: {},
+		field: "forestfield",
+		condition: {
+			duration: 0,
+
+			onStart() {
+				// Remove every other custom field before starting Jungle Field.
+				this.field.clearField();
+
+				this.add('-fieldstart', 'Forest Field', '[message] The forest is alive!');
+			},
+
+			onEnd() {
+				this.add('-fieldend', 'Forest Field', '[message] The forest calms down.'
+				);
+			},
+		},
+
+		secondary: null,
+		target: "all",
+		type: "Bug",
+	},
 	irritation: {
 		num: 6902,
 		accuracy: 100,

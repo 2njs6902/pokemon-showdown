@@ -1209,7 +1209,14 @@ export class Battle {
 				end: customHolder ? null : field.clearTerrain, effectHolder: customHolder || field,
 			}, callbackName));
 		}
-
+		const fieldEffect = field.getField(); ///Called fieldEffect here cause the whole thing called field
+		callback = this.getCallback(field, fieldEffect, callbackName);
+		if (callback !== undefined || (getKey && field.fieldState[getKey])) {
+			handlers.push(this.resolvePriority({
+				effect: fieldEffect, callback, state: field.fieldState,
+				end: customHolder ? null : field.clearField, effectHolder: customHolder || field,
+			}, callbackName));
+		}
 		return handlers;
 	}
 

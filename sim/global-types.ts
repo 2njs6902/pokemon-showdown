@@ -355,6 +355,9 @@ interface ModdedField extends Partial<Field> {
 	setTerrain?: (
 		this: Field, status: string | Effect, source: Pokemon | 'debug' | null, sourceEffect: Effect | null
 	) => boolean;
+	setField?: (
+		this: Field, status: string | Effect, source: Pokemon | 'debug' | null, sourceEffect: Effect | null
+	) => boolean;
 }
 
 interface ModdedBattleScriptsData extends Partial<BattleScriptsData> {

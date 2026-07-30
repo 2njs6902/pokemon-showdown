@@ -17,6 +17,8 @@ export class Field {
 	weatherState: EffectState;
 	terrain: ID;
 	terrainState: EffectState;
+	field: ID;
+	fieldState: EffectState;
 	pseudoWeather: { [id: string]: EffectState };
 
 	constructor(battle: Battle) {
@@ -29,6 +31,8 @@ export class Field {
 		this.weatherState = this.battle.initEffectState({ id: '' });
 		this.terrain = '';
 		this.terrainState = this.battle.initEffectState({ id: '' });
+		this.field = '';
+		this.fieldState = this.battle.initEffectState({ id: '' });
 		this.pseudoWeather = {};
 	}
 
@@ -181,6 +185,62 @@ export class Field {
 
 	getTerrain() {
 		return this.battle.dex.conditions.getByID(this.terrain);
+	}
+
+	setField(status: string | Effect, source: Pokemon | 'debug' | null = null, sourceEffect: Effect | null = null) {
+		status = this.battle.dex.conditions.get(status);
+		if (!sourceEffect && this.battle.effect) sourceEffect = this.battle.effect;
+		if (!source && this.battle.event?.target) source = this.battle.event.target;
+		if (source === 'debug') source = this.battle.sides[0].active[0];
+		if (!source) throw new Error(`setting field without a source`);
+
+		if (this.field === status.id) return false;
+		const prevField = this.field;
+		const prevFieldState = this.fieldState;
+		this.field = status.id;
+		this.fieldState = this.battle.initEffectState({
+			id: status.id,
+			source,
+			sourceSlot: source.getSlot(),
+			duration: status.duration,
+		});
+		if (status.durationCallback) {
+			this.fieldState.duration = status.durationCallback.call(this.battle, source, source, sourceEffect);
+		}
+		if (!this.battle.singleEvent('FieldStart', status, this.fieldState, this, source, sourceEffect)) {
+			this.field = prevField;
+			this.fieldState = prevFieldState;
+			return false;
+		}
+		this.battle.eachEvent('FieldChange', sourceEffect);
+		return true;
+	}
+
+	clearField() {
+		if (!this.field) return false;
+		const prevField = this.getField();
+		this.battle.singleEvent('FieldEnd', prevField, this.fieldState, this);
+		this.field = '';
+		this.battle.clearEffectState(this.fieldState);
+		this.battle.eachEvent('FieldChange');
+		return true;
+	}
+
+	effectiveField(target?: Pokemon | Side | Battle) {
+		if (this.battle.event && !target) target = this.battle.event.target;
+		return this.battle.runEvent('TryField', target) ? this.field : '';
+	}
+
+	isField(field: string | string[], target?: Pokemon | Side | Battle) {
+		const ourField = this.effectiveField(target);
+		if (!Array.isArray(field)) {
+			return ourField === toID(field);
+		}
+		return field.map(toID).includes(ourField);
+	}
+	
+	getField() {
+		return this.battle.dex.conditions.getByID(this.field);
 	}
 
 	addPseudoWeather(
