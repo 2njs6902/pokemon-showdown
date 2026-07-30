@@ -8,6 +8,13 @@
 
 import { FS, Net } from "../../lib";
 
+const LOCAL_TRAINERS = new Set(
+    FS("play.pokemonshowdown.com/sprites/trainers")
+        .readdirSync()
+        .filter(f => f.endsWith(".png"))
+        .map(f => f.slice(0, -4))
+);
+
 const AVATARS_FILE = 'config/avatars.json';
 
 /**
@@ -78,7 +85,10 @@ export const Avatars = new class {
 	}
 	canUse(userid: ID, avatar: string): AvatarID | null {
 		avatar = avatar.toLowerCase().replace(/[^a-z0-9-.#]+/g, '');
-		if (OFFICIAL_AVATARS.has(avatar)) return avatar;
+
+		if (OFFICIAL_AVATARS.has(avatar) || LOCAL_TRAINERS.has(avatar)) {
+			return avatar;
+		}
 
 		const customs = customAvatars[userid]?.allowed;
 		if (!customs) return null;
