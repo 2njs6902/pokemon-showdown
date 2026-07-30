@@ -9,14 +9,18 @@
 import * as path from "path";
 import { FS, Net } from "../../lib";
 
-console.log(__dirname);
-
-const TRAINER_DIR = path.resolve(
-    __dirname,
-    "../../../pokemon-showdown-client/play.pokemonshowdown.com/sprites/trainers"
+const TRAINER_DIR = path.join(
+    process.cwd(),
+    "..",
+    "pokemon-showdown-client",
+    "play.pokemonshowdown.com",
+    "sprites",
+    "trainers",
 );
 
-console.log(TRAINER_DIR);
+console.log("cwd =", process.cwd());
+console.log("TRAINER_DIR =", TRAINER_DIR);
+console.log("exists =", FS(TRAINER_DIR).existsSync());
 
 const LOCAL_TRAINERS = new Set(
     FS(TRAINER_DIR)
