@@ -22,13 +22,16 @@ console.log("cwd =", process.cwd());
 console.log("TRAINER_DIR =", TRAINER_DIR);
 console.log("exists =", FS(TRAINER_DIR).existsSync());
 
-const LOCAL_TRAINERS = new Set(
-    FS(TRAINER_DIR)
-        .readdirSync()
-        .filter(f => f.endsWith(".png"))
-        .map(f => f.slice(0, -4))
-);
+function getLocalTrainers(): string[] {
+	if (!FS(TRAINER_DIR).existsSync()) return [];
 
+	return FS(TRAINER_DIR)
+		.readdirSync()
+		.filter(filename => filename.toLowerCase().endsWith('.png'))
+		.map(filename => filename.slice(0, -4))
+		.filter(Boolean)
+		.sort((a, b) => a.localeCompare(b));
+}
 const AVATARS_FILE = 'config/avatars.json';
 
 /**
@@ -100,7 +103,7 @@ export const Avatars = new class {
 	canUse(userid: ID, avatar: string): AvatarID | null {
 		avatar = avatar.toLowerCase().replace(/[^a-z0-9-.#]+/g, '');
 
-		if (OFFICIAL_AVATARS.has(avatar) || LOCAL_TRAINERS.has(avatar)) {
+		if (OFFICIAL_AVATARS.has(avatar) || getLocalTrainers().includes(avatar)) {
 			return avatar;
 		}
 
@@ -724,6 +727,14 @@ for (const avatar of OFFICIAL_AVATARS_FLAMIBANE) OFFICIAL_AVATARS.add(avatar);
 for (const avatar of OFFICIAL_AVATARS_RADU) OFFICIAL_AVATARS.add(avatar);
 
 export const commands: Chat.ChatCommands = {
+	localavatars(target, room, user) {
+		const avatars = getLocalTrainers();
+
+		this.sendReply(
+			`|queryresponse|localavatars|${JSON.stringify(avatars)}`
+		);
+	},
+
 	avatar(target, room, user) {
 		if (!target) return this.parse(`${this.cmdToken}avatars`);
 		const [maybeAvatar, silent] = target.split(',');
