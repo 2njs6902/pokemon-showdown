@@ -6,10 +6,18 @@
  * @author Zarel <guangcongluo@gmail.com>
  */
 
+import * as path from "path";
 import { FS, Net } from "../../lib";
 
+const TRAINER_DIR = path.resolve(
+    __dirname,
+    "../../../pokemon-showdown-client/play.pokemonshowdown.com/sprites/trainers"
+);
+
+console.log(TRAINER_DIR);
+
 const LOCAL_TRAINERS = new Set(
-    FS("play.pokemonshowdown.com/sprites/trainers")
+    FS(TRAINER_DIR)
         .readdirSync()
         .filter(f => f.endsWith(".png"))
         .map(f => f.slice(0, -4))
