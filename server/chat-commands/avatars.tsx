@@ -727,12 +727,14 @@ for (const avatar of OFFICIAL_AVATARS_FLAMIBANE) OFFICIAL_AVATARS.add(avatar);
 for (const avatar of OFFICIAL_AVATARS_RADU) OFFICIAL_AVATARS.add(avatar);
 
 export const commands: Chat.ChatCommands = {
-	localavatars(target, room, user) {
-		const avatars = getLocalTrainers();
+	localavatars(target, room, user, connection) {
+		const avatars = getLocalTrainers().filter(
+			avatar => !OFFICIAL_AVATARS.has(avatar)
+		);
 
-		console.log("LOCAL AVATARS:", avatars);
+		console.log('RETURNING LOCAL AVATARS:', avatars);
 
-		this.sendReply(
+		connection.send(
 			`|queryresponse|localavatars|${JSON.stringify(avatars)}`
 		);
 	},
