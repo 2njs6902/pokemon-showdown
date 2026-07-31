@@ -18,9 +18,9 @@ const TRAINER_DIR = path.join(
     "trainers",
 );
 
-console.log("cwd =", process.cwd());
-console.log("TRAINER_DIR =", TRAINER_DIR);
-console.log("exists =", FS(TRAINER_DIR).existsSync());
+// console.log("cwd =", process.cwd());
+// console.log("TRAINER_DIR =", TRAINER_DIR);
+// console.log("exists =", FS(TRAINER_DIR).existsSync());
 
 function getLocalTrainers(): string[] {
 	if (!FS(TRAINER_DIR).existsSync()) return [];
@@ -730,7 +730,7 @@ export const commands: Chat.ChatCommands = {
 	localavatars(target, room, user, connection) {
 		const avatars = getLocalTrainers();
 
-		console.log('[localavatars] returning:', avatars);
+		// console.log('[localavatars] returning:', avatars);
 
 		connection.send(
 			`|queryresponse|localavatars|${JSON.stringify(avatars)}`
