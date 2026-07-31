@@ -728,11 +728,9 @@ for (const avatar of OFFICIAL_AVATARS_RADU) OFFICIAL_AVATARS.add(avatar);
 
 export const commands: Chat.ChatCommands = {
 	localavatars(target, room, user, connection) {
-		const avatars = getLocalTrainers().filter(
-			avatar => !OFFICIAL_AVATARS.has(avatar)
-		);
+		const avatars = getLocalTrainers();
 
-		console.log('RETURNING LOCAL AVATARS:', avatars);
+		console.log('[localavatars] returning:', avatars);
 
 		connection.send(
 			`|queryresponse|localavatars|${JSON.stringify(avatars)}`
