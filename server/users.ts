@@ -618,13 +618,10 @@ export class User extends Chat.MessageContext {
 	 */
 	hasConsoleAccess(connection: Connection) {
 		if (this.hasSysopAccess()) return true;
+		if (!this.can('console')) return false; // normal permission check
 
 		const whitelist = Config.consoleips || ['127.0.0.1'];
-
-		return (
-			whitelist.includes(connection.ip) ||
-			whitelist.includes(this.id)
-		);
+		return whitelist.includes(connection.ip) || whitelist.includes(this.id);
 	}
 	resetName(isForceRenamed = false) {
 		return this.forceRename(`Guest ${this.guestNum}`, false, isForceRenamed);

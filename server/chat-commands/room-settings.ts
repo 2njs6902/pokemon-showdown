@@ -207,7 +207,6 @@ export const commands: Chat.ChatCommands = {
 	],
 	
 	setfield(target, room, user) {
-		this.canUseConsole();
 		room = this.requireRoom();
 
 		if (!room.battle) {
@@ -220,13 +219,13 @@ export const commands: Chat.ChatCommands = {
 		}
 
 		void room.battle.stream.write(
-			`>eval this.battle.field.addPseudoWeather('${field}')`
+			`>eval this.battle.field.setField('${field}')`
 		);
 
 		this.sendReply(`Field set to "${field}".`);
 	},
 	setfieldhelp: [
-		`/setfield [field] - Starts the specified pseudo-weather in the current battle. Requires: ~ console access.`,
+		`/setfield [field] - Starts the specified field in the current battle.`,
 	],
 
 	ionext() {
