@@ -626,7 +626,7 @@ export interface ModdedConditionDataTable { [id: IDEntry]: ModdedConditionData }
 
 export class Condition extends BasicEffect implements
 	Readonly<BasicEffect & SideConditionData & FieldConditionData & PokemonConditionData> {
-	declare readonly effectType: 'Condition' | 'Weather' | 'Status' | 'Terrain';
+	declare readonly effectType: 'Condition' | 'Weather' | 'Status' | 'Terrain' | 'Field';
 	declare readonly counterMax?: number;
 	declare effectOrder?: number;
 
@@ -643,7 +643,7 @@ export class Condition extends BasicEffect implements
 
 	constructor(data: AnyObject) {
 		super(data);
-		this.effectType = (['Weather', 'Status', 'Terrain'].includes(data.effectType) ? data.effectType : 'Condition');
+		this.effectType = (['Weather', 'Status', 'Terrain', 'Field'].includes(data.effectType) ? data.effectType : 'Condition');
 		assignMissingFields(this, data);
 	}
 }

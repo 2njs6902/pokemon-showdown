@@ -935,6 +935,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	sneaselhisui: {
 		name: "Sneasel-Hisui",
 	},
+	sneaselaevium: {
+		name: "Sneasel-Aevium",
+	},
 	teddiursa: {
 		name: "Teddiursa",
 	},
@@ -3694,6 +3697,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	sneasler: {
 		name: "Sneasler",
+	},
+	sneasleraevium: {
+		name: "Sneasler-Aevium",
 	},
 	overqwil: {
 		name: "Overqwil",

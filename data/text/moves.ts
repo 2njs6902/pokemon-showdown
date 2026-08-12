@@ -80,9 +80,24 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		shortDesc: "50% chance to raise the user's Sp. Atk by 1.",
 	},
 	solarflare: {
-		name: "Solare Flare",
+		name: "Solar Flare",
 		desc: "Has a 50% chance to raise the user's Attack by 1 stage.",
 		shortDesc: "50% chance to raise the user's Atk by 1.",
+	},
+	injection: {
+		name: "Injection",
+		desc: "The user drains the target of its data and life force. Restors 50% of damage dealt as HP.",
+		shortDesc: "User recovers 50% of the damage dealt.",
+	},
+	cauterize: {
+		name: "Cauterize",
+		desc: "If the target is an ally, this move restores 1/2 of its maximum HP, rounded down, instead of dealing damage.",
+		shortDesc: "If the target is an ally, heals 50% of its max HP.",
+	},
+	radiantclaw: {
+		name: "Radiant Claw",
+		desc: "The user slashes at the target withg an intense mythical power. It also damages the user.",
+		shortDesc: "Has 33% recoil.",
 	},
 	"10000000voltthunderbolt": {
 		name: "10,000,000 Volt Thunderbolt",

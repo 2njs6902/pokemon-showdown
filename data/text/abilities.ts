@@ -28,6 +28,23 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		desc: "Pollen dealing 1/16th HP damage to all non-seeded, non-Grass Type Pokémon is released into the air at the end of the turn. User heals for the damage dealt.",
 		shortDesc: "Deals 1/16th HP damage to all non-seeded, non-Grass Type Pokémon the end of the turn. User heals for the damage dealt."
 	},
+	swornduty: {
+		name: "Sworn Duty",
+		desc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
+		shortDesc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
+
+		heal: "  [Source] shared its mead with [Pokemon]!",
+	},
+	memoryleak: {
+		name: "Memory Leak",
+		desc: "This Pokemon passes stat boosts to its partner Pokemon.",
+		shortDesc: "This Pokemon passes stat boosts to its partner Pokemon.",
+	},
+	invigorate: {
+		name: "Invigorate",
+		desc: "Amplifies the healing effects of allies by 20%.",
+		shortDesc: "Amplifies the healing effects of allies by 20%.",
+	},
 	adaptability: {
 		name: "Adaptability",
 		desc: "This Pokemon's moves that match one of its types have a same-type attack bonus (STAB) of 2 instead of 1.5.",

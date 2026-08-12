@@ -221,6 +221,68 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		rating: 3,
 		num: 6906,
 	},
+	swornduty: {
+		onSwitchInPriority: -2,
+		onStart(pokemon) {
+			for (const ally of pokemon.adjacentAllies()) {
+				this.heal(ally.baseMaxhp / 4, ally, pokemon);
+			}
+		},
+		flags: {},
+		name: "Sworn Duty",
+		rating: 0,
+		num: 299,
+	},
+	memoryleak: {
+		onAfterEachBoost(boost, target, source, effect) {
+			// Only trigger when the Pokémon WITH Memory Leak got boosted.
+			if (target !== this.effectState.target) return;
+
+			const ally = target.allies()[0];
+			if (!ally || ally.fainted) return;
+
+			const copiedBoosts: SparseBoostsTable = {};
+
+			let stat: BoostID;
+			for (stat in boost) {
+				// Only copy positive stat changes.
+				if (boost[stat]! > 0) {
+					copiedBoosts[stat] = boost[stat];
+				}
+			}
+
+			if (!Object.keys(copiedBoosts).length) return;
+
+			this.add('-activate', target, 'ability: Memory Leak');
+
+			this.boost(
+				copiedBoosts,
+				ally,
+				target,
+				this.effect
+			);
+		},
+
+		flags: {},
+		name: "Memory Leak",
+		rating: 3,
+		num: -1,
+	},
+	invigorate: {
+		onAnyTryHeal(damage, target, source, effect) {
+			const holder = this.effectState.target;
+
+			// Only boost healing received by the holder's allies.
+			if (!target.isAlly(holder) || target === holder) return;
+
+			return this.chainModify([6, 5]);
+		},
+
+		flags: {},
+		name: "Invigorate",
+		rating: 3,
+		num: -1,
+	},
 	adaptability: {
 		onModifySTAB(stab, source, target, move) {
 			if (move.forceSTAB || source.hasType(move.type)) {

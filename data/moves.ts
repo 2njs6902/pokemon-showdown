@@ -49,13 +49,25 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		flags: {},
 		field: "forestfield",
 		condition: {
+			effectType: 'Field',
 			duration: 0,
 
 			onStart() {
 				// Remove every other custom field before starting Jungle Field.
 				this.field.clearField();
 
-				this.add('-fieldstart', 'Forest Field', '[message] The forest is alive!');
+				this.add('-fieldstart', 'Forest Field', '[message] The field is abound with trees.');
+			},
+
+			onBasePower(basePower, attacker, defender, move) {
+				if (move.type === 'Grass' && attacker.isGrounded() && !attacker.isSemiInvulnerable()) {
+					this.debug('forest field boost');
+					return this.chainModify([5325, 4096]);
+				}
+				if (move.type === 'Bug' && attacker.isGrounded() && move.category === 'Special' && !attacker.isSemiInvulnerable()) {
+					this.debug('forest field boost');
+					return this.chainModify([5325, 4096]);
+				}
 			},
 
 			onEnd() {
@@ -470,6 +482,70 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		target: "normal",
 		type: "Fire",
 		contestType: "Beautiful",
+	},
+	injection: {
+		num: 6918,
+		accuracy: 100,
+		basePower: 75,
+		category: "Special",
+		name: "Injection",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, heal: 1, metronome: 1 },
+		drain: [1, 2],
+		secondary: null,
+		target: "normal",
+		type: "Steel",
+		contestType: "Clever",
+	},
+	cauterize: {
+		num: 6919,
+		accuracy: 100,
+		basePower: 90,
+		category: "Special",
+		name: "Cauterize",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, allyanim: 1, metronome: 1, bullet: 1 },
+		onTryHit(target, source, move) {
+			if (source.isAlly(target)) {
+				move.basePower = 0;
+				move.infiltrates = true;
+			}
+		},
+		onTryMove(source, target, move) {
+			if (source.isAlly(target) && source.volatiles['healblock']) {
+				this.attrLastMove('[still]');
+				this.add('cant', source, 'move: Heal Block', move);
+				return false;
+			}
+		},
+		onHit(target, source, move) {
+			if (source.isAlly(target)) {
+				if (!this.heal(Math.floor(target.baseMaxhp * 0.5))) {
+					return this.NOT_FAIL;
+				}
+			}
+		},
+		secondary: null,
+		target: "normal",
+		type: "Fire",
+		contestType: "Cute",
+	},
+	radiantclaw: {
+		num: 6920,
+		accuracy: 100,
+		basePower: 120,
+		category: "Physical",
+		name: "Radiant Claw",
+		pp: 15,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, distance: 1, metronome: 1 },
+		recoil: [33, 100],
+		secondary: null,
+		target: "any",
+		type: "Fairy",
+		contestType: "Cool",
 	},
 	"10000000voltthunderbolt": {
 		num: 719,

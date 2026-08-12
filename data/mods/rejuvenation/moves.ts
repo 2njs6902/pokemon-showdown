@@ -6,6 +6,36 @@ const REJUV_FIELDS = [
 ] as const;
 
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+    // chloroblast: {
+    //     inherit: true,
+	// 	num: 835,
+	// 	accuracy: 95,
+	// 	basePower: 150,
+	// 	category: "Special",
+	// 	name: "Chloroblast",
+	// 	pp: 5,
+	// 	priority: 0,
+	// 	flags: { protect: 1, mirror: 1, metronome: 1 },
+	// 	// Recoil implemented in battle-actions.ts
+	// 	secondary: null,
+	// 	target: "normal",
+	// 	type: "Grass",
+	// },
+    cut: {
+        inherit: true,
+        onEffectiveness(typeMod, target, type, move) {
+            if (this.field.isField('forestfield')){
+                return typeMod + this.dex.getEffectiveness('Grass', type);
+            }
+        },
+		onBasePower(basePower, pokemon, target) {
+			if (this.field.isField('forestfield')) {
+				this.debug('weakened by weather');
+				return this.chainModify(2.0);
+			}
+		},
+
+	},
 	explosion: {
         inherit: true,
         onEffectiveness(typeMod, target, type, move) {
@@ -61,6 +91,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 		},
 	},
+    healorder: {
+        inherit: true,
+
+        onModifyMove(move, pokemon, target) {
+            if (this.field.isField('forestfield')) {
+                move.heal = [2, 3];
+            }
+        },
+    },
     hurricane: {
         inherit: true,
         onEffectiveness(typeMod, target, type, move) {
