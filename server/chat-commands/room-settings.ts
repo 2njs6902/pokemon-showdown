@@ -219,7 +219,7 @@ export const commands: Chat.ChatCommands = {
 		}
 
 		void room.battle.stream.write(
-			`>eval this.battle.field.setField('${field}')`
+			`>eval this.battle.field.setField('${field}', 'debug')`
 		);
 
 		this.sendReply(`Field set to "${field}".`);
