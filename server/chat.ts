@@ -1040,13 +1040,13 @@ export class CommandContext extends MessageContext {
 		this.commandDoesNotExist();
 	}
 	canUseConsole() {
-		console.log('[DEBUG canUseConsole]', {
-			user: this.user.id,
-			ip: this.connection.ip,
-			hasSysop: this.user.hasSysopAccess(),
-			canConsole: this.user.can('console'),
-			consoleips: Config.consoleips,
-		});
+		// console.log('[DEBUG canUseConsole]', {
+		// 	user: this.user.id,
+		// 	ip: this.connection.ip,
+		// 	hasSysop: this.user.hasSysopAccess(),
+		// 	canConsole: this.user.can('console'),
+		// 	consoleips: Config.consoleips,
+		// });
 
 		if (!this.user.hasConsoleAccess(this.connection)) {
 			throw new Chat.ErrorMessage(
