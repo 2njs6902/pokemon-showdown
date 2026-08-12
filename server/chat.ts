@@ -1043,6 +1043,9 @@ export class CommandContext extends MessageContext {
 		console.log('[DEBUG canUseConsole]', {
 			user: this.user.id,
 			ip: this.connection.ip,
+			hasSysop: this.user.hasSysopAccess(),
+			canConsole: this.user.can('console'),
+			consoleips: Config.consoleips,
 		});
 
 		if (!this.user.hasConsoleAccess(this.connection)) {
