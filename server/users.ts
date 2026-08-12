@@ -622,6 +622,13 @@ export class User extends Chat.MessageContext {
 
 		const whitelist = Config.consoleips || ['127.0.0.1'];
 		// on the IP whitelist OR the userid whitelist
+		console.log('[CONSOLE ACCESS]', {
+			userid: this.id,
+			ip: connection.ip,
+			canConsole: this.can('console'),
+			hasSysop: this.hasSysopAccess(),
+			consoleips: Config.consoleips,
+		});
 		return whitelist.includes(connection.ip) || whitelist.includes(this.id);
 	}
 	resetName(isForceRenamed = false) {
