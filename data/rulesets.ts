@@ -22,7 +22,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		desc: "Makes sure the team is possible to obtain in Pokemon rejuvenation.",
 		ruleset: ['Obtainable Moves', 'Team Preview Shiny', 'Obtainable Abilities', 'EV Limit = Auto', 'Obtainable Misc'],
 		banlist: ['Unreleased', 'Unobtainable', 'Nonexistent'],
-  		unbanlist: ['move: Hidden Power', 'move: Frustration'],
+  		unbanlist: ['move: Hidden Power', 'move: Frustration', 'move: Heal Order'],
 	},
 	nonrejuvmons: {
 		effectType: 'ValidatorRule',
