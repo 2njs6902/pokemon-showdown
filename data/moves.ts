@@ -52,6 +52,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 			effectType: 'Field',
 			duration: 0,
 			onFieldStart(field, source, sourceEffect) {
+				this.add('-fieldstart', 'forestfield');
 				this.add('-message', 'The field is abound with trees.');
 			},
 			onStart() {
