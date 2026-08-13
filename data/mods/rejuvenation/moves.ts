@@ -30,7 +30,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         },
 		onBasePower(basePower, pokemon, target) {
 			if (this.field.isField('forestfield')) {
-				this.debug('weakened by weather');
 				return this.chainModify(2.0);
 			}
 		},

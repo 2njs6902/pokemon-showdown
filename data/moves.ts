@@ -51,7 +51,9 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		condition: {
 			effectType: 'Field',
 			duration: 0,
-
+			onFieldStart(field, source, sourceEffect) {
+				this.add('-message', 'The field is abound with trees.');
+			},
 			onStart() {
 				// Remove every other custom field before starting Jungle Field.
 				this.field.clearField();

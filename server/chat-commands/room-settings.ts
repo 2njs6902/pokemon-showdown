@@ -219,10 +219,8 @@ export const commands: Chat.ChatCommands = {
 		}
 
 		void room.battle.stream.write(
-			`>eval this.battle.field.setField('${field}', 'debug')`
+			`>setfield ${field}`
 		);
-
-		this.sendReply(`Field set to "${field}".`);
 	},
 	setfieldhelp: [
 		`/setfield [field] - Starts the specified field in the current battle.`,

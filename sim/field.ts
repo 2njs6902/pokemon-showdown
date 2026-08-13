@@ -191,7 +191,7 @@ export class Field {
 		status = this.battle.dex.conditions.get(status);
 		if (!sourceEffect && this.battle.effect) sourceEffect = this.battle.effect;
 		if (!source && this.battle.event?.target) source = this.battle.event.target;
-		if (source === 'debug') source = this.battle.sides[0].active[0];
+		if (source === 'debug') source = this.battle.sides[0].pokemon[0];
 		if (!source) throw new Error(`setting field without a source`);
 
 		if (this.field === status.id) return false;
