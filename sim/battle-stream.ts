@@ -151,6 +151,9 @@ export class BattleStream extends Streams.ObjectReadWriteStream<string> {
 			this.battle!.inputLog.push(`>chat ${message}`);
 			this.battle!.add('chat', `${message}`);
 			break;
+			case 'setfield':
+				this.battle!.field.setField(message.trim());
+			break;
 		case 'eval':
 			const battle = this.battle!;
 
