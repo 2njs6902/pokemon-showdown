@@ -1,4 +1,29 @@
 export const Items: import('../sim/dex-items').ItemDataTable = {
+	telluricseed: {
+		name: "Telluric Seed",
+		spritenum: 0,
+		fling: {
+			basePower: 10,
+		},
+		onSwitchInPriority: -1,
+		onStart(pokemon) {
+			if (!pokemon.ignoringItem() && this.field.isField('forestfield')) {
+				pokemon.useItem();
+			}
+		},
+		onTerrainChange(pokemon) {
+			if (this.field.isField('forestfield')) {
+				pokemon.useItem();
+			}
+		},
+		onUse(pokemon) {
+			if (this.field.isField('forestfield')) {
+				pokemon.addVolatile('spikyshield');
+			}
+		},
+		num: 6902,
+		gen: 9,
+	},
 	abilityshield: {
 		name: "Ability Shield",
 		spritenum: 746,

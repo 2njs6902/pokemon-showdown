@@ -52,6 +52,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 			effectType: 'Field',
 			duration: 0,
 			onFieldStart(field, source, sourceEffect) {
+				this.field.fieldState.waterCounter = 0;
 				this.add('-fieldstart', 'forestfield');
 				this.add('-message', 'The field is abound with trees.');
 			},
@@ -63,18 +64,78 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 			},
 
 			onBasePower(basePower, attacker, defender, move) {
-				if (move.type === 'Grass' && attacker.isGrounded() && !attacker.isSemiInvulnerable()) {
+				const counter = (this.field.fieldState as any).waterCounter || 0;
+				if (move.type === 'Grass' && !attacker.isSemiInvulnerable()) {
+					this.debug('forest field boost');
+					this.add('-message', 'The forestry strengthened the attack!');
+					return this.chainModify([5325, 4096]);
+				}
+				if (move.type === 'Bug' && move.category === 'Special' && !attacker.isSemiInvulnerable()) {
 					this.debug('forest field boost');
 					return this.chainModify([5325, 4096]);
 				}
-				if (move.type === 'Bug' && attacker.isGrounded() && move.category === 'Special' && !attacker.isSemiInvulnerable()) {
-					this.debug('forest field boost');
-					return this.chainModify([5325, 4096]);
+				if (move.id === 'surf' && counter + 1 >= 3) {
+					return this.chainModify([13, 10]);
+				}
+				if (move.id === 'muddywater' && counter + 2 >= 3) {
+					return this.chainModify([13, 10]);
+				}
+			},
+
+			onAfterMove(source, target, move) {
+				let amount = 0;
+
+				if (move.id === 'surf') amount = 1;
+				if (move.id === 'muddywater') amount = 2;
+				if (!amount) return;
+
+				const state = this.field.fieldState as any;
+				state.waterCounter = (state.waterCounter || 0) + amount;
+
+				if (state.waterCounter >= 3) {
+					this.add('-message', 'The forest became marshy!');
+					this.field.setField('swampfield', source, move);
+				} else {
+					this.add('-message', 'The ground became waterlogged...');
 				}
 			},
 
 			onEnd() {
 				this.add('-fieldend', 'Forest Field', '[message] The forest calms down.'
+				);
+			},
+		},
+
+		secondary: null,
+		target: "all",
+		type: "Bug",
+	},
+	swampfield : {
+		num: 7002,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Swamp Field",
+		pp: 10,
+		priority: 0,
+		flags: {},
+		field: "swampfield",
+		condition: {
+			effectType: 'Field',
+			duration: 0,
+			onFieldStart(field, source, sourceEffect) {
+				this.field.fieldState.waterCounter = 0;
+				this.add('-fieldstart', 'swampfield');
+				this.add('-message', 'The field is swamped.');
+			},
+			onStart() {
+				// Remove every other custom field before starting Jungle Field.
+				this.field.clearField();
+
+				this.add('-fieldstart', 'Swamp Field', '[message] The field is swamped.');
+			},
+			onEnd() {
+				this.add('-fieldend', 'Swamp Field', '[message] The swamp recedes.'
 				);
 			},
 		},

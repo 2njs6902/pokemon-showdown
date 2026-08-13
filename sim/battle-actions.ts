@@ -1398,7 +1398,10 @@ export class BattleActions {
 	}
 
 	calcRecoilDamage(damageDealt: number, move: Move, pokemon: Pokemon): number {
-		if (move.id === 'chloroblast') return Math.round(pokemon.maxhp / 2);
+		if (move.id === 'chloroblast') {
+			if (this.battle.field.isField('forestfield')) return Math.round(pokemon.maxhp / 4);
+			return Math.round(pokemon.maxhp / 2);
+		}
 		return this.battle.clampIntRange(Math.round(damageDealt * move.recoil![0] / move.recoil![1]), 1);
 	}
 

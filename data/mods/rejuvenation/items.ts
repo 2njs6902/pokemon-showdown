@@ -8,6 +8,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	adamantorb: {
 		inherit: true,
 	},
+	swanpertite: {
+		inherit: true,
+		gen: 9,
+		isNonstandard: null,
+	},
+	telluricseed: {
+		inherit: true,
+	},
 	venusaurite: {
 		inherit: true,
 		gen: 9,
@@ -17,4 +25,5 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+
 }
