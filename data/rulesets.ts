@@ -58,7 +58,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			'move: Grass Whistle',
 			'move: Grudge',
 			'move: Hail',
-			'move: Heal Block',
+			// 'move: Heal Block',
 			'move: Heal Order',
 			'move: Heart Stamp',
 			'move: Hidden Power',
