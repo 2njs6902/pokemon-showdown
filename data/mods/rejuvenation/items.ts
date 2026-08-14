@@ -2,13 +2,16 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	absorbbulb: {
 		inherit: true,
 	},
-	adamancrystal: {
+	adamantcrystal: {
 		inherit: true,
 	},
 	adamantorb: {
 		inherit: true,
 	},
-	swanpertite: {
+	berryjuice: {
+		inherit: true,
+	},
+	swampertite: {
 		inherit: true,
 		gen: 9,
 		isNonstandard: null,

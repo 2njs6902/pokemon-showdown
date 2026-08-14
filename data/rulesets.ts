@@ -103,7 +103,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			'move: Rock Climb',
 			'move: Rolling Kick',
 			'move: Rototiller',
-			// 'move: Secret Power',
+			'move: Secret Power',
 			'move: Sharpen',
 			'move: Signal Beam',
 			'move: Silver Wind',
@@ -133,7 +133,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			// Your existing Rejuvenation additions
 			'move: Cut',
 			'move: Strength',
-			// 'move: Surf',
 			'move: Dive',
 			'move: Waterfall',
 			'move: Fly',

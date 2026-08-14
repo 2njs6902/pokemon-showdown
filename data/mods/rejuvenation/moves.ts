@@ -81,6 +81,26 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+	camouflage: {
+        inherit: true,
+		onHit(target) {
+			let newType = 'Normal';
+            if (this.field.isField('forestfield')) {
+                newType = 'Bug';
+            } else if (this.field.isTerrain('electricterrain')) {
+				newType = 'Electric';
+			} else if (this.field.isTerrain('grassyterrain')) {
+				newType = 'Grass';
+			} else if (this.field.isTerrain('mistyterrain')) {
+				newType = 'Fairy';
+			} else if (this.field.isTerrain('psychicterrain')) {
+				newType = 'Psychic';
+			}
+
+			if (target.getTypes().join() === newType || !target.setType(newType)) return false;
+			this.add('-start', target, 'typechange', newType);
+		},
+	},
     cut: {
         inherit: true,
         onEffectiveness(typeMod, target, type, move) {
@@ -213,6 +233,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 move.heal = [2, 3];
             }
         },
+        gen: 9,
     },
     hurricane: {
         inherit: true,
@@ -267,6 +288,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
 			return pokemon.cureStatus() || success;
 		},
+        gen: 9,
     },
     muddywater: {
         inherit: true,
@@ -309,6 +331,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
             return this.clampIntRange(Math.floor(target.getUndynamaxedHP() / 2), 1);
 		},
+        gen: 9,
     },
 	paraboliccharge: {
         inherit: true,
@@ -459,12 +482,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				});
 			}
 		},
+        gen: 9,
 	},
     selfdestruct: {
         inherit: true,
         onEffectiveness(typeMod, target, type, move) {
             if (this.field.isTerrain('electricterrain')){
                 return typeMod + this.dex.getEffectiveness('Electric', type);
+            }
+        },
+    },
+    shelter: {
+        inherit: true,
+        onHit(pokemon) {
+            if (this.field.isField('forestfield')) {
+                pokemon.addVolatile('shelterforest');
             }
         },
     },
@@ -556,6 +588,37 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+	terrainpulse: {
+        inherit: true,
+		onModifyType(move, pokemon) {
+            if (this.field.isField('forestfield')) {
+                move.type = 'Grass';
+            }
+            else {
+                if (!pokemon.isGrounded()) return;
+                switch (this.field.terrain) {
+                case 'electricterrain':
+                    move.type = 'Electric';
+                    break;
+                case 'grassyterrain':
+                    move.type = 'Grass';
+                    break;
+                case 'mistyterrain':
+                    move.type = 'Fairy';
+                    break;
+                case 'psychicterrain':
+                    move.type = 'Psychic';
+                    break;
+                }
+            }
+		},
+		onModifyMove(move, pokemon) {
+			if ((this.field.terrain && pokemon.isGrounded()) || this.field.isField('forestfield')) {
+				move.basePower *= 2;
+				this.debug('BP doubled in Terrain or Field');
+			}
+		},
+	},
     thousandarrows: {
         inherit: true,
         onEffectiveness(typeMod, target, type, move) {
