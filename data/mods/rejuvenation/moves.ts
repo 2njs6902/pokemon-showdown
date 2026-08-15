@@ -233,7 +233,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 move.heal = [2, 3];
             }
         },
-        gen: 9,
     },
     hurricane: {
         inherit: true,
@@ -288,7 +287,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
 			return pokemon.cureStatus() || success;
 		},
-        gen: 9,
     },
     muddywater: {
         inherit: true,
@@ -331,7 +329,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
             return this.clampIntRange(Math.floor(target.getUndynamaxedHP() / 2), 1);
 		},
-        gen: 9,
     },
 	paraboliccharge: {
         inherit: true,
@@ -482,7 +479,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				});
 			}
 		},
-        gen: 9,
 	},
     selfdestruct: {
         inherit: true,

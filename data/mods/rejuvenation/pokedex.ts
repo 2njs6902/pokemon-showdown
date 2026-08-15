@@ -16077,19 +16077,15 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	tapukoko: {
 		inherit: true,
-		gen: 9,
 	},
 	tapulele: {
 		inherit: true,
-		gen: 9,
 	},
 	tapubulu: {
 		inherit: true,
-		gen: 9,
 	},
 	tapufini: {
 		inherit: true,
-		gen: 9,
 	},
 	cosmog: {
 		num: 789,
@@ -18208,7 +18204,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	},
 	zarude: {
 		inherit: true,
-		gen: 9,
 	},
 	zarudedada: {
 		num: 893,
