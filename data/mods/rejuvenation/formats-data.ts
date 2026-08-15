@@ -49,37 +49,6 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	fearow: {
 		tier: "RU",
 	},
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
-	pikachuhoenn: {
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
-	pikachusinnoh: {
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
-	pikachuunova: {
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
-	pikachukalos: {
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
-	pikachualola: {
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
-	pikachupartner: {
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
-	pikachuworld: {
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
 	nidoranf: {
 		tier: "LC",
 	},
