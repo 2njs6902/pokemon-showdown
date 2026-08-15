@@ -8206,16 +8206,8 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		prevo: "Shellos",
 		evoLevel: 30,
 		eggGroups: ["Water 1", "Amorphous"],
-		otherFormes: ["Gastrodon-Aevium-West", "Gastrodon-Aevium-West"],
-		cosmeticFormes: ["Gastrodon-East"],
-		formeOrder: ["Gastrodon", "Gastrodon-East", "Gastrodon-Aevium-West", "Gastrodon-Aevium-West"],
-	},
-	gastrodoneast: {
-		isCosmeticForme: true,
-		name: "Gastrodon-East",
-		baseSpecies: "Gastrodon",
-		forme: "East",
-		color: "Blue",
+		otherFormes: ["Gastrodon-Aevium-West", "Gastrodon-Aevium-East"],
+		formeOrder: ["Gastrodon", "Gastrodon-Aevium-West", "Gastrodon-Aevium-West"],
 	},
 	gastrodonaeviumwest: {
 		num: 423,

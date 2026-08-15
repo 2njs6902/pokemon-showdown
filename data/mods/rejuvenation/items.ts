@@ -31,6 +31,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	buggem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	bugmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	burntberry: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
@@ -43,19 +51,99 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	darkgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	darkmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	dragongem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	dragonmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	electricgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	electricmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	electricseed: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
+	},
+	fairygem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	fairymemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	fightinggem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	fightingmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	firegem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	firememory: {
+		inherit: true,
+		isNonstandard: null,
 	},
 	flowersweet: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	flyinggem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	flyingmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	ghostgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	ghostmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	grassgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	grassmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	groundgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	groundmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	goldberry: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
-	goldenbottlecap: {
+	goldbottlecap: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
@@ -67,7 +155,19 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	icegem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	icememory: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	loveberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	lovesweet: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
@@ -91,6 +191,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	normalgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	parkball: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
@@ -102,6 +206,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	pinkbow: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
+	},
+	poisongem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	poisonmemory: {
+		inherit: true,
+		isNonstandard: null,
 	},
 	polkadotbow: {
 		inherit: true,
@@ -115,6 +227,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	psychgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	psychmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	psychicseed: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
@@ -123,9 +243,21 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	rockgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	rockmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	starsweet: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
+	},
+	steelmemory: {
+		inherit: true,
+		isNonstandard: null,
 	},
 	strangeball: {
 		inherit: true,
@@ -560,5 +692,12 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
-
+	watergem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	watermemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
 }
