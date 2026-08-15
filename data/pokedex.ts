@@ -45,6 +45,13 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		formeOrder: ["Venusaur", "Venusaur-Mega"],
 		canGigantamax: "G-Max Vine Lash",
 	},
+	venusaurf: {
+		isCosmeticForme: true,
+		name: "Venusaur-F",
+		baseSpecies: "Venusaur",
+		forme: "F",
+		color: "Green",
+	},
 	venusaurmega: {
 		num: 3,
 		name: "Venusaur-Mega",
