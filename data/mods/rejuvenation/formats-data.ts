@@ -49,7 +49,6 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	fearow: {
 		tier: "RU",
 	},
-	pikachucosplay: {
 		isNonstandard: "Past",
 		tier: "Illegal",
 	},
