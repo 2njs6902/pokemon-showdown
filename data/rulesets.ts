@@ -128,15 +128,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			'move: Wake-Up Slap',
 			'move: Water Sport',
 			'move: Wring Out',
-			'move: Zippy Zap',
-
-			// Your existing Rejuvenation additions
-			'move: Cut',
-			'move: Strength',
-			'move: Dive',
-			'move: Waterfall',
-			'move: Fly',
-			'move: Rock Smash',
 		],
 	},
 	nonrejuvmons: {

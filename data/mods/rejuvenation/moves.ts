@@ -83,6 +83,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
 	camouflage: {
         inherit: true,
+        isNonstandard: null,
 		onHit(target) {
 			let newType = 'Normal';
             if (this.field.isField('forestfield')) {
@@ -103,6 +104,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	},
     cut: {
         inherit: true,
+        isNonstandard: null,
         onEffectiveness(typeMod, target, type, move) {
             if (this.field.isField('forestfield')){
                 return typeMod + this.dex.getEffectiveness('Grass', type);
@@ -200,7 +202,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		    }
         },
     },
-    furcutter: {
+    furycutter: {
         inherit: true,
         onBasePower(basePower, pokemon, target) {
             if (this.field.isField('forestfield')) {
@@ -228,6 +230,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     healorder: {
         inherit: true,
+        isNonstandard: null,
         onModifyMove(move, pokemon, target) {
             if (this.field.isField('forestfield')) {
                 move.heal = [2, 3];
@@ -304,6 +307,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     }, 
     naturepower: {
         inherit: true,
+        isNonstandard: null,
         onTryHit(target, pokemon) {
 			let move = 'triattack';
             if (this.field.isField('forestfield')) {
@@ -323,6 +327,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
 	naturesmadness: {
         inherit: true,
+        isNonstandard: null,
 		damageCallback(pokemon, target) {
             if (this.field.isField('forestfield')) {
 			    return this.clampIntRange(Math.floor(target.getUndynamaxedHP() * 3 / 4), 1);
@@ -444,6 +449,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
 	secretpower: {
         inherit: true,
+        isNonstandard: null,
 		onModifyMove(move, pokemon) {
 			if (this.field.isTerrain('') || this.field.isField('')) return;
 			move.secondaries = [];
@@ -617,6 +623,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	},
     thousandarrows: {
         inherit: true,
+        isNonstandard: null,
         onEffectiveness(typeMod, target, type, move) {
             if (move.type !== 'Ground') return;
 			if (!target) return; // avoid crashing when called from a chat plugin
@@ -636,4 +643,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Electric",
 	},
+    watersport: {
+        inherit: true,
+        isNonstandard: null,
+    },
 };
