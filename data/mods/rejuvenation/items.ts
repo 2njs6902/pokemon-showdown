@@ -8,8 +8,540 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	adamantorb: {
 		inherit: true,
 	},
+	berry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
 	berryjuice: {
 		inherit: true,
+	},
+	berrysweet: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	berserkgene: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	bitterberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	bottlecap: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	burntberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	cloversweet: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	crucibellite: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	electricseed: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	flowersweet: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	goldberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	goldenbottlecap: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	grassyseed: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	iceberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	loveberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	mail: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	mintberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	miracleberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	mistyseed: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	mysteryberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	parkball: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	pikashuniumz: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	pinkbow: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	polkadotbow: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	przcureberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	psncureberry: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	psychicseed: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	ribbonsweet: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	starsweet: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	strangeball: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	strawberrysweet: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	terrainextender: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr00: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr01: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr02: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr03: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr04: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr05: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr06: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr07: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr08: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr09: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr10: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr11: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr12: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr13: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr14: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr15: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr16: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr17: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr18: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr19: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr20: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr21: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr22: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr23: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr24: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr25: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr26: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr27: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr28: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr29: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr30: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr31: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr32: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr33: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr34: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr35: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr36: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr37: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr38: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr39: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr40: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr41: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr42: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr43: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr44: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr45: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr46: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr47: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr48: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr49: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr50: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr51: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr52: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr53: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr54: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr55: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr56: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr57: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr58: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr59: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr60: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr61: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr62: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr63: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr64: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr65: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr66: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr67: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr68: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr69: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr70: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr71: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr72: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr73: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr74: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr75: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr76: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr77: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr78: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr79: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr80: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr81: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr82: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr83: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr84: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr85: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr86: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr87: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr88: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr89: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr90: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr91: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr92: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr93: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr94: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr95: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr96: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr97: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr98: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	tr99: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
+	},
+	vilevial: {
+		inherit: true,
+		isNonstandard: "Unobtainable",
 	},
 	swampertite: {
 		inherit: true,
