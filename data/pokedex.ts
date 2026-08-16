@@ -41,16 +41,8 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		evoLevel: 32,
 		eggGroups: ["Monster", "Grass"],
 		otherFormes: ["Venusaur-Mega"],
-		cosmeticFormes: ["Venusaur-f"],
-		formeOrder: ["Venusaur", "Venusaur-F", "Venusaur-Mega"],
+		formeOrder: ["Venusaur", "Venusaur-Mega"],
 		canGigantamax: "G-Max Vine Lash",
-	},
-	venusaurf: {
-		isCosmeticForme: true,
-		name: "Venusaur-F",
-		baseSpecies: "Venusaur",
-		forme: "F",
-		color: "Green",
 	},
 	venusaurmega: {
 		num: 3,
