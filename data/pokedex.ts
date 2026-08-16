@@ -10552,7 +10552,7 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 	unfezantaeviumf: {
 		isCosmeticForme: true,
 		name: "Unfezant-Aevium-F",
-		baseSpecies: "Unfezant-Aevium",
+		baseSpecies: "Unfezant",
 		forme: "F",
 		color: "Brown",
 	},
