@@ -1370,6 +1370,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	solrock: {
 		name: "Solrock",
 	},
+	solrockdominantfusion: {
+		name: "Solrock",
+	},
 	barboach: {
 		name: "Barboach",
 	},

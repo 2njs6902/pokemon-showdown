@@ -42,7 +42,7 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		eggGroups: ["Monster", "Grass"],
 		otherFormes: ["Venusaur-Mega"],
 		cosmeticFormes: ["Venusaur-f"],
-		formeOrder: ["Venusaur", "Venusaur-Mega"],
+		formeOrder: ["Venusaur", "Venusaur-F", "Venusaur-Mega"],
 		canGigantamax: "G-Max Vine Lash",
 	},
 	venusaurf: {
@@ -4492,7 +4492,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		evoItem: "Metal Coat",
 		eggGroups: ["Mineral"],
 		otherFormes: ["Steelix-Mega"],
-		formeOrder: ["Steelix", "Steelix-Mega"],
+		cosmeticFormes: ["Steelix-F"],
+		formeOrder: ["Steelix", "Steelix-F", "Steelix-Mega"],
+	},
+	steelixf: {
+		isCosmeticForme: true,
+		name: "Steelix-F",
+		baseSpecies: "Steelix",
+		forme: "F",
+		color: "Gray",
 	},
 	steelixmega: {
 		num: 208,
@@ -4507,6 +4515,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		color: "Gray",
 		eggGroups: ["Mineral"],
 		requiredItem: "Steelixite",
+		cosmeticFormes: ["Steelix-Mega-F"],
+		formeOrder: ["Steelix-Mega", "Steelix-Mega-F"],
+	},
+	steelixmegaf: {
+		isCosmeticForme: true,
+		name: "Steelix-Mega-F",
+		baseSpecies: "Steelix-Mega",
+		forme: "F",
+		color: "Gray",
 	},
 	snubbull: {
 		num: 209,
@@ -4802,6 +4819,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		prevo: "Remoraid",
 		evoLevel: 25,
 		eggGroups: ["Water 1", "Water 2"],
+		cosmeticFormes: ["Octillery-F"],
+		formeOrder: ["Octillery", "Octillery-F"],
+	},
+	octilleryf: {
+		isCosmeticForme: true,
+		name: "Octillery-F",
+		baseSpecies: "Octillery",
+		forme: "F",
+		color: "Red",
 	},
 	delibird: {
 		num: 225,
@@ -4882,7 +4908,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		evoLevel: 24,
 		eggGroups: ["Field"],
 		otherFormes: ["Houndoom-Mega"],
-		formeOrder: ["Houndoom", "Houndoom-Mega"],
+		cosmeticFormes: ["Houndoom-F"],
+		formeOrder: ["Houndoom", "Houndoom-F", "Houndoom-Mega"],
+	},
+	houndoomf: {
+		isCosmeticForme: true,
+		name: "Houndoom-F",
+		baseSpecies: "Houndoom",
+		forme: "F",
+		color: "Black",
 	},
 	houndoommega: {
 		num: 229,
@@ -5277,6 +5311,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		color: "Red",
 		evos: ["Combusken"],
 		eggGroups: ["Field"],
+		cosmeticFormes: ["Torchic-F"],
+		formeOrder: ["Torchic", "Torchic-F"],
+	},
+	torchicf: {
+		isCosmeticForme: true,
+		name: "Torchic-F",
+		baseSpecies: "Torchic",
+		forme: "F",
+		color: "Red",
 	},
 	combusken: {
 		num: 256,
@@ -5292,6 +5335,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		evoLevel: 16,
 		evos: ["Blaziken"],
 		eggGroups: ["Field"],
+		cosmeticFormes: ["Combusken-F"],
+		formeOrder: ["Combusken", "Combusken-F"],
+	},
+	combuskenf: {
+		isCosmeticForme: true,
+		name: "Combusken-F",
+		baseSpecies: "Combusken",
+		forme: "F",
+		color: "Red",
 	},
 	blaziken: {
 		num: 257,
@@ -5307,7 +5359,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		evoLevel: 36,
 		eggGroups: ["Field"],
 		otherFormes: ["Blaziken-Mega"],
-		formeOrder: ["Blaziken", "Blaziken-Mega"],
+		cosmeticFormes: ["Blaziken-F"],
+		formeOrder: ["Blaziken", "Blaziken-F", "Blaziken-Mega"],
+	},
+	blazikenf: {
+		isCosmeticForme: true,
+		name: "Blaziken-F",
+		baseSpecies: "Blaziken",
+		forme: "F",
+		color: "Red",
 	},
 	blazikenmega: {
 		num: 257,
@@ -6285,6 +6345,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		color: "Green",
 		evos: ["Swalot"],
 		eggGroups: ["Amorphous"],
+		cosmeticFormes: ["Gulpin-F"],
+		formeOrder: ["Gulpin", "Gulpin-F"]
+	},
+	gulpinf: {
+		isCosmeticForme: true,
+		name: "Gulpin-F",
+		baseSpecies: "Gulpin",
+		forme: "F",
+		color: "Green",
 	},
 	swalot: {
 		num: 317,
@@ -6298,6 +6367,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		prevo: "Gulpin",
 		evoLevel: 26,
 		eggGroups: ["Amorphous"],
+		cosmeticFormes: ["Swalot-F"],
+		formeOrder: ["Swalot", "Swalot-F"]
+	},
+	swalotf: {
+		isCosmeticForme: true,
+		name: "Swalot-F",
+		baseSpecies: "Swalot",
+		forme: "F",
+		color: "Purple",
 	},
 	carvanha: {
 		num: 318,
@@ -7856,6 +7934,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		color: "Blue",
 		evos: ["Luxio"],
 		eggGroups: ["Field"],
+		cosmeticFormes: ["Shinx-F"],
+		formeOrder: ["Shinx", "Shinx-F"],
+	},
+	shinxf: {
+		isCosmeticForme: true,
+		name: "Shinx-F",
+		baseSpecies: "Shinx",
+		forme: "F",
+		color: "Blue",
 	},
 	luxio: {
 		num: 404,
@@ -7870,6 +7957,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		evoLevel: 15,
 		evos: ["Luxray"],
 		eggGroups: ["Field"],
+		cosmeticFormes: ["Luxio-F"],
+		formeOrder: ["Luxio", "Luxio-F"],
+	},
+	luxiof: {
+		isCosmeticForme: true,
+		name: "Luxio-F",
+		baseSpecies: "Luxio",
+		forme: "F",
+		color: "Blue",
 	},
 	luxray: {
 		num: 405,
@@ -7883,6 +7979,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		prevo: "Luxio",
 		evoLevel: 30,
 		eggGroups: ["Field"],
+		cosmeticFormes: ["Luxray-F"],
+		formeOrder: ["Luxray", "Luxray-F"],
+	},
+	luxrayf: {
+		isCosmeticForme: true,
+		name: "Luxray-F",
+		baseSpecies: "Luxray",
+		forme: "F",
+		color: "Blue",
 	},
 	budew: {
 		num: 406,
@@ -10417,7 +10522,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		evoLevel: 32,
 		eggGroups: ["Flying"],
 		otherFormes: ["Unfezant-Aevium"],
-		formeOrder: ["Unfezant", "Unfezant-Aevium"]
+		cosmeticFormes: ["Unfezant-F"],
+		formeOrder: ["Unfezant", "Unfezant-F", "Unfezant-Aevium"]
+	},
+	unfezantf: {
+		isCosmeticForme: true,
+		name: "Unfezant-F",
+		baseSpecies: "Unfezant",
+		forme: "F",
+		color: "Gray",
 	},
 	unfezantaevium: {
 		num: 521,
@@ -10433,6 +10546,15 @@ export const Pokedex: import('../sim/dex-species').SpeciesDataTable = {
 		prevo: "Tranquill-Aevium",
 		evoLevel: 32,
 		eggGroups: ["Flying"],
+		cosmeticFormes: ["Unfezant-Aevium-F"],
+		formeOrder: ["Unfezant-Aevium", "Unfezant-Aevium-F"]
+	},
+	unfezantaeviumf: {
+		isCosmeticForme: true,
+		name: "Unfezant-Aevium-F",
+		baseSpecies: "Unfezant-Aevium",
+		forme: "F",
+		color: "Brown",
 	},
 	blitzle: {
 		num: 522,
