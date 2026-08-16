@@ -531,10 +531,19 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	pidove: {
 		tier: "LC",
 	},
+	pidoveaevium: {
+		tier: "LC",
+	},
 	tranquill: {
 		tier: "NFE",
 	},
+	tranquillaevium: {
+		tier: "NFE",
+	},
 	unfezant: {
+		tier: "RU",
+	},
+	unfezantaevium: {
 		tier: "RU",
 	},
 	roggenrola: {
