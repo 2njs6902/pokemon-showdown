@@ -33,7 +33,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
-	leafgaurd: {
+	leafguard: {
 		inherit: true,
 		onSetStatus(status, target, source, effect) {
 			if (['sunnyday', 'desolateland'].includes(target.effectiveWeather()) || this.field.isField('forestfield')) {
@@ -55,10 +55,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 	},
 	mimicry: {
-		onSwitchInPriority: -1,
-		onStart(pokemon) {
-			this.singleEvent('TerrainChange', this.effect, this.effectState, pokemon);
-		},
+		inherit: true,
 		onTerrainChange(pokemon) {
 			let types;
 			if (this.field.isField('forestfield')) {
@@ -83,18 +80,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 			const oldTypes = pokemon.getTypes();
 			if (oldTypes.join() === types.join() || !pokemon.setType(types)) return;
-			if (this.field.terrain || pokemon.transformed) {
+			if (this.field.terrain || this.field.isField('forestfield') || pokemon.transformed) {
 				this.add('-start', pokemon, 'typechange', types.join('/'), '[from] ability: Mimicry');
-				if (!this.field.terrain) this.hint("Transform Mimicry changes you to your original un-transformed types.");
+				if (!this.field.terrain && !this.field.isField('forestfield')) {
+					this.hint("Transform Mimicry changes you to your original un-transformed types.");
+				}
 			} else {
 				this.add('-activate', pokemon, 'ability: Mimicry');
 				this.add('-end', pokemon, 'typechange', '[silent]');
 			}
 		},
-		flags: {},
-		name: "Mimicry",
-		rating: 0,
-		num: 250,
 	},
 	overgrow: {
 		inherit: true,

@@ -1,10 +1,3 @@
-const REJUV_FIELDS = [
-	'junglefield',
-	'ancientruins',
-	'electricterrainfield',
-	'cavefield',
-] as const;
-
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     // chloroblast: {
     //     inherit: true,
@@ -278,7 +271,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 		},
 	},
-    jugglehealing: {
+    junglehealing: {
         inherit: true,
         onHit(pokemon) {
             let success;
@@ -451,7 +444,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
 		onModifyMove(move, pokemon) {
-			if (this.field.isTerrain('') || this.field.isField('')) return;
+            if (!this.field.field && this.field.isTerrain('')) return;
 			move.secondaries = [];
             if (this.field.isField('forestfield')) {
                 move.secondaries.push({
@@ -594,7 +587,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		onModifyType(move, pokemon) {
             if (this.field.isField('forestfield')) {
-                move.type = 'Grass';
+                move.type = 'Bug';
             }
             else {
                 if (!pokemon.isGrounded()) return;
