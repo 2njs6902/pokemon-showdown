@@ -1,29 +1,5 @@
 export const Items: import('../sim/dex-items').ItemDataTable = {
-	telluricseed: {
-		name: "Telluric Seed",
-		spritenum: 0,
-		fling: {
-			basePower: 10,
-		},
-		onSwitchInPriority: -1,
-		onStart(pokemon) {
-			if (!pokemon.ignoringItem() && this.field.isField('forestfield')) {
-				pokemon.useItem();
-			}
-		},
-		onTerrainChange(pokemon) {
-			if (this.field.isField('forestfield')) {
-				pokemon.useItem();
-			}
-		},
-		onUse(pokemon) {
-			if (this.field.isField('forestfield')) {
-				pokemon.addVolatile('spikyshield');
-			}
-		},
-		num: 6902,
-		gen: 9,
-	},
+	// Number of next item is 6907
 	abilityshield: {
 		name: "Ability Shield",
 		spritenum: 746,
@@ -809,6 +785,17 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 249,
 		gen: 2,
+	},
+	charizarditeg: {
+		name: "Charizardite G",
+		spritenum: 587,
+		megaStone: { "Charizard": "Charizard-Giga" },
+		itemUser: ["Charizard"],
+		onTakeItem(item, source) {
+			return !item.megaStone?.[source.baseSpecies.baseSpecies];
+		},
+		num: 6905,
+		gen: 9,
 	},
 	charizarditex: {
 		name: "Charizardite X",
@@ -3226,6 +3213,17 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 170,
 		gen: 3,
 	},
+	kinglerite: {
+		name: "Kinglerite",
+		spritenum: 608,
+		megaStone: { "Kingler": "Kingler-Giga" },
+		itemUser: ["Kingler"],
+		onTakeItem(item, source) {
+			return !item.megaStone?.[source.baseSpecies.baseSpecies];
+		},
+		num: 6904,
+		gen: 9,
+	},
 	kingsrock: {
 		name: "King's Rock",
 		spritenum: 236,
@@ -5220,6 +5218,17 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 1115,
 		gen: 8,
 	},
+	rillaboomite: {
+		name: "Rillaboomite",
+		spritenum: 608,
+		megaStone: { "Rillaboom": "Rillaboom-Giga" },
+		itemUser: ["Rillaboom"],
+		onTakeItem(item, source) {
+			return !item.megaStone?.[source.baseSpecies.baseSpecies];
+		},
+		num: 6906,
+		gen: 9,
+	},
 	rindoberry: {
 		name: "Rindo Berry",
 		spritenum: 409,
@@ -6299,6 +6308,37 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 2649,
 		gen: 9,
 		isNonstandard: "Future",
+	},
+	telluricseed: {
+		name: "Telluric Seed",
+		spritenum: 0,
+		fling: {
+			basePower: 10,
+		},
+		onSwitchInPriority: -1,
+		onStart(pokemon) {
+			if (!pokemon.ignoringItem() && this.field.isField(['forestfield', 'swampfield'])) {
+				pokemon.useItem();
+			}
+		},
+		onTerrainChange(pokemon) {
+			if (this.field.isField(['forestfield', 'swampfield'])) {
+				pokemon.useItem();
+			}
+		},
+		onUse(pokemon) {
+			switch (this.field.field) {
+			case 'forestfield':
+				pokemon.addVolatile('spikyshield');
+				break;
+			case 'swampfield':
+				this.boost({ def: 1 }, pokemon);
+				pokemon.setAbility('clearbody');
+				break;
+			}
+		},
+		num: 6903,
+		gen: 9,
 	},
 	terrainextender: {
 		name: "Terrain Extender",
@@ -7486,18 +7526,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 1123,
 		gen: 8,
 	},
-	venusaurite: {
-		name: "Venusaurite",
-		spritenum: 608,
-		megaStone: { "Venusaur": "Venusaur-Mega" },
-		itemUser: ["Venusaur"],
-		onTakeItem(item, source) {
-			return !item.megaStone?.[source.baseSpecies.baseSpecies];
-		},
-		num: 659,
-		gen: 6,
-		isNonstandard: "Past",
-	},
 	venusauriteg: {
 		name: "Venusaurite G",
 		spritenum: 608,
@@ -7508,6 +7536,17 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 6902,
 		gen: 9,
+	},
+	venusaurite: {
+		name: "Venusaurite",
+		spritenum: 608,
+		megaStone: { "Venusaur": "Venusaur-Mega" },
+		itemUser: ["Venusaur"],
+		onTakeItem(item, source) {
+			return !item.megaStone?.[source.baseSpecies.baseSpecies];
+		},
+		num: 659,
+		gen: 6,
 		isNonstandard: "Past",
 	},
 	victreebelite: {

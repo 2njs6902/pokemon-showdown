@@ -42,6 +42,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    aquaruing: {
+        inherit: true,
+        condition: {
+			onStart(pokemon) {
+				this.add('-start', pokemon, 'Aqua Ring');
+			},
+			onResidualOrder: 6,
+			onResidual(pokemon) {
+				this.heal(pokemon.baseMaxhp / (this.field.isField('forestfield') ? 8 : 16));
+			},
+		},
+    },
     attackorder: {
         inherit: true,
         onBasePower(basePower, pokemon, target) {
@@ -50,6 +62,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return this.chainModify(1.5);
             }
         },
+        onHit(target, source, move) {
+            if (this.field.isField('swampfield')) {
+                const stat = this.sample(['atk', 'def', 'spa', 'spd', 'spe'] as const);
+                this.boost({ [stat]: -1 }, target, source);
+            }
+        },
+    },
+    barbbarrage: {
+        inherit: true,
+        zMove: {basePower: 160},
     },
     branchpoke: {
         inherit: true,
@@ -74,27 +96,59 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
-	camouflage: {
+    brine: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        }
+    },
+    bulldoze: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The attack dissipated in the soggy ground...');
+                return this.chainModify(0.25);
+            }
+        },
+    },
+    camouflage: {
         inherit: true,
         isNonstandard: null,
-		onHit(target) {
-			let newType = 'Normal';
-            if (this.field.isField('forestfield')) {
-                newType = 'Bug';
-            } else if (this.field.isTerrain('electricterrain')) {
-				newType = 'Electric';
-			} else if (this.field.isTerrain('grassyterrain')) {
-				newType = 'Grass';
-			} else if (this.field.isTerrain('mistyterrain')) {
-				newType = 'Fairy';
-			} else if (this.field.isTerrain('psychicterrain')) {
-				newType = 'Psychic';
-			}
+        onHit(target) {
+            let newType = 'Normal';
 
-			if (target.getTypes().join() === newType || !target.setType(newType)) return false;
-			this.add('-start', target, 'typechange', newType);
-		},
-	},
+            switch (this.field.field) {
+            case 'forestfield':
+                newType = 'Bug';
+                break;
+            case 'swampfield':
+                newType = 'Water';
+                break;
+
+            default:
+                if (this.field.isTerrain('electricterrain')) {
+                    newType = 'Electric';
+                } else if (this.field.isTerrain('grassyterrain')) {
+                    newType = 'Grass';
+                } else if (this.field.isTerrain('mistyterrain')) {
+                    newType = 'Fairy';
+                } else if (this.field.isTerrain('psychicterrain')) {
+                    newType = 'Psychic';
+                }
+                break;
+            }
+
+            if (target.getTypes().join() === newType || !target.setType(newType)) return false;
+            this.add('-start', target, 'typechange', newType);
+        },
+    },
+    coaching: {
+        inherit: true,
+		zMove: { boost: { atk: 1 } },
+    },
     cut: {
         inherit: true,
         isNonstandard: null,
@@ -119,6 +173,31 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    doubleironbash: {
+        inherit: true,
+        zMove: {basePower: 190},
+    },
+    dragondarts: {
+        inherit: true,
+        zMove: {basePower: 180},
+    },
+    dragonenergy: {
+        inherit: true,
+        zMove: {basePower: 200},
+    },
+    dualwingbeat: {
+        inherit: true,
+        zMove: {basePower: 160},
+    },
+    earthquake: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The attack dissipated in the soggy ground...');
+                return this.chainModify(0.25);
+            }
+        },
+    },
     electroweb: {
         inherit: true,
 		onBasePower(basePower, pokemon, target) {
@@ -128,8 +207,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			}
 		},
     },
+    eruption: {
+        inherit: true,
+        zMove: {basePower: 200},
+    },
 	explosion: {
         inherit: true,
+        onTryMove() {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The dampness prevents the explosion!');
+                return false;
+            }
+        },
         onEffectiveness(typeMod, target, type, move) {
             if (this.field.isTerrain('electricterrain')){
                 return typeMod + this.dex.getEffectiveness('Electric', type);
@@ -191,6 +280,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			this.add('-start', target, 'typeadd', 'Grass', '[from] move: Forest\'s Curse');
 
             if (this.field.isField('forestfield')) {
+                this.add('-message', `${source.name} put a curse on ${target.name}!`);
                 target.addVolatile('curse', source);
 		    }
         },
@@ -216,10 +306,23 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     growth: {
         inherit: true,
         onModifyMove(move, pokemon, target) {
-            if (this.field.isField('forestfield')) {
+            if (this.field.isField('forestfield') || ['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
                 move.boosts = { spa: 2, atk: 2 };
             }
         },
+    },
+    gunkshot: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
+    hardpress: {
+        inherit: true,
+        zMove: {basePower: 180},
     },
     healorder: {
         inherit: true,
@@ -245,6 +348,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return typeMod + this.dex.getEffectiveness('Electric', type);
             }
         },
+    },
+    infernalparade: {
+        inherit: true,
+        zMove: {basePower: 160},
     },
 	ingrain: {
         inherit: true,
@@ -284,6 +391,96 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			return pokemon.cureStatus() || success;
 		},
     },
+    leechseed: {
+        inherit: true,
+        condition: {
+            inherit: true,
+            onResidualOrder: 8,
+            onResidual(pokemon) {
+                const target = this.getAtSlot(pokemon.volatiles['leechseed'].sourceSlot);
+                if (!target || target.fainted || target.hp <= 0) return;
+
+                const damage = this.damage(pokemon.baseMaxhp / 8, pokemon, target);
+
+                if (damage) {
+                    const healed = this.heal(damage, target, pokemon);
+
+                    if (healed && this.field.isField('swampfield')) {
+                        const stats: BoostID[] = ['atk', 'def', 'spa', 'spd', 'spe'];
+                        const stat = this.sample(stats);
+                        const boost: SparseBoostsTable = {};
+                        boost[stat] = -1;
+
+                        this.boost(boost, pokemon, target);
+                    }
+                }
+            },
+        },
+    },
+    magnitude: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The attack dissipated in the soggy ground...');
+                return this.chainModify(0.25);
+            }
+        },
+    },
+    mindblown: {
+        inherit: true,
+        onTryMove() {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The dampness prevents the explosion!');
+                return false;
+            }
+        },
+    },
+    mudbarrage: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
+    mudbomb: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
+    mudshot: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+        onModifyMove(move, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                move.secondary = {
+                    chance: 100,
+                    boosts: {
+                        spe: -2,
+                    },
+                };
+            }
+        },
+    },
+    mudslap: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     muddywater: {
         inherit: true,
         onEffectiveness(typeMod, target, type, move) {
@@ -295,6 +492,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             if (this.field.isField('forestfield')) {
                 this.add('-message', 'The forest softened the attack...');
                 return this.chainModify(0.5);
+            } else if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
             }
         },
     }, 
@@ -302,21 +502,30 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
         onTryHit(target, pokemon) {
-			let move = 'triattack';
-            if (this.field.isField('forestfield')) {
+            let move = 'triattack';
+            switch (this.field.field) {
+            case 'forestfield':
                 move = 'woodhammer';
-            } else if (this.field.isTerrain('electricterrain')) {
-				move = 'thunderbolt';
-			} else if (this.field.isTerrain('grassyterrain')) {
-				move = 'energyball';
-			} else if (this.field.isTerrain('mistyterrain')) {
-				move = 'moonblast';
-			} else if (this.field.isTerrain('psychicterrain')) {
-				move = 'psychic';
-			}
-			this.actions.useMove(move, pokemon, { target });
-			return null;
-		},
+                break;
+            case 'swampfield':
+                move = 'muddywater';
+                break;
+            default:
+                if (this.field.isTerrain('electricterrain')) {
+                    move = 'thunderbolt';
+                } else if (this.field.isTerrain('grassyterrain')) {
+                    move = 'energyball';
+                } else if (this.field.isTerrain('mistyterrain')) {
+                    move = 'moonblast';
+                } else if (this.field.isTerrain('psychicterrain')) {
+                    move = 'psychic';
+                }
+                break;
+            }
+
+            this.actions.useMove(move, pokemon, { target });
+            return null;
+        },
     },
 	naturesmadness: {
         inherit: true,
@@ -328,10 +537,30 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             return this.clampIntRange(Math.floor(target.getUndynamaxedHP() / 2), 1);
 		},
     },
+    octolock: {
+        inherit: true,
+        zMove: { boost: { atk: 2 } },
+    },
 	paraboliccharge: {
         inherit: true,
 		drain: [3, 4],
 	},
+    poisonpowder: {
+        inherit: true,
+        onModifyMove(move, pokemon) {
+            if (this.field.isField('swampfield')) {
+                move.accuracy = 100;
+            }
+        },
+    },
+    populationbomb: {
+        inherit: true,
+        zMove: {basePower: 200},
+    },
+    powershift: {
+        inherit: true,
+        zMove: { boost: { atk: 1 } },
+    },
     psychocut: {
         inherit: true,
         onEffectiveness(typeMod, target, type, move) {
@@ -440,47 +669,78 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
-	secretpower: {
+    roar: {
+        inherit: true,
+        onHit(target, source, move) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'What are ya doin\' in my swamp?!');
+            }
+        },
+    },
+    secretpower: {
         inherit: true,
         isNonstandard: null,
-		onModifyMove(move, pokemon) {
+        onModifyMove(move, pokemon) {
             if (!this.field.field && this.field.isTerrain('')) return;
-			move.secondaries = [];
-            if (this.field.isField('forestfield')) {
+
+            move.secondary = null;
+            move.secondaries = [];
+
+            switch (this.field.field) {
+            case 'forestfield':
                 move.secondaries.push({
                     chance: 100,
                     status: 'slp',
                 });
+                break;
+
+            case 'swampfield':
+                move.secondaries.push({
+                    chance: 30,
+                    boosts: {
+                        spe: -1,
+                    },
+                });
+                break;
+
+            default:
+                if (this.field.isTerrain('electricterrain')) {
+                    move.secondaries.push({
+                        chance: 30,
+                        status: 'par',
+                    });
+                } else if (this.field.isTerrain('grassyterrain')) {
+                    move.secondaries.push({
+                        chance: 30,
+                        status: 'slp',
+                    });
+                } else if (this.field.isTerrain('mistyterrain')) {
+                    move.secondaries.push({
+                        chance: 30,
+                        boosts: {
+                            spa: -1,
+                        },
+                    });
+                } else if (this.field.isTerrain('psychicterrain')) {
+                    move.secondaries.push({
+                        chance: 30,
+                        boosts: {
+                            spe: -1,
+                        },
+                    });
+                }
+                break;
             }
-			if (this.field.isTerrain('electricterrain')) {
-				move.secondaries.push({
-					chance: 30,
-					status: 'par',
-				});
-			} else if (this.field.isTerrain('grassyterrain')) {
-				move.secondaries.push({
-					chance: 30,
-					status: 'slp',
-				});
-			} else if (this.field.isTerrain('mistyterrain')) {
-				move.secondaries.push({
-					chance: 30,
-					boosts: {
-						spa: -1,
-					},
-				});
-			} else if (this.field.isTerrain('psychicterrain')) {
-				move.secondaries.push({
-					chance: 30,
-					boosts: {
-						spe: -1,
-					},
-				});
-			}
-		},
-	},
+        },
+    },
     selfdestruct: {
         inherit: true,
+        onTryMove() {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The dampness prevents the explosion!');
+                return false;
+            }
+        },
         onEffectiveness(typeMod, target, type, move) {
             if (this.field.isTerrain('electricterrain')){
                 return typeMod + this.dex.getEffectiveness('Electric', type);
@@ -490,8 +750,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     shelter: {
         inherit: true,
         onHit(pokemon) {
-            if (this.field.isField('forestfield')) {
+            switch (this.field.field) {
+            case 'forestfield':
                 pokemon.addVolatile('shelterforest');
+                break;
+            case 'swampfield':
+                pokemon.addVolatile('shelterswamp');
+                break;
+            }
+        },
+        onModifyMove(move, pokemon) {
+            switch (this.field.field) {
+            case 'swampfield':
+                if (pokemon.hasType('Water')) {
+                    move.self = { boosts: { def: 3 } };
+                }
+                break;
             }
         },
     },
@@ -537,13 +811,43 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    sleeppowder: {
+        inherit: true,
+        onModifyMove(move, pokemon) {
+            if (this.field.isField('swampfield')) {
+                move.accuracy = 100;
+            }
+        },
+    },
+    sludgewave: {
+        inherit: true,
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     smackdown: {
         inherit: true,
         onEffectiveness(typeMod, target, type, move) {
-            if (this.field.isTerrain('electricterrain')){
-                return typeMod + this.dex.getEffectiveness('Electric', type);
+            if (this.field.isField('swampfield')){
+                return typeMod + this.dex.getEffectiveness('Water', type);
+            }
+            // if (this.field.isTerrain('electricterrain')){
+            //     return typeMod + this.dex.getEffectiveness('Electric', type);
+            // }
+        },
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
             }
         },
+    },
+    spicyextract: {
+        inherit: true,
+		zMove: { boost: { atk: 1 } },
     },
     stickyweb: {
         inherit: true,
@@ -563,10 +867,49 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         onHit(target, source) {
             if (target.boosts.atk === -6) return false;
+
             const atk = target.getStat('atk', false, true);
             const healAmount = this.field.isField('forestfield') ? this.modify(atk, 1.3) : atk;
+
+            const healed = this.heal(healAmount, source, target);
             const success = this.boost({ atk: -1 }, target, source, null, false, true);
-            return !!(this.heal(healAmount, source, target) || success);
+
+            if (healed && this.field.isField('swampfield')) {
+                const stat = this.sample(['atk', 'def', 'spa', 'spd', 'spe'] as const);
+                this.boost({ [stat]: -1 }, target, source);
+            }
+
+            return !!(healed || success);
+        },
+    },
+    stringshot: {
+        inherit: true,
+        onHit(target, source, move) {
+            if (this.field.isField('swampfield')) {
+                const stat = this.sample(['atk', 'def', 'spa', 'spd', 'spe'] as const);
+                this.boost({ [stat]: -1 }, target, source);
+            }
+        },
+    },
+    strugglebug: {
+        inherit: true,
+        onModifyMove(move, pokemon) {
+            if (this.field.isField('swampfield')) {
+                move.secondary = {
+                    chance: 100,
+                    boosts: {
+                        spa: -2,
+                    },
+                };
+            }
+        },
+    },
+    stunspore: {
+        inherit: true,
+        onModifyMove(move, pokemon) {
+            if (this.field.isField('swampfield')) {
+                move.accuracy = 100;
+            }
         },
     },
     surf: {
@@ -586,27 +929,34 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	terrainpulse: {
         inherit: true,
 		onModifyType(move, pokemon) {
-            if (this.field.isField('forestfield')) {
-                move.type = 'Bug';
-            }
-            else {
-                if (!pokemon.isGrounded()) return;
-                switch (this.field.terrain) {
-                case 'electricterrain':
-                    move.type = 'Electric';
+            switch (this.field.field) {
+                case 'forestfield':
+                    move.type = 'Bug';
                     break;
-                case 'grassyterrain':
-                    move.type = 'Grass';
+
+                case 'swampfield':
+                    move.type = 'Water';
                     break;
-                case 'mistyterrain':
-                    move.type = 'Fairy';
-                    break;
-                case 'psychicterrain':
-                    move.type = 'Psychic';
-                    break;
+
+                default: {
+                    if (!pokemon.isGrounded()) return;
+                    switch (this.field.terrain) {
+                    case 'electricterrain':
+                        move.type = 'Electric';
+                        break;
+                    case 'grassyterrain':
+                        move.type = 'Grass';
+                        break;
+                    case 'mistyterrain':
+                        move.type = 'Fairy';
+                        break;
+                    case 'psychicterrain':
+                        move.type = 'Psychic';
+                        break;
+                    }
                 }
             }
-		},
+        },
 		onModifyMove(move, pokemon) {
 			if ((this.field.terrain && pokemon.isGrounded()) || this.field.isField('forestfield')) {
 				move.basePower *= 2;
@@ -624,8 +974,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (!target.runImmunity('Ground')) {
 				if (target.hasType('Flying')) return 0;
 			}
-            if (this.field.isTerrain('electricterrain')){
-                return typeMod + this.dex.getEffectiveness('Electric', type);
+            if (this.field.isField('swampfield')) {
+                return typeMod + this.dex.getEffectiveness('Water', type);
+            }
+            // if (this.field.isTerrain('electricterrain')){
+            //     return typeMod + this.dex.getEffectiveness('Electric', type);
+            // }
+        },
+        onBasePower(basePower, pokemon, target) {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
             }
         },
     },
@@ -636,8 +995,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		target: "normal",
 		type: "Electric",
 	},
+    tripleaxel: {
+        inherit: true,
+        zMove: {basePower: 190},
+    },
+    tripledive: {
+        inherit: true,
+        zMove: {basePower: 175},
+    },
+    twinbeam: {
+        inherit: true,
+        zMove: {basePower: 160},
+    },
     watersport: {
         inherit: true,
         isNonstandard: null,
+    },
+    waterspout: {
+        inherit: true,
+        zMove: {basePower: 200},
     },
 };

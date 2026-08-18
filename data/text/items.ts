@@ -234,6 +234,10 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 			shortDesc: "Holder's Fire-type attacks have 1.1x power.",
 		},
 	},
+	charizarditeg: {
+		name: "Charizardite G",
+		shortDesc: "If held by a Charizard, this item allows it to Mega Evolve in battle.",
+	},
 	charizarditex: {
 		name: "Charizardite X",
 		shortDesc: "If held by a Charizard, this item allows it to Mega Evolve in battle.",
@@ -967,6 +971,10 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 		name: "Kelpsy Berry",
 		shortDesc: "Cannot be eaten by the holder. No effect when eaten with Bug Bite or Pluck.",
 	},
+	kinglerite: {
+		name: "Kinglerite",
+		shortDesc: "If held by a Kingler, this item allows it to Mega Evolve in battle.",
+	},
 	kingsrock: {
 		name: "King's Rock",
 		desc: "Holder's attacks without a chance to make the target flinch gain a 10% chance to make the target flinch. Evolves Poliwhirl into Politoed and Slowpoke into Slowking when traded.",
@@ -1581,6 +1589,10 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	ribbonsweet: {
 		name: "Ribbon Sweet",
 		shortDesc: "Evolves Milcery into Alcremie when held and spun around.",
+	},
+	rillaboomite: {
+		name: "Rillaboomite",
+		shortDesc: "If held by a Rillaboom, this item allows it to Mega Evolve in battle.",
 	},
 	rindoberry: {
 		name: "Rindo Berry",

@@ -33,4 +33,12 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			}
 		},
 	},
+	shelterswamp: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (move.type === 'Water') {
+				return this.chainModify(0.5);
+			}
+		},
+	},
 };

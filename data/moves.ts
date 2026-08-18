@@ -1,12 +1,4 @@
 // List of flags and their descriptions can be found in sim/dex-moves.ts
-const REJUV_FIELDS = [
-	'junglefield',
-	'ancientruins',
-	'electricterrainfield',
-	'cavefield',
-] as const;
-
-
 export const Moves: import('../sim/dex-moves').MoveDataTable = {
 	concertvenue: {
 		num: 7000,
@@ -65,12 +57,12 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 
 			onBasePower(basePower, attacker, defender, move) {
 				const counter = (this.field.fieldState as any).waterCounter || 0;
-				if (move.type === 'Grass' && !attacker.isSemiInvulnerable()) {
+				if (move.type === 'Grass') {
 					this.debug('forest field boost');
 					this.add('-message', 'The forestry strengthened the attack!');
 					return this.chainModify([5325, 4096]);
 				}
-				if (move.type === 'Bug' && move.category === 'Special' && !attacker.isSemiInvulnerable()) {
+				if (move.type === 'Bug' && move.category === 'Special') {
 					this.debug('forest field boost');
 					return this.chainModify([5325, 4096]);
 				}
@@ -110,7 +102,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		target: "all",
 		type: "Bug",
 	},
-	swampfield : {
+	swampfield: {
 		num: 7002,
 		accuracy: true,
 		basePower: 0,
@@ -123,20 +115,81 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		condition: {
 			effectType: 'Field',
 			duration: 0,
+
+			onBeforeMove(pokemon, target, move) {
+				if (move.drain) {
+					this.field.fieldState.drainStartHP = pokemon.hp;
+				}
+			},
+
+			onAfterMoveSecondarySelf(pokemon, target, move) {
+				if (!move.drain) return;
+
+				const oldHP = this.field.fieldState.drainStartHP;
+				delete this.field.fieldState.drainStartHP;
+
+				if (oldHP === undefined || pokemon.hp <= oldHP) return;
+				if (!target || target.fainted) return;
+
+				const stats: BoostID[] = ['atk', 'def', 'spa', 'spd', 'spe'];
+				const stat = this.sample(stats);
+				const boost: SparseBoostsTable = {};
+				boost[stat] = -1;
+
+				this.boost(boost, target, pokemon);
+			},
+
+			onResidualOrder: 28,
+			onResidual(pokemon) {
+				const trapped = !!pokemon.volatiles['partiallytrapped'];
+
+				if (pokemon.status === 'slp' || pokemon.hasAbility('comatose')) {
+					this.add('-message', `${pokemon.name}'s strength is sapped by the swamp!`);
+					this.damage(pokemon.baseMaxhp / (trapped ? 8 : 16), pokemon);
+				}
+
+				if (!pokemon.isGrounded()) return;
+				if (pokemon.hasItem(['heavydutyboots', 'clearamulet'])) return;
+				if (pokemon.hasAbility([
+					'clearbody',
+					'propellertail',
+					'quickfeet',
+					'swiftswim',
+					'whitesmoke',
+				])) return;
+
+				this.add('-message', `${pokemon.name}'s Speed sank...!`);
+				this.boost({ spe: trapped ? -2 : -1 }, pokemon);
+			},
+
+			onBasePower(basePower, attacker, defender, move) {
+				switch (move.type) {
+				case 'Bug':
+					this.add('-message', 'Bugs are swarming everywhere!');
+					return this.chainModify([5325, 4096]);
+
+				case 'Grass':
+					this.add('-message', 'Thick mangroves line the area!');
+					return this.chainModify([5325, 4096]);
+
+				case 'Water':
+					this.add('-message', 'The dampness strengthened the attack!');
+					return this.chainModify([5325, 4096]);
+
+				case 'Fire':
+					this.add('-message', 'The dampness weakened the flame...');
+					return this.chainModify([3277, 4096]);
+				}
+			},
+
 			onFieldStart(field, source, sourceEffect) {
 				this.field.fieldState.waterCounter = 0;
-				this.add('-fieldstart', 'swampfield');
+				this.add('-fieldstart', 'Swamp Field');
 				this.add('-message', 'The field is swamped.');
 			},
-			onStart() {
-				// Remove every other custom field before starting Jungle Field.
-				this.field.clearField();
 
-				this.add('-fieldstart', 'Swamp Field', '[message] The field is swamped.');
-			},
 			onEnd() {
-				this.add('-fieldend', 'Swamp Field', '[message] The swamp recedes.'
-				);
+				this.add('-fieldend', 'Swamp Field', '[message] The swamp recedes.');
 			},
 		},
 
@@ -451,6 +504,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		secondary: null,
 		target: "normal",
 		type: "Ground",
+		zMove: { basePower: 140 },
 		contestType: "Tough",
 	},
 	mirrorbeam: {

@@ -3,48 +3,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "No Ability",
 		shortDesc: "Does nothing.",
 	},
-	inexorable: {
-		name: "Inexorable",
-		desc: "The power of this Pokemon's Dragon moves are multiplied by 1.5 if it is the first to move in a turn.",
-		shortDesc: "This Pokemon's Dragon moves have 1.5x power if it is the first to move in a turn.",
-	},
-	lunaridol: {
-		name: "Lunar Idol",
-		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Ice moves by 1.5. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
-		shortDesc: "Grants Levitate. Ice moves have 1.5x power. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
-	},
-	solaridol: {
-		name: "Solar Idol",
-		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Fire moves by 1.5. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
-		shortDesc: "Grants Levitate. Fire moves have 1.5x power. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
-	},
-	reflector: {
-		name: "Reflector",
-		desc: "Mirrors the opponent's types on entry, gaining these types. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used.",
-		shortDesc: "Mirrors the opponent's types on entry. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used"
-	},
-	pollenflight: {
-		name: "Pollenflight",
-		desc: "Pollen dealing 1/16th HP damage to all non-seeded, non-Grass Type Pokémon is released into the air at the end of the turn. User heals for the damage dealt.",
-		shortDesc: "Deals 1/16th HP damage to all non-seeded, non-Grass Type Pokémon the end of the turn. User heals for the damage dealt."
-	},
-	swornduty: {
-		name: "Sworn Duty",
-		desc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
-		shortDesc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
-
-		heal: "  [Source] shared its mead with [Pokemon]!",
-	},
-	memoryleak: {
-		name: "Memory Leak",
-		desc: "This Pokemon passes stat boosts to its partner Pokemon.",
-		shortDesc: "This Pokemon passes stat boosts to its partner Pokemon.",
-	},
-	invigorate: {
-		name: "Invigorate",
-		desc: "Amplifies the healing effects of allies by 20%.",
-		shortDesc: "Amplifies the healing effects of allies by 20%.",
-	},
 	adaptability: {
 		name: "Adaptability",
 		desc: "This Pokemon's moves that match one of its types have a same-type attack bonus (STAB) of 2 instead of 1.5.",
@@ -567,6 +525,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		desc: "This Pokemon receives 1/2 damage from contact moves, but double damage from Fire moves.",
 		shortDesc: "This Pokemon takes 1/2 damage from contact moves, 2x damage from Fire moves.",
 	},
+	foamspray: {
+		name: "Foam Spray",
+		desc: "Lowers Defence of adjacent Pokemon when hit.",
+		shortDesc: "Lowers Defence of adjacent Pokemon when hit.",
+	},
 	forecast: {
 		name: "Forecast",
 		desc: "If this Pokemon is a Castform, its type changes to the current weather condition's type, except Sandstorm. This effect is prevented if this Pokemon is holding a Utility Umbrella and the weather is Rain Dance or Sunny Day.",
@@ -786,6 +749,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		desc: "On switch-in, this Pokemon Transforms into the opposing Pokemon that is facing it. If there is no Pokemon at that position, this Pokemon does not Transform.",
 		shortDesc: "On switch-in, this Pokemon Transforms into the opposing Pokemon that is facing it.",
 	},
+	inexorable: {
+		name: "Inexorable",
+		desc: "The power of this Pokemon's Dragon moves are multiplied by 1.5 if it is the first to move in a turn.",
+		shortDesc: "This Pokemon's Dragon moves have 1.5x power if it is the first to move in a turn.",
+	},
 	infiltrator: {
 		name: "Infiltrator",
 		desc: "This Pokemon's moves ignore substitutes and the opposing side's Reflect, Light Screen, Safeguard, Mist, and Aurora Veil.",
@@ -845,6 +813,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 			shortDesc: "On switch-in, this Pokemon's Attack is raised by 1 stage.",
 		},
 	},
+	invigorate: {
+		name: "Invigorate",
+		desc: "Amplifies the healing effects of allies by 20%.",
+		shortDesc: "Amplifies the healing effects of allies by 20%.",
+	},
 	ironbarbs: {
 		name: "Iron Barbs",
 		desc: "Pokemon making contact with this Pokemon lose 1/8 of their maximum HP, rounded down.",
@@ -856,6 +829,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "Iron Fist",
 		desc: "This Pokemon's punch-based attacks have their power multiplied by 1.2.",
 		shortDesc: "This Pokemon's punch-based attacks have 1.2x power. Sucker Punch is not boosted.",
+	},
+	junglebeat: {
+		name: "Jungle Beat",
+		desc: "Sound-based moves deal 1.3x more damage and deal 0.5x less damage to this Pokemon. Grass-Type moves count as Sound-based.",
+		shortDesc: "Sound-based moves deal 1.3x damage and deal 0.5x damage to this Pokemon, Grass-type moves count as Sound-based.",
 	},
 	justified: {
 		name: "Justified",
@@ -964,6 +942,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "Long Reach",
 		shortDesc: "This Pokemon's attacks do not make contact with the target.",
 	},
+	lunaridol: {
+		name: "Lunar Idol",
+		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Ice moves by 1.5. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
+		shortDesc: "Grants Levitate. Ice moves have 1.5x power. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
+	},
 	magicbounce: {
 		name: "Magic Bounce",
 		desc: "This Pokemon is unaffected by certain non-damaging moves directed at it and will instead use such moves against the original user. Moves reflected in this way are unable to be reflected again by this or Magic Coat's effect. Spikes, Stealth Rock, Sticky Web, and Toxic Spikes can only be reflected once per side, by the leftmost Pokemon under this or Magic Coat's effect. The Lightning Rod and Storm Drain Abilities redirect their respective moves before this Ability takes effect.",
@@ -1021,6 +1004,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "Mega Launcher",
 		desc: "This Pokemon's pulse moves have their power multiplied by 1.5. Heal Pulse restores 3/4 of a target's maximum HP, rounded half down.",
 		shortDesc: "This Pokemon's pulse moves have 1.5x power. Heal Pulse heals 3/4 target's max HP.",
+	},
+	memoryleak: {
+		name: "Memory Leak",
+		desc: "This Pokemon passes stat boosts to its partner Pokemon.",
+		shortDesc: "This Pokemon passes stat boosts to its partner Pokemon.",
 	},
 	merciless: {
 		name: "Merciless",
@@ -1329,6 +1317,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		desc: "This Pokemon's contact moves have a 30% chance of poisoning. This effect comes after a move's inherent secondary effect chance.",
 		shortDesc: "This Pokemon's contact moves have a 30% chance of poisoning.",
 	},
+	pollenflight: {
+		name: "Pollenflight",
+		desc: "Pollen dealing 1/16th HP damage to all non-seeded, non-Grass Type Pokémon is released into the air at the end of the turn. User heals for the damage dealt.",
+		shortDesc: "Deals 1/16th HP damage to all non-seeded, non-Grass Type Pokémon the end of the turn. User heals for the damage dealt."
+	},
 	powerconstruct: {
 		name: "Power Construct",
 		desc: "If this Pokemon is a Zygarde in its 10% or 50% Forme, it changes to Complete Forme when it has 1/2 or less of its maximum HP at the end of the turn.",
@@ -1496,6 +1489,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "Reckless",
 		desc: "This Pokemon's attacks with recoil or crash damage have their power multiplied by 1.2. Does not affect Struggle.",
 		shortDesc: "This Pokemon's attacks with recoil or crash damage have 1.2x power; not Struggle.",
+	},
+	reflector: {
+		name: "Reflector",
+		desc: "Mirrors the opponent's types on entry, gaining these types. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used.",
+		shortDesc: "Mirrors the opponent's types on entry. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used"
 	},
 	refrigerate: {
 		name: "Refrigerate",
@@ -1763,6 +1761,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 			shortDesc: "On switch-in, this Pokemon summons Hail.",
 		},
 	},
+	solaridol: {
+		name: "Solar Idol",
+		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Fire moves by 1.5. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
+		shortDesc: "Grants Levitate. Fire moves have 1.5x power. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
+	},
 	solarpower: {
 		name: "Solar Power",
 		desc: "If Sunny Day is active, this Pokemon's Special Attack is multiplied by 1.5 and it loses 1/8 of its maximum HP, rounded down, at the end of each turn. These effects are prevented if the Pokemon is holding a Utility Umbrella.",
@@ -1955,6 +1958,13 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		shortDesc: "Active Pokemon without this Ability have their Defense multiplied by 0.75.",
 
 		start: "  [POKEMON]'s Sword of Ruin weakened the Defense of all surrounding Pokémon!",
+	},
+	swornduty: {
+		name: "Sworn Duty",
+		desc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
+		shortDesc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
+
+		heal: "  [Source] shared its mead with [Pokemon]!",
 	},
 	symbiosis: {
 		name: "Symbiosis",
@@ -2250,6 +2260,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	whitesmoke: {
 		name: "White Smoke",
 		shortDesc: "Prevents other Pokemon from lowering this Pokemon's stat stages.",
+	},
+	wildfire: {
+		name: "Wildfire",
+		desc: "A wildfire is unleashed dealing 1/16th HP damage to non-Fire types. Damage is doubled against burned opponents.",
+		shortDesc: "Deals 1/16th HP damage to non-Fire types; doubled if burned.",
 	},
 	wimpout: {
 		name: "Wimp Out",

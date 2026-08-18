@@ -40,187 +40,6 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		rating: 0.1,
 		num: 0,
 	},
-	inexorable: {
-		onBasePowerPriority: 21, //Same as analytic (for now)
-		onBasePower(basePower, pokemon, target, move) {
-			if (move.type !== 'Dragon') return;
-
-			let boosted = true;
-			for (const target of this.getAllActive()) {
-				if (target === pokemon) continue;
-				// If the target pokemon moves BEFORE us, then you arent the first pokemon and therefore break
-				if (this.queue.willMove(target) && !this.queue.willMove(pokemon)) {
-					boosted = false;
-					break;
-				}
-			}
-			if (boosted) {
-				this.debug('Inexorable boost');
-				return this.chainModify([5325, 4096]);
-			}
-		},
-		flags: {},
-		name: "Inexorable",
-		rating: 4, //Fealt it was fitting
-		num: 6902,
-	},
-	lunaridol: {
-		onModifyAtkPriority: 5,
-		onModifyAtk(atk, attacker, defender, move) {
-			if (move.type === 'Ice') {
-				return this.chainModify(1.5);
-			}
-		},
-		onModifySpAPriority: 5,
-		onModifySpA(atk, attacker, defender, move) {
-			let mod = 1;
-
-			// Weather boost
-			if (this.field.isWeather(['hail', 'snowscape'])) {
-				mod *= 1.5;
-			}
-
-			// Ice move boost
-			if (move.type === 'Ice') {
-				mod *= 1.5;
-			}
-
-			if (mod !== 1) {
-				return this.chainModify(mod);
-			}
-		},
-		flags: {},
-		name: "Lunar Idol",
-		rating: 5,
-		num: 6903,
-	},
-	solaridol: {
-		onModifyAtkPriority: 5,
-		onModifyAtk(atk, pokemon, defender, move) {
-			let mod = 1;
-
-			// Weather boost
-			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				mod *= 1.5;
-			}
-
-			// Ice move boost
-			if (move.type === 'Fire') {
-				mod *= 1.5;
-			}
-
-			if (mod !== 1) {
-				return this.chainModify(mod);
-			}
-		},
-		onModifySpAPriority: 5,
-		onModifySpA(atk, attacker, defender, move) {
-			if (move.type === 'Fire') {
-				return this.chainModify(1.5);
-			}
-		},
-		flags: {},
-		name: "Solar Idol",
-		rating: 5,
-		num: 6904,
-	},
-	reflector: {
-	onStart(pokemon) {
-		let target = pokemon.foes()[0];
-
-		if (this.gameType === 'doubles') {
-		target =
-			pokemon.foes().find(foe => foe.position === pokemon.position) ||
-			pokemon.foes()[0];
-		}
-
-		if (!target) return;
-
-		const originalTypes = [...pokemon.getTypes()];
-		const finalTypes = [...originalTypes];
-		const gainedTypes: string[] = [];
-
-		for (const type of target.getTypes()) {
-		if (!originalTypes.includes(type)) {
-			finalTypes.push(type);
-			gainedTypes.push(type);
-		}
-		}
-
-		pokemon.m.reflectorTypes = gainedTypes;
-
-		this.add('-ability', pokemon, 'Reflector', '[of] ' + target);
-		pokemon.setType(finalTypes);
-		if (gainedTypes.length) {
-			this.add('-start', pokemon, 'typechange', finalTypes.join('/'));
-			this.add('-message', `${pokemon.name} gained the ${gainedTypes.join('/')} type${gainedTypes.length > 1 ? 's' : ''}!`);
-		}
-	},
-	onSourceModifyDamage(damage, attacker, defender, move) {
-		const gainedTypes =
-		defender.m.reflectorTypes as string[] | undefined;
-
-		if (gainedTypes?.includes(move.type)) {
-		this.debug(`Reflector resisted mirrored ${move.type} typing`);
-		return this.chainModify(0.5);
-		}
-	},
-	onEnd(pokemon) {
-		delete pokemon.m.reflectorTypes;
-	},
-	onSwitchOut(pokemon) {
-		delete pokemon.m.reflectorTypes;
-	},
-	flags: {},
-	name: "Reflector",
-	rating: 3,
-	num: 6905,
-	},
-	pollenflight: {
-		onResidualOrder: 8,
-		onResidualSubOrder: 1,
-		onResidual(pokemon) {
-			if (!pokemon.hp) return;
-
-			let totalDamage = 0;
-			let activated = false;
-
-			for (const target of this.getAllActive()) {
-				if (
-					target === pokemon ||
-					!target.hp ||
-					target.hasType('Grass') ||
-					target.volatiles['leechseed']
-				) {
-					continue;
-				}
-
-				if (!activated) {
-					this.add('-ability', pokemon, 'Pollenflight');
-					activated = true;
-				}
-
-				const damage = this.damage(
-					target.baseMaxhp / 16,
-					target,
-					pokemon,
-					this.dex.abilities.get('pollenflight')
-				);
-
-				if (damage) {
-					totalDamage += damage;
-				}
-			}
-
-			if (totalDamage && pokemon.hp) {
-				this.heal(totalDamage, pokemon, pokemon);
-			}
-		},
-		flags: {},
-		name: "Pollenflight",
-		rating: 3,
-		num: 6906,
-	},
 	swornduty: {
 		onSwitchInPriority: -2,
 		onStart(pokemon) {
@@ -231,7 +50,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		flags: {},
 		name: "Sworn Duty",
 		rating: 0,
-		num: 299,
+		num: 6907,
 	},
 	memoryleak: {
 		onAfterEachBoost(boost, target, source, effect) {
@@ -262,11 +81,29 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				this.effect
 			);
 		},
-
 		flags: {},
 		name: "Memory Leak",
 		rating: 3,
-		num: -1,
+		num: 6908,
+	},
+	foamspray: {
+		onDamagingHit(damage, target, source, move) {
+			let activated = false;
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon === target || pokemon.fainted) continue;
+
+				if (!activated) {
+					this.add('-ability', target, 'Foam Spray');
+					activated = true;
+				}
+
+				this.boost({ def: -1 }, pokemon, target, null, true);
+			}
+		},
+		flags: {},
+		name: "Foam Spray",
+		rating: 3,
+		num: 6909,
 	},
 	invigorate: {
 		onAnyTryHeal(damage, target, source, effect) {
@@ -277,11 +114,46 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 
 			return this.chainModify([6, 5]);
 		},
-
 		flags: {},
 		name: "Invigorate",
 		rating: 3,
-		num: -1,
+		num: 6910,
+	},
+	wildfire: {
+		onResidualOrder: 8,
+		onResidualSubOrder: 1,
+		onResidual(pokemon) {
+			if (!pokemon.hp) return;
+			if (pokemon.hasType('Fire')) return;
+			this.damage(pokemon.baseMaxhp / (pokemon.status === 'brn' ? 8 : 16), pokemon, null);
+		},
+		flags: {},
+		name: "Wildfire",
+		rating: 3,
+		num: 6911,
+		},
+	junglebeat: {
+		onModifyMove(move, pokemon) {
+			if (move.type === 'Grass') {
+				move.flags['sound'] = 1;
+			}
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			if (move.flags['sound']) {
+				this.debug('Jungle Beat sound boost');
+				return this.chainModify([5325, 4096]);
+			}
+		},
+		onSourceModifyDamage(damage, source, target, move) {
+			if (move.flags['sound']) {
+				this.debug('Jungle Beat sound resistance');
+				return this.chainModify(0.5);
+			}
+		},
+		flags: {},
+		name: "Jungle Beat",
+		rating: 4,
+		num: 6912,
 	},
 	adaptability: {
 		onModifySTAB(stab, source, target, move) {
@@ -2314,6 +2186,30 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		rating: 5,
 		num: 150,
 	},
+	inexorable: {
+		onBasePowerPriority: 21, //Same as analytic (for now)
+		onBasePower(basePower, pokemon, target, move) {
+			if (move.type !== 'Dragon') return;
+
+			let boosted = true;
+			for (const target of this.getAllActive()) {
+				if (target === pokemon) continue;
+				// If the target pokemon moves BEFORE us, then you arent the first pokemon and therefore break
+				if (this.queue.willMove(target) && !this.queue.willMove(pokemon)) {
+					boosted = false;
+					break;
+				}
+			}
+			if (boosted) {
+				this.debug('Inexorable boost');
+				return this.chainModify([5325, 4096]);
+			}
+		},
+		flags: {},
+		name: "Inexorable",
+		rating: 4, //Fealt it was fitting
+		num: 6902,
+	},
 	infiltrator: {
 		onModifyMove(move) {
 			move.infiltrates = true;
@@ -2618,6 +2514,36 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		name: "Long Reach",
 		rating: 1,
 		num: 203,
+	},
+	lunaridol: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Ice') {
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			let mod = 1;
+
+			// Weather boost
+			if (this.field.isWeather(['hail', 'snowscape'])) {
+				mod *= 1.5;
+			}
+
+			// Ice move boost
+			if (move.type === 'Ice') {
+				mod *= 1.5;
+			}
+
+			if (mod !== 1) {
+				return this.chainModify(mod);
+			}
+		},
+		flags: {},
+		name: "Lunar Idol",
+		rating: 5,
+		num: 6903,
 	},
 	magicbounce: {
 		onTryHitPriority: 1,
@@ -3539,6 +3465,51 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		rating: 2,
 		num: 143,
 	},
+	pollenflight: {
+		onResidualOrder: 8,
+		onResidualSubOrder: 1,
+		onResidual(pokemon) {
+			if (!pokemon.hp) return;
+
+			let totalDamage = 0;
+			let activated = false;
+
+			for (const target of this.getAllActive()) {
+				if (
+					target === pokemon ||
+					!target.hp ||
+					target.hasType('Grass') ||
+					target.volatiles['leechseed']
+				) {
+					continue;
+				}
+
+				if (!activated) {
+					this.add('-ability', pokemon, 'Pollenflight');
+					activated = true;
+				}
+
+				const damage = this.damage(
+					target.baseMaxhp / 16,
+					target,
+					pokemon,
+					this.dex.abilities.get('pollenflight')
+				);
+
+				if (damage) {
+					totalDamage += damage;
+				}
+			}
+
+			if (totalDamage && pokemon.hp) {
+				this.heal(totalDamage, pokemon, pokemon);
+			}
+		},
+		flags: {},
+		name: "Pollenflight",
+		rating: 3,
+		num: 6906,
+	},
 	powerconstruct: {
 		onResidualOrder: 29,
 		onResidual(pokemon) {
@@ -3965,6 +3936,58 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		name: "Reckless",
 		rating: 3,
 		num: 120,
+	},
+	reflector: {
+	onStart(pokemon) {
+		let target = pokemon.foes()[0];
+
+		if (this.gameType === 'doubles') {
+		target =
+			pokemon.foes().find(foe => foe.position === pokemon.position) ||
+			pokemon.foes()[0];
+		}
+
+		if (!target) return;
+
+		const originalTypes = [...pokemon.getTypes()];
+		const finalTypes = [...originalTypes];
+		const gainedTypes: string[] = [];
+
+		for (const type of target.getTypes()) {
+		if (!originalTypes.includes(type)) {
+			finalTypes.push(type);
+			gainedTypes.push(type);
+		}
+		}
+
+		pokemon.m.reflectorTypes = gainedTypes;
+
+		this.add('-ability', pokemon, 'Reflector', '[of] ' + target);
+		pokemon.setType(finalTypes);
+		if (gainedTypes.length) {
+			this.add('-start', pokemon, 'typechange', finalTypes.join('/'));
+			this.add('-message', `${pokemon.name} gained the ${gainedTypes.join('/')} type${gainedTypes.length > 1 ? 's' : ''}!`);
+		}
+	},
+	onSourceModifyDamage(damage, attacker, defender, move) {
+		const gainedTypes =
+		defender.m.reflectorTypes as string[] | undefined;
+
+		if (gainedTypes?.includes(move.type)) {
+		this.debug(`Reflector resisted mirrored ${move.type} typing`);
+		return this.chainModify(0.5);
+		}
+	},
+	onEnd(pokemon) {
+		delete pokemon.m.reflectorTypes;
+	},
+	onSwitchOut(pokemon) {
+		delete pokemon.m.reflectorTypes;
+	},
+	flags: {},
+	name: "Reflector",
+	rating: 3,
+	num: 6905,
 	},
 	refrigerate: {
 		onModifyTypePriority: -1,
@@ -4549,6 +4572,36 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		name: "Snow Warning",
 		rating: 4,
 		num: 117,
+	},
+	solaridol: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, pokemon, defender, move) {
+			let mod = 1;
+
+			// Weather boost
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				mod *= 1.5;
+			}
+
+			// Ice move boost
+			if (move.type === 'Fire') {
+				mod *= 1.5;
+			}
+
+			if (mod !== 1) {
+				return this.chainModify(mod);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			if (move.type === 'Fire') {
+				return this.chainModify(1.5);
+			}
+		},
+		flags: {},
+		name: "Solar Idol",
+		rating: 5,
+		num: 6904,
 	},
 	solarpower: {
 		onModifySpAPriority: 5,

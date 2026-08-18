@@ -26,6 +26,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	charizard: {
 		name: "Charizard",
 	},
+	charizardgiga: {
+		name: "Charizard-Giga",
+	},
 	charizardmegax: {
 		name: "Charizard-Mega-X",
 	},
@@ -481,6 +484,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	kingler: {
 		name: "Kingler",
+	},
+	kinglergiga: {
+		name: "Kingler-Giga",
 	},
 	kinglergmax: {
 		name: "Kingler-Gmax",
@@ -3316,6 +3322,9 @@ export const PokedexText: { [id: IDEntry]: PokedexText } = {
 	},
 	rillaboom: {
 		name: "Rillaboom",
+	},
+	rillaboomgiga: {
+		name: "Rillaboom-Giga",
 	},
 	rillaboomgmax: {
 		name: "Rillaboom-Gmax",
