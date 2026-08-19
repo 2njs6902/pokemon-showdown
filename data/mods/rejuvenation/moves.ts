@@ -285,6 +285,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		    }
         },
     },
+    frustration: {
+        inherit: true,
+        isNonstandard: null,
+    },
     furycutter: {
         inherit: true,
         onBasePower(basePower, pokemon, target) {
@@ -332,6 +336,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 move.heal = [2, 3];
             }
         },
+    },
+    hiddenpower: {
+        inherit: true,
+        isNonstandard: null,
     },
     hurricane: {
         inherit: true,
@@ -668,6 +676,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             source.apparentType = oldApparentType;
             }
         },
+    },
+    return: {
+        inherit: true,
+        isNonstandard: null,
     },
     roar: {
         inherit: true,

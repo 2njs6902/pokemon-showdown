@@ -227,11 +227,11 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
-	psychgem: {
+	psychicgem: {
 		inherit: true,
 		isNonstandard: null,
 	},
-	psychmemory: {
+	psychicmemory: {
 		inherit: true,
 		isNonstandard: null,
 	},
