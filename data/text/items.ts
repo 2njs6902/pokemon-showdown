@@ -1598,7 +1598,7 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 		name: "Rabuta Berry",
 		shortDesc: "Cannot be eaten by the holder. No effect when eaten with Bug Bite or Pluck.",
 	},
-	raichuniitex: {
+	raichunitex: {
 		name: "Raichunite X",
 		shortDesc: "If held by a Raichu, this item allows it to Mega Evolve in battle.",
 	},
