@@ -684,7 +684,14 @@ export class TeamValidator {
 		}
 		if (set.hpType) {
 			const type = dex.types.get(set.hpType);
-			if (!type.exists || ['normal', 'fairy', 'stellar'].includes(type.id)) {
+
+			const isRejuvenation = dex.currentMod === 'rejuvenation';
+
+			if (
+				!type.exists ||
+				(!isRejuvenation && ['normal', 'fairy', 'stellar'].includes(type.id)) ||
+				(isRejuvenation && type.id === 'stellar')
+			) {
 				problems.push(`${name}'s Hidden Power type (${set.hpType}) is invalid.`);
 			} else {
 				set.hpType = type.name;
