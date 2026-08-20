@@ -183,6 +183,19 @@ export class Field {
 		return terrain.map(toID).includes(ourTerrain);
 	}
 
+	isUnlayeredTerrain(terrain: string | string[], target?: Pokemon | Side | Battle) {
+		// A terrain is "unlayered" only when no custom Field is active.
+		if (this.effectiveField(target)) return false;
+
+		const ourTerrain = this.effectiveTerrain(target);
+
+		if (!Array.isArray(terrain)) {
+			return ourTerrain === toID(terrain);
+		}
+
+		return terrain.map(toID).includes(ourTerrain);
+	}
+
 	getTerrain() {
 		return this.battle.dex.conditions.getByID(this.terrain);
 	}

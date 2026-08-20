@@ -1,4 +1,16 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	comatose: {
+			inherit: true,
+			onSetStatus(status, target, source, effect) {
+				if (this.field.isUnlayeredTerrain('electricterrain')) {
+					return;
+				}
+				if ((effect as Move)?.status) {
+					this.add('-immune', target, '[from] ability: Comatose');
+				}
+				return false;
+			},
+	},
 	dryskin: {
 		inherit: true,
 		onWeather(target, source, effect) {
@@ -75,24 +87,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	gulpmissile: {
 		inherit: true,
-		onDamagingHit(damage, target, source, move) {
-			if (!source.hp || !source.isActive || target.isSemiInvulnerable()) return;
-			if (['cramorantgulping', 'cramorantgorging'].includes(target.species.id)) {
-				this.damage(source.baseMaxhp / 4, source, target);
-				if (target.species.id === 'cramorantgulping') {
-					this.boost({ def: -1 }, source, target, null, true);
-				} else {
-					source.trySetStatus('par', target, move);
-				}
-				target.formeChange('cramorant', move);
-			}
-		},
-		// The Dive part of this mechanic is implemented in Dive's `onTryMove` in moves.ts
 		onSourceTryPrimaryHit(target, source, effect) {
 			if (effect?.id === 'surf' && source.hasAbility('gulpmissile') && source.species.name === 'Cramorant') {
-				const forme = this.field.isField('swampfield') ? 'cramorantgulping' :
-					source.hp <= source.maxhp / 2 ? 'cramorantgorging' : 'cramorantgulping';
-
+				let forme;
+				if (!this.field.isField('')) {
+					forme = this.field.isField('swampfield') ? 'cramorantgulping' : source.hp <= source.maxhp / 2 ? 'cramorantgorging' : 'cramorantgulping';
+				} else if (this.field.isTerrain('electricterrain')) {
+					forme = 'cramorantgorging';
+				} else {
+					forme = source.hp <= source.maxhp / 2 ? 'cramorantgorging' : 'cramorantgulping';
+				}
 				source.formeChange(forme, effect);
 			}
 		},
@@ -172,6 +176,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	motordrive: {
+		inherit: true,
+	},
 	overgrow: {
 		inherit: true,
 		onModifyAtk(atk, attacker, defender, move) {
@@ -197,10 +204,32 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	sapsipper: {
 		inherit: true,
-		onResidual(pokemon) {
+		onField(target, source, effect) {
 			if (this.field.isField('forestfield')) {
-				this.add('-message', `${pokemon.name} drank tree sap to recover!`);
-				this.heal(pokemon.baseMaxhp / 16);
+				this.add('-message', `${target.name} drank tree sap to recover!`);
+				this.heal(target.baseMaxhp / 16);
+			}
+		},
+	},
+	slowstart: {
+		inherit: true,
+		onResidual(pokemon) {
+			if (pokemon.activeTurns && this.effectState.counter) {
+				this.effectState.counter -= this.field.isUnlayeredTerrain('electricterrain') ? 2 : 1;
+				if (this.effectState.counter <= 0) {
+					this.add('-end', pokemon, 'Slow Start');
+					delete this.effectState.counter;
+				}
+			}
+		},
+	},
+	static: {
+		inherit: true,
+		onDamagingHit(damage, target, source, move) {
+			if (this.checkMoveMakesContact(move, source, target)) {
+				if (this.field.isUnlayeredTerrain('electricterrain') ? this.randomChance(6, 10) : this.randomChance(3, 10)) {
+					source.trySetStatus('par', target);
+				}
 			}
 		},
 	},
@@ -219,20 +248,36 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	teravolt: {
+		inherit: true,
+	},
+	transistor: {
+		inherit: true,
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Electric') {
+				this.debug('Transistor boost');
+				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.6 : [5325, 4096]));
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			if (move.type === 'Electric') {
+				this.debug('Transistor boost');
+				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.6 : [5325, 4096]));
+			}
+		},
+	},
 	watercompaction: {
 		inherit: true,
-		onResidualOrder: 28,
-		onResidualSubOrder: 2,
-		onResidual(pokemon) {
-			if (this.field.isField('swampfield')  && pokemon.isGrounded()) {
+		onField(target) {
+			if (this.field.isField('swampfield')  && target.isGrounded()) {
 				this.boost({def: 2});
 			}
-		}
+		},
 	},
 	wildfire: {
 		inherit: true,
-		onResidualOrder: 8,
-		onResidualSubOrder: 1,
 		onResidual(pokemon) {
 			if (!pokemon.hp) return;
 			if (pokemon.hasType('Fire')) return;

@@ -336,10 +336,8 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		accuracy: 100,
 		basePower: 40,
 		basePowerCallback(pokemon, target, move) {
-			if (!pokemon.volatiles['stackingfury'] || move.hit === 1) {
-				pokemon.addVolatile('stackingfury');
-			}
-			const bp = this.clampIntRange(move.basePower * pokemon.volatiles['stackingfury'].multiplier, 1, 160);
+			pokemon.addVolatile('furycutter');
+			const bp = this.clampIntRange(move.basePower * pokemon.volatiles['furycutter'].multiplier, 1, 160);
 			this.debug(`BP: ${bp}`);
 			return bp;
 		},
@@ -348,18 +346,6 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
-		condition: {
-			duration: 2,
-			onStart() {
-				this.effectState.multiplier = 1;
-			},
-			onRestart() {
-				if (this.effectState.multiplier < 4) {
-					this.effectState.multiplier <<= 1;
-				}
-				this.effectState.duration = 2;
-			},
-		},
 		secondary: null,
 		target: "normal",
 		type: "Fighting",
@@ -7194,10 +7180,8 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		accuracy: 95,
 		basePower: 40,
 		basePowerCallback(pokemon, target, move) {
-			if (!pokemon.volatiles['stackingfury'] || move.hit === 1) {
-				pokemon.addVolatile('stackingfury');
-			}
-			const bp = this.clampIntRange(move.basePower * pokemon.volatiles['stackingfury'].multiplier, 1, 160);
+			pokemon.addVolatile('furycutter');
+			const bp = this.clampIntRange(move.basePower * pokemon.volatiles['furycutter'].multiplier, 1, 160);
 			this.debug(`BP: ${bp}`);
 			return bp;
 		},

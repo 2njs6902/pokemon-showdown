@@ -226,6 +226,21 @@ export const commands: Chat.ChatCommands = {
 		`/setfield [field] - Starts the specified field in the current battle.`,
 	],
 
+	clearfield(target, room, user) {
+		room = this.requireRoom();
+
+		if (!room.battle) {
+			throw new Chat.ErrorMessage(`This command can only be used in a battle room.`);
+		}
+
+		void room.battle.stream.write(
+			`>clearfield`
+		);
+	},
+	clearfieldhelp: [
+		`/clearfield - Clears the current field in the battle.`,
+	],
+
 	ionext() {
 		throw new Chat.ErrorMessage([
 			`"ionext" is an outdated feature. Hidden battles now have password-protected URLs, making them fully secure against eavesdroppers.`,
