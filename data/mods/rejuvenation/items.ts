@@ -43,6 +43,19 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	cellbattery: {
+		inherit: true,
+		onStart(pokemon) {
+			if (!pokemon.ignoringItem() && this.field.isUnlayeredTerrain(['electricterrain'])) {
+				pokemon.useItem();
+			}
+		},
+		onTerrainChange(pokemon) {
+			if (this.field.isUnlayeredTerrain(['electricterrain'])) {
+				pokemon.useItem();
+			}
+		},
+	},
 	cloversweet: {
 		inherit: true,
 		isNonstandard: "Unobtainable",

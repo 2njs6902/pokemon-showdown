@@ -74,6 +74,10 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 		name: "Ampharosite",
 		shortDesc: "If held by an Ampharos, this item allows it to Mega Evolve in battle.",
 	},
+	amplifiedrock: {
+		name: "Amplified Rock",
+		shortDesc: "Extends the duration of certain terrains and fields.",
+	},
 	apicotberry: {
 		name: "Apicot Berry",
 		shortDesc: "Raises holder's Sp. Def by 1 stage when at 1/4 max HP or less. Single use.",
@@ -551,6 +555,10 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	electriumz: {
 		name: "Electrium Z",
 		shortDesc: "If holder has an Electric move, this item allows it to use an Electric Z-Move.",
+	},
+	elementalseed: {
+		name: "Elemental Seed",
+		shortDesc: "A single-use seed that boosts its holder in Elemental Fields.",
 	},
 	emboarite: {
 		name: "Emboarite",

@@ -139,6 +139,17 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				this.boost(boost, target, pokemon);
 			},
 
+			onFieldResidualOrder: 27,
+			onFieldResidual() {
+				if (!this.field.fieldState.duration) return;
+
+				this.field.fieldState.duration--;
+
+				if (this.field.fieldState.duration <= 0) {
+					this.field.clearField();
+				}
+			},
+
 			onResidualOrder: 28,
 			onResidual(pokemon) {
 				const trapped = !!pokemon.volatiles['partiallytrapped'];
@@ -196,6 +207,23 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		secondary: null,
 		target: "all",
 		type: "Bug",
+	},
+	frozendimensionalfield: {
+		num: 7003,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Frozen Dimensional Field",
+		pp: 10,
+		priority: 0,
+		flags: {},
+		field: "frozendimensionalfield",
+		condition: {
+		},
+
+		secondary: null,
+		target: "all",
+		type: "Ice",
 	},
 	irritation: {
 		num: 6902,
@@ -346,6 +374,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+
 		secondary: null,
 		target: "normal",
 		type: "Fighting",
@@ -434,6 +463,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 		secondary: null,
 		target: "allySide",
 		type: "Ground",
+		zMove: { boost: { def: 1 } },
 		contestType: "Beautiful",
 	},
 	quicksilverspear: {

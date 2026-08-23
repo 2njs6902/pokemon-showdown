@@ -1,5 +1,5 @@
 export const Items: import('../sim/dex-items').ItemDataTable = {
-	// Number of next item is 6907
+	// Number of next item is 6909
 	abilityshield: {
 		name: "Ability Shield",
 		spritenum: 746,
@@ -259,6 +259,11 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 658,
 		gen: 6,
 		isNonstandard: "Past",
+	},
+	amplifiedrock: {
+		name: "Amplified Rock",
+		gen: 9,
+		num: 6907,
 	},
 	apicotberry: {
 		name: "Apicot Berry",
@@ -1837,6 +1842,34 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 779,
 		gen: 7,
 		isNonstandard: "Past",
+	},
+	elementalseed: {
+		name: "Elemental Seed",
+		spritenum: 0,
+		fling: {
+			basePower: 10,
+		},
+		onSwitchInPriority: -1,
+		onStart(pokemon) {
+			if (!pokemon.ignoringItem() && this.field.isUnlayeredTerrain(['electricterrain'])) {
+				pokemon.useItem();
+			}
+		},
+		onTerrainChange(pokemon) {
+			if (this.field.isUnlayeredTerrain(['electricterrain'])) {
+				pokemon.useItem();
+			}
+		},
+		onUse(pokemon) {
+			switch (this.field.terrain) {
+			case 'electricterrain':
+				this.boost({ spe: 1 }, pokemon);
+				pokemon.addVolatile('charge');
+				break;
+			}
+		},
+		num: 6908,
+		gen: 9,
 	},
 	emboarite: {
 		name: "Emboarite",

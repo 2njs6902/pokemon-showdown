@@ -1,4 +1,13 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	battery: {
+		inherit: true,
+		onAllyBasePower(basePower, attacker, defender, move) {
+			if (attacker !== this.effectState.target && move.category === 'Special') {
+				this.debug('Battery boost');
+				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.5 : 1.3));
+			}
+		},
+	},
 	comatose: {
 			inherit: true,
 			onSetStatus(status, target, source, effect) {
@@ -52,6 +61,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	electricsurge: {
+		inherit: true,
+		onStart(source) {
+			if (this.field.setTerrain('electricterrain')) {
+				this.field.terrainState.duration = source.hasItem('amplifiedrock') ? 8 : 5;
+			}
+		},
+	},
+	electromorphosis: {
+		inherit: true,
+		onStart(pokemon) {
+			if (this.field.isUnlayeredTerrain('electricterrain')) {
+				this.boost({ spa: 1 }, pokemon);
+			}
+		},
+	},
 	foamspray: {
 		inherit: true,
 		onDamagingHit(damage, target, source, move) {
@@ -66,6 +91,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 
 				this.boost({ def: (this.field.isField('swampfield') ? -2 : -1) }, pokemon, target, null, true);
 			}
+		},
+	},
+	galvanize: {
+		inherit: true,
+		onBasePower(basePower, pokemon, target, move) {
+			if (move.typeChangerBoosted === this.effect) return this.field.isUnlayeredTerrain('electricterrain') ? this.chainModify(1.5) : this.chainModify(1.2);
 		},
 	},
 	gooey: {
@@ -101,6 +132,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	hadronengine: {
+		inherit: true,
+		onStart(pokemon) {
+			if (this.field.setTerrain('electricterrain')) {
+				this.field.terrainState.duration = pokemon.hasItem('amplifiedrock') ? 8 : 5;
+			} else if (this.field.isTerrain('electricterrain')) {
+				this.add('-activate', pokemon, 'ability: Hadron Engine');
+			}
+		},
+		onModifySpA(atk, attacker, defender, move) {
+			if (this.field.isTerrain('electricterrain')) {
+				this.debug('Hadron Engine boost');
+				this.add('-message', `${attacker.name} used the Electric Terrain to energize its futuristic engine!`);
+				return this.chainModify([5461, 4096]);
+			}
+		},
+	},
 	junglebeat: {
 		inherit: true,
 		onBasePower(basePower, attacker, defender, move) {
@@ -128,6 +176,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (typeof accuracy !== 'number') return;
 				this.debug('longreach in forestfield - hindering accuracy');
 				return this.chainModify(0.9);
+			}
+		},
+	},
+	lightningrod: {
+		inherit: true,
+		onStart(pokemon) {
+			if (this.field.isUnlayeredTerrain('electricterrain')) {
+				this.boost({ spa: 1 }, pokemon);
+			}
+		},
+	},
+	minus: {
+		inherit: true,
+		onModifySpA(spa, pokemon) {
+			if (this.field.isTerrain('electricterrain')) {
+				return this.chainModify(1.5);
+			}
+			for (const allyActive of pokemon.allies()) {
+				if (allyActive.hasAbility(['minus', 'plus'])) {
+					return this.chainModify(1.5);
+				}
 			}
 		},
 	},
@@ -178,7 +247,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	motordrive: {
 		inherit: true,
-	},
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			if (this.field.isUnlayeredTerrain('electricterrain')) {
+				this.add('-message', `${pokemon.name} drank tree sap to recover!`);
+				this.boost({ spe: 1 });
+			}
+		},
+	},	
 	overgrow: {
 		inherit: true,
 		onModifyAtk(atk, attacker, defender, move) {
@@ -194,9 +271,56 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	plus: {
+		inherit: true,
+		onModifySpA(spa, pokemon) {
+			if (this.field.isTerrain('electricterrain')) {
+				return this.chainModify(1.5);
+			}
+			for (const allyActive of pokemon.allies()) {
+				if (allyActive.hasAbility(['minus', 'plus'])) {
+					return this.chainModify(1.5);
+				}
+			}
+		},
+	},
+	quarkdrive: {
+		inherit: true,
+		condition: {
+			inherit: true,
+			onStart(pokemon, source, effect) {
+				if (effect?.name === 'Booster Energy') {
+					this.effectState.fromBooster = true;
+					this.add('-activate', pokemon, 'ability: Quark Drive', '[fromitem]');
+				} else {
+					this.effectState.bestStat = pokemon.getBestStat(false, true);
+					const statName = {
+						atk: 'Attack',
+						def: 'Defense',
+						spa: 'Special Attack',
+						spd: 'Special Defense',
+						spe: 'Speed',
+					}[this.effectState.bestStat as 'atk' | 'def' | 'spa' | 'spd' | 'spe'];
+					this.add('-message', `The Electric Terrain activated ${pokemon.name}'s Quark Drive, heightening its ${statName}!`);
+				}
+				if (!this.effectState.bestStat) {
+					this.effectState.bestStat = pokemon.getBestStat(false, true);
+				}
+				this.add('-start', pokemon, 'quarkdrive' + this.effectState.bestStat);
+			},
+		},
+	},
+	quickfeet: {
+		inherit: true,
+		onModifySpe(spe, pokemon) {
+			if (pokemon.status || this.field.isUnlayeredTerrain('electricterrain')) {
+				return this.chainModify(1.5);
+			}
+		},
+	},
 	rattled: {
 		inherit: true,
-		onSwitchIn(pokemon) {
+		onSwitchIn() {
 			if (this.field.isField('swampfield')) {
 				this.boost({ spe: 1 });
 			}
@@ -204,10 +328,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	sapsipper: {
 		inherit: true,
-		onField(target, source, effect) {
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
 			if (this.field.isField('forestfield')) {
-				this.add('-message', `${target.name} drank tree sap to recover!`);
-				this.heal(target.baseMaxhp / 16);
+				this.add('-message', `${pokemon.name} drank tree sap to recover!`);
+				this.heal(pokemon.baseMaxhp / 16);
 			}
 		},
 	},
@@ -233,6 +359,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	steadfast: {
+		inherit: true,
+		onModifySpe(spe, pokemon) {
+			if (this.field.isTerrain('electricterrain')) {
+				return this.chainModify(1.5);
+			}
+		},
+	},
 	swarm: {
 		inherit: true,
 		onModifyAtk(atk, attacker, defender, move) {
@@ -250,6 +384,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	teravolt: {
 		inherit: true,
+		onModifyMove(move) {
+			move.ignoreAbility = true;
+			if (this.field.isUnlayeredTerrain('electricterrain') && move.type === 'Electric') {
+				move.ignoreImmunity = { Electric: true };
+			}
+		},
 	},
 	transistor: {
 		inherit: true,
@@ -268,10 +408,23 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	voltabsorb: {
+		inherit: true,
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			if (this.field.isTerrain('electricterrain')) {
+				this.add('-message', `${pokemon.name} absorbed stray electricity!`);
+				this.heal(pokemon.baseMaxhp / 16);
+			}
+		},
+	},
 	watercompaction: {
 		inherit: true,
-		onField(target) {
-			if (this.field.isField('swampfield')  && target.isGrounded()) {
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			if (this.field.isField('swampfield')  && pokemon.isGrounded()) {
 				this.boost({def: 2});
 			}
 		},

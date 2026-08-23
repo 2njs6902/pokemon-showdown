@@ -20,6 +20,10 @@ export class Field {
 	field: ID;
 	fieldState: EffectState;
 	pseudoWeather: { [id: string]: EffectState };
+	previousField: {
+		id: ID;
+		state: EffectState;
+	} | null;
 
 	constructor(battle: Battle) {
 		this.battle = battle;
@@ -34,6 +38,7 @@ export class Field {
 		this.field = '';
 		this.fieldState = this.battle.initEffectState({ id: '' });
 		this.pseudoWeather = {};
+		this.previousField = null;
 	}
 
 	toJSON(): AnyObject {
@@ -172,6 +177,7 @@ export class Field {
 
 	effectiveTerrain(target?: Pokemon | Side | Battle) {
 		if (this.battle.event && !target) target = this.battle.event.target;
+		if (this.getPseudoWeather('mudsport') && this.terrain === 'electricterrain') return '';
 		return this.battle.runEvent('TryTerrain', target) ? this.terrain : '';
 	}
 
@@ -227,10 +233,43 @@ export class Field {
 		return true;
 	}
 
+	setTemporaryField(status: string | Effect, duration: number, source: Pokemon | null = null, sourceEffect: Effect | null = null) {
+		status = this.battle.dex.conditions.get(status);
+
+		if (this.field === status.id) {
+			this.fieldState.duration = duration;
+			return false;
+		}
+
+		const previousField = this.field;
+		const previousFieldState = this.fieldState;
+
+		if (!this.setField(status, source, sourceEffect)) return false;
+
+		if (previousField) {
+			this.previousField = {
+				id: previousField,
+				state: previousFieldState,
+			};
+		}
+
+		this.fieldState.duration = duration;
+		return true;
+	}
+
 	clearField() {
 		if (!this.field) return false;
 		const prevField = this.getField();
 		this.battle.singleEvent('FieldEnd', prevField, this.fieldState, this);
+
+		if (this.previousField) {
+			this.field = this.previousField.id;
+			this.fieldState = this.previousField.state;
+			this.previousField = null;
+			this.battle.eachEvent('FieldChange');
+			return true;
+		}
+
 		this.field = '';
 		this.battle.clearEffectState(this.fieldState);
 		this.battle.eachEvent('FieldChange');
