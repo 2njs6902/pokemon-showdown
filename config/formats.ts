@@ -29,18 +29,25 @@ export const Formats: import('../sim/dex-formats').FormatList = [
     	desc: `Unofficial Rejuvenation Mod for Pokemon Showdown`,
 		mod: 'rejuvenation',
 		ruleset: ['Rejuvenation'],
-		onValidateTeam(team, format) {
-        // const allowedTiers = ['LC', 'NFE', 'OU', 'UU', '(OU)', 'UUBL', 'AG', 'UBER'];
-        // for (const set of team) {
-        //     const species = this.dex.species.get(set.species);
+		// onValidateTeam(team, format) {
+        // // const allowedTiers = ['LC', 'NFE', 'OU', 'UU', '(OU)', 'UUBL', 'AG', 'UBER'];
+        // // for (const set of team) {
+        // //     const species = this.dex.species.get(set.species);
 
-        //     if (!allowedTiers.includes(species.tier)) {
-        //         return [
-        //             `${species.name} is not legal in Rejuvenation Mod.`,
-        //         ];
-        //     }
-        // }
-    },
+        // //     if (!allowedTiers.includes(species.tier)) {
+        // //         return [
+        // //             `${species.name} is not legal in Rejuvenation Mod.`,
+        // //         ];
+        // //     }
+        // // }
+    	// },
+	},
+	{
+		name: "[Gen 9] Rejuvenation DuoType Doubles",
+    	desc: `Unofficial Rejuvenation Mod for Pokemon Showdown`,
+		mod: 'rejuvenation',
+		gameType: 'doubles',
+		ruleset: ['Rejuvenation'],
 	},
 
 	// // S/V Singles

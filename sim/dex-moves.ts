@@ -153,6 +153,7 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 	pp: number;
 	category: 'Physical' | 'Special' | 'Status';
 	type: string;
+	additionalTypes?: string[];
 	priority: number;
 	target: MoveTarget;
 	flags: MoveFlags;

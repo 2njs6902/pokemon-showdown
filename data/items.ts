@@ -1,5 +1,5 @@
 export const Items: import('../sim/dex-items').ItemDataTable = {
-	// Number of next item is 6909
+	// Number of next item is 6910
 	abilityshield: {
 		name: "Ability Shield",
 		spritenum: 746,
@@ -1904,6 +1904,12 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onEat() { },
 		num: 208,
 		gen: 3,
+	},
+	everstone: {
+		name: "Everstone",
+		spritenum: 0,
+		num: 6909,
+		gen: 9,
 	},
 	eviolite: {
 		name: "Eviolite",

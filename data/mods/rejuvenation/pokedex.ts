@@ -6608,7 +6608,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Aevium",
 		types: ["Ice", "Poison"],
 		baseStats: { hp: 70, atk: 110, def: 90, spa: 60, spd: 75, spe: 95 },
-		abilities: { 0: "Fur Coat", 1: "Marciless", H: "Overcoat" },
+		abilities: { 0: "Fur Coat", 1: "Merciless", H: "Overcoat" },
 		heightm: 1.3,
 		weightkg: 63.5,
 		color: "White",

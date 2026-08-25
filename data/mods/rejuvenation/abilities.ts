@@ -13,8 +13,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			onSetStatus(status, target, source, effect) {
 				if (this.field.isUnlayeredTerrain('electricterrain')) {
 					return;
-				}
-				if ((effect as Move)?.status) {
+				} else if ((effect as Move)?.status) {
 					this.add('-immune', target, '[from] ability: Comatose');
 				}
 				return false;
@@ -96,7 +95,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	galvanize: {
 		inherit: true,
 		onBasePower(basePower, pokemon, target, move) {
-			if (move.typeChangerBoosted === this.effect) return this.field.isUnlayeredTerrain('electricterrain') ? this.chainModify(1.5) : this.chainModify(1.2);
+			if (this.field.isUnlayeredTerrain('electricterrain')) {
+				return this.chainModify(1.5);
+			}
 		},
 	},
 	gooey: {
@@ -393,18 +394,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	transistor: {
 		inherit: true,
-		onModifyAtkPriority: 5,
 		onModifyAtk(atk, attacker, defender, move) {
 			if (move.type === 'Electric') {
 				this.debug('Transistor boost');
-				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.6 : [5325, 4096]));
+				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.6 : 1.3));
 			}
 		},
-		onModifySpAPriority: 5,
 		onModifySpA(atk, attacker, defender, move) {
 			if (move.type === 'Electric') {
 				this.debug('Transistor boost');
-				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.6 : [5325, 4096]));
+				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.6 : 1.3));
 			}
 		},
 	},

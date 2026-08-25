@@ -571,6 +571,10 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 			shortDesc: "No competitive use.",
 		},
 	},
+	everstone: {
+		name: "Everstone",
+		shortDesc: "Holder cannot gain a higher Evolution. Also prevents field generation for certain moves.",
+	},
 	eviolite: {
 		name: "Eviolite",
 		shortDesc: "If holder's species can evolve, its Defense and Sp. Def are 1.5x.",

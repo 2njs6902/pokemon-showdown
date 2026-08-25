@@ -277,7 +277,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onBasePower(basePower, attacker, defender, move) {
 				if (move.type === 'Electric' && attacker.isGrounded() && !attacker.isSemiInvulnerable()) {
 					this.debug('electric terrain boost');
-					return this.chainModify(this.field.isUnlayeredTerrain('electricterrain') ? 1.3 : 1.5);
+                    this.add('-message', 'The Electric Terrain strengthened the attack!');
+					return this.chainModify(this.field.isUnlayeredTerrain('electricterrain') ? 1.5 : 1.3);
 				}
 			},
 			onFieldStart(field, source, effect) {
@@ -366,6 +367,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return false;
             }
         },
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isTerrain('electricterrain')) {
+				move.additionalTypes.push('Electric');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onBasePower() {
             if (this.field.isTerrain('electricterrain')){
                 this.add('-message', 'The explosion became hyper-charged!');
@@ -384,6 +394,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     focuspunch: {
         inherit: true,
+		priorityChargeCallback(pokemon) {
+			if (this.field.isUnlayeredTerrain('electricterrain')) return;
+			pokemon.addVolatile('focuspunch');
+		},
         onTryMove(source) {
             if (this.field.isUnlayeredTerrain('electricterrain')){
                 this.add('-message', `${source.name} lost its focus and couldn't move!`);
@@ -498,6 +512,25 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return this.chainModify(1.5);
             }
         },
+        onModifyMove(move, pokemon, target) {
+			switch (target?.effectiveWeather()) {
+			case 'raindance':
+			case 'primordialsea':
+				move.accuracy = true;
+				break;
+			case 'sunnyday':
+			case 'desolateland':
+				move.accuracy = 50;
+				break;
+			}
+			move.additionalTypes ??= [];
+
+			if (this.field.isTerrain('electricterrain')) {
+				move.additionalTypes.push('Electric');
+			} else {
+				move.additionalTypes = [];
+            }
+        },
         onEffectiveness(typeMod, target, type) {
             if (this.field.isTerrain('electricterrain')){
                 return typeMod + this.dex.getEffectiveness('Electric', type);
@@ -511,6 +544,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return typeMod + this.dex.getEffectiveness('Electric', type);
             }
         },
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isUnlayeredTerrain('electricterrain')) {
+				move.additionalTypes.push('Electric');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onBasePower() {
             if (this.field.isField('swampfield')) {
                 this.add('-message', 'The murk strengthened the attack!');
@@ -705,6 +747,38 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    muddywater: {
+        inherit: true,
+        onEffectiveness(typeMod, target, type) {
+            if (this.field.isTerrain('electricterrain')){
+                return typeMod + this.dex.getEffectiveness('Electric', type);
+            }
+        },
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isTerrain('electricterrain')) {
+				move.additionalTypes.push('Electric');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
+        onBasePower() {
+            let modifier = 1;
+            if (this.field.isField('forestfield')) {
+                this.add('-message', 'The forest softened the attack...');
+                modifier *= 0.5;
+            } else if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                 modifier *= 1.5;
+            }
+            if (this.field.isTerrain('electricterrain')){
+                this.add('-message', 'The attack became hyper-charged!');
+                modifier *= 1.5;
+            }
+            return this.chainModify(modifier);
+        },
+    }, 
     mudshot: {
         inherit: true,
         onBasePower() {
@@ -733,29 +807,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
-    muddywater: {
+    mudsport: {
         inherit: true,
-        onEffectiveness(typeMod, target, type) {
-            if (this.field.isTerrain('electricterrain')){
-                return typeMod + this.dex.getEffectiveness('Electric', type);
-            }
-        },
-        onBasePower() {
-            let modifier = 1;
-            if (this.field.isField('forestfield')) {
-                this.add('-message', 'The forest softened the attack...');
-                modifier *= 0.5;
-            } else if (this.field.isField('swampfield')) {
-                this.add('-message', 'The murk strengthened the attack!');
-                 modifier *= 1.5;
-            }
-            if (this.field.isTerrain('electricterrain')){
-                this.add('-message', 'The attack became hyper-charged!');
-                modifier *= 1.5;
-            }
-            return this.chainModify(modifier);
-        },
-    }, 
+        isNonstandard: null,
+    },
     naturepower: {
         inherit: true,
         isNonstandard: null,
@@ -809,6 +864,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	},
     plasmafists: {
         inherit: true,
+        isNonstandard: null,
         onAfterMoveSecondarySelf(source, target, move) {
             if (source.hasItem('everstone')) return;
             if (this.field.setTerrain('electricterrain', source, move)) {
@@ -1030,6 +1086,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return false;
             }
         },
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isTerrain('electricterrain')) {
+				move.additionalTypes.push('Electric');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onEffectiveness(typeMod, target, type) {
             if (this.field.isTerrain('electricterrain')){
                 return typeMod + this.dex.getEffectiveness('Electric', type);
@@ -1147,6 +1212,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return typeMod + this.dex.getEffectiveness('Electric', type);
             }
         },
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isTerrain('electricterrain')) {
+				move.additionalTypes.push('Electric');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onBasePower() {
             let modifier = 1;
             if (this.field.isField('swampfield')) {
@@ -1186,6 +1260,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		condition: {
 			inherit: true,
+			onSideStart(side, target) {
+				this.add('-message', `${target.name} was hurt by the electrified spikes!`);
+				this.effectState.layers = 1;
+			},
+			onSideRestart(side, target) {
+				if (this.effectState.layers >= 3) return false;
+				this.add('-message', `${target.name} was hurt by the electrified spikes!`);
+				this.effectState.layers++;
+			},
 			onSwitchIn(pokemon) {
 				if (pokemon.hasItem('heavydutyboots')) return;
 
@@ -1196,7 +1279,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					const typeMod = this.dex.getEffectiveness('Electric', pokemon);
 					const damage = damageAmounts[this.effectState.layers] * pokemon.maxhp / 24;
 					this.damage(damage * Math.pow(2, typeMod));
-					this.add('-message', `${pokemon.name} was hurt by the electrified spikes!`);
 					return;
 				}
 
@@ -1269,6 +1351,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return typeMod + this.dex.getEffectiveness('Electric', type);
             }
         },
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isTerrain('electricterrain')) {
+				move.additionalTypes.push('Electric');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onBasePower() {
             let modifier = 1;
             if (this.field.isField('forestfield')) {
@@ -1289,13 +1380,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	tectonicrage: {
 		inherit: true,
 		isNonstandard: null,
+		onBasePower() {
+			if (this.field.isTerrain('electricterrain')) {
+				return this.chainModify(1.3);
+			}
+		},
 		onAfterHit(target, source) {
-			if (source.hp) {
+			if (source.hp && this.field.isTerrain('electricterrain')) {
 				this.field.clearTerrain();
 			}
 		},
 		onAfterSubDamage(damage, target, source) {
-			if (source.hp) {
+			if (source.hp && this.field.isTerrain('electricterrain')) {
 				this.field.clearTerrain();
 			}
 		},
@@ -1345,20 +1441,36 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     thousandarrows: {
         inherit: true,
         isNonstandard: null,
-        onEffectiveness(typeMod, target, type, move) {
-            if (move.type !== 'Ground') return;
-			if (!target) return; // avoid crashing when called from a chat plugin
-			// ignore effectiveness if the target is Flying type and immune to Ground
-			if (!target.runImmunity('Ground')) {
-				if (target.hasType('Flying')) return 0;
+		onModifyMove(move) {
+			move.additionalTypes = [];
+
+			if (this.field.isField('swampfield')) {
+				move.additionalTypes.push('Water');
 			}
-            if (this.field.isField('swampfield')) {
-                return typeMod + this.dex.getEffectiveness('Water', type);
+			if (this.field.isTerrain('electricterrain')) {
+				move.additionalTypes.push('Electric');
+			}
+            else {
+                move.additionalTypes = [];
             }
-            // if (this.field.isTerrain('electricterrain')){
-            //     return typeMod + this.dex.getEffectiveness('Electric', type);
-            // }
-        },
+		},
+		onEffectiveness(typeMod, target, type, move) {
+			if (move.type !== 'Ground') return;
+			if (!target) return;
+
+			if (!target.runImmunity('Ground')) {
+				if (target.hasType('Flying')) typeMod = 0;
+			}
+
+			if (this.field.isField('swampfield')) {
+				typeMod += this.dex.getEffectiveness('Water', type);
+			}
+			if (this.field.isTerrain('electricterrain')) {
+				typeMod += this.dex.getEffectiveness('Electric', type);
+			}
+
+			return typeMod;
+		},
         onBasePower() {
             let modifier = 1;
             if (this.field.isField('swampfield')) {

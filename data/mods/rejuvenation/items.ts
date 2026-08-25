@@ -8,6 +8,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	adamantorb: {
 		inherit: true,
 	},
+	aloraichiumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	berry: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
@@ -32,6 +36,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		isNonstandard: "Unobtainable",
 	},
 	buggem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	buginiumz: {
 		inherit: true,
 		isNonstandard: null,
 	},
@@ -68,6 +76,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	darkiniumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	decidiumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	darkmemory: {
 		inherit: true,
 		isNonstandard: null,
@@ -76,7 +92,15 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	dragoniumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	dragonmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	eeviumz: {
 		inherit: true,
 		isNonstandard: null,
 	},
@@ -91,6 +115,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	electricseed: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
+	},
+	electriumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	fairiumz: {
+		inherit: true,
+		isNonstandard: null,
 	},
 	fairygem: {
 		inherit: true,
@@ -108,11 +140,19 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	fightiniumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	firegem: {
 		inherit: true,
 		isNonstandard: null,
 	},
 	firememory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	firiumz: {
 		inherit: true,
 		isNonstandard: null,
 	},
@@ -128,7 +168,15 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	flyiniumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	ghostgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	ghostiumz: {
 		inherit: true,
 		isNonstandard: null,
 	},
@@ -140,11 +188,19 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	grassiumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	grassmemory: {
 		inherit: true,
 		isNonstandard: null,
 	},
 	groundgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	groundiumz: {
 		inherit: true,
 		isNonstandard: null,
 	},
@@ -176,6 +232,18 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	iciumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	inciniumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	kommoniumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	loveberry: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
@@ -184,9 +252,29 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	lunaliumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	lycaniumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	mail: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
+	},
+	marshadiumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	mewniumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	mimikiumz: {
+		inherit: true,
+		isNonstandard: null,
 	},
 	mintberry: {
 		inherit: true,
@@ -208,9 +296,17 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	normaliumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	parkball: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
+	},
+	pikaniumz: {
+		inherit: true,
+		isNonstandard: null,
 	},
 	pikashuniumz: {
 		inherit: true,
@@ -224,6 +320,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	poisoniumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	poisonmemory: {
 		inherit: true,
 		isNonstandard: null,
@@ -231,6 +331,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	polkadotbow: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
+	},
+	primariumz: {
+		inherit: true,
+		isNonstandard: null,
 	},
 	przcureberry: {
 		inherit: true,
@@ -252,6 +356,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	psychiumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	ribbonsweet: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
@@ -260,13 +368,33 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: null,
 	},
+	rockiumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	rockmemory: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	snorliumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	solganiumz: {
 		inherit: true,
 		isNonstandard: null,
 	},
 	starsweet: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
+	},
+	steelgem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	steeliumz: {
+		inherit: true,
+		isNonstandard: null,
 	},
 	steelmemory: {
 		inherit: true,
@@ -283,6 +411,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	terrainextender: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
+	},
+	tapuniumz: {
+		inherit: true,
+		isNonstandard: null,
 	},
 	tr00: {
 		inherit: true,
@@ -684,6 +816,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		inherit: true,
 		isNonstandard: "Unobtainable",
 	},
+	ultranecroziumz: {
+		inherit: true,
+		isNonstandard: null,
+	},
 	vilevial: {
 		inherit: true,
 		isNonstandard: "Unobtainable",
@@ -706,6 +842,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		isNonstandard: null,
 	},
 	watergem: {
+		inherit: true,
+		isNonstandard: null,
+	},
+	wateriumz: {
 		inherit: true,
 		isNonstandard: null,
 	},
