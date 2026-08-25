@@ -182,6 +182,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	lightningrod: {
 		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source  && (move.type === 'Electric' || move.additionalTypes?.includes('Electric'))) {
+				if (!this.boost({ spa: 1 })) {
+					this.add('-immune', target, '[from] ability: Lightning Rod');
+				}
+				return null;
+			}
+		},
 		onStart(pokemon) {
 			if (this.field.isUnlayeredTerrain('electricterrain')) {
 				this.boost({ spa: 1 }, pokemon);
@@ -248,6 +256,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	motordrive: {
 		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source  && (move.type === 'Electric' || move.additionalTypes?.includes('Electric'))) {
+				if (!this.boost({ spe: 1 })) {
+					this.add('-immune', target, '[from] ability: Motor Drive');
+				}
+				return null;
+			}
+		},
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
@@ -409,6 +425,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	voltabsorb: {
 		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source && (move.type === 'Electric' || move.additionalTypes?.includes('Electric'))) {
+				if (!this.heal(target.baseMaxhp / 4)) {
+					this.add('-immune', target, '[from] ability: Volt Absorb');
+				}
+				return null;
+			}
+		},
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {

@@ -1406,29 +1406,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		condition: {
 			inherit: true,
 			onSideStart(side, target) {
-				this.add('-message', `${target.name} was hurt by the electrified spikes!`);
+				this.add('-sidestart', side, 'Spikes');
 				this.effectState.layers = 1;
 			},
 			onSideRestart(side, target) {
 				if (this.effectState.layers >= 3) return false;
-				this.add('-message', `${target.name} was hurt by the electrified spikes!`);
+				this.add('-sidestart', side, 'Spikes');
 				this.effectState.layers++;
 			},
 			onSwitchIn(pokemon) {
-				if (pokemon.hasItem('heavydutyboots')) return;
-
+				if (!pokemon.isGrounded() || pokemon.hasItem('heavydutyboots')) return;
 				const damageAmounts = [0, 3, 4, 6];
-				if (this.field.isUnlayeredTerrain('electricterrain')) {
-					if (!pokemon.runImmunity('Electric')) return;
-
-					const typeMod = this.dex.getEffectiveness('Electric', pokemon);
-					const damage = damageAmounts[this.effectState.layers] * pokemon.maxhp / 24;
-					this.damage(damage * Math.pow(2, typeMod));
-					return;
+				if (this.field.isTerrain('electricterrain')) {
+					this.damage(damageAmounts[this.effectState.layers] * pokemon.maxhp / 24, pokemon, null, this.dex.conditions.get('electrifiedspikes'));
+				} else {
+					this.damage(damageAmounts[this.effectState.layers] * pokemon.maxhp / 24);
 				}
-
-				if (!pokemon.isGrounded()) return;
-				this.damage(damageAmounts[this.effectState.layers] * pokemon.maxhp / 24);
 			},
 		},
 	},

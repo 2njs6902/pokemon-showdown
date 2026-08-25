@@ -2142,6 +2142,13 @@ export class Battle {
 			case 'confused':
 				this.add('-damage', target, target.getHealth, '[from] confusion');
 				break;
+			case 'spikes':
+				if (this.field.isTerrain('electricterrain')) {
+					this.add('-damage', target, target.getHealth, '[from] Electrified Spikes');
+				} else {
+					this.add('-damage', target, target.getHealth, '[from] Spikes');
+				}
+				break;
 			default:
 				if (effect.effectType === 'Move' || !name) {
 					this.add('-damage', target, target.getHealth);

@@ -1823,6 +1823,10 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 			desc: "For 5 turns, the terrain becomes Electric Terrain. During the effect, the power of Electric-type attacks made by grounded Pokemon is multiplied by 1.5 and grounded Pokemon cannot fall asleep; Pokemon already asleep do not wake up. Grounded Pokemon cannot become affected by Yawn or fall asleep from its effect. Camouflage transforms the user into an Electric type, Nature Power becomes Thunderbolt, and Secret Power has a 30% chance to cause paralysis. Fails if the current terrain is Electric Terrain.",
 		},
 	},
+	electrifiedspikes: {
+		name: "Electrified Spikes",
+		damage: "  [POKEMON] was hurt by the electrified spikes!",
+	},
 	electrify: {
 		name: "Electrify",
 		desc: "Causes the target's move to become Electric type this turn. Among effects that can change a move's type, this effect happens last. Fails if the target already moved this turn.",
