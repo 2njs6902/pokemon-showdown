@@ -58,6 +58,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 		},
     },
+    aromatherapy: {
+        inherit: true,
+        isNonstandard: null,
+    },
     attackorder: {
         inherit: true,
         onBasePower() {
@@ -73,9 +77,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    autotomize: {
+        inherit: true,
+        isNonstandard: null,
+    },
     barbbarrage: {
         inherit: true,
         zMove: {basePower: 160},
+    },
+    barrier: {
+        inherit: true,
+        isNonstandard: null,
+    },
+    bestow: {
+        inherit: true,
+        isNonstandard: null,
     },
     branchpoke: {
         inherit: true,
@@ -153,6 +169,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             this.add('-start', target, 'typechange', newType);
         },
     },
+    captivate: {
+        inherit: true,
+        isNonstandard: null,
+    },
     charge: {
         inherit: true,
         onModifyMove(move) {
@@ -161,9 +181,30 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    chillyreception: {
+        inherit: true,
+		zMove: { effect: 'healreplacement' },
+    },
+    clangoroussoul: {
+        inherit: true,
+		zMove: { effect: 'clearnegativeboost' },
+    },
     coaching: {
         inherit: true,
 		zMove: { boost: { atk: 1 } },
+    },
+    corrosivegas: {
+        inherit: true,
+        isNonstandard: null,
+		zMove: { boost: { spd: 1 } },
+    },
+    courtchange: {
+        inherit: true,
+		zMove: { effect: 'clearnegativeboost' },
+    },
+    craftyshield: {
+        inherit: true,
+        isNonstandard: null,
     },
     cut: {
         inherit: true,
@@ -181,6 +222,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 
 	},
+    decorate: {
+        inherit: true,
+		zMove: { effect: 'heal' },
+    },
 	defendorder: {
         inherit: true,
         onModifyMove(move) {
@@ -214,9 +259,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             return null;
         },
     },
+    doodle: {
+        inherit: true,
+		zMove: { effect: 'clearnegativeboost' },
+    },
     doubleironbash: {
         inherit: true,
         zMove: {basePower: 190},
+    },
+    dragoncheer: {
+        inherit: true,
+        isNonstandard: null,
+		zMove: { boost: { accuracy: 1 } },
     },
     dragondarts: {
         inherit: true,
@@ -388,6 +442,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
 		},
 	},
+    filletaway: {
+        inherit: true,
+        zMove: {effect: 'heal'},
+    },
+    flash: {
+        inherit: true,
+        isNonstandard: null,
+    },
     flowershield: {
         inherit: true,
         isNonstandard: null,
@@ -404,6 +466,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return false;
             }
         },
+    },
+    foresight: {
+        inherit: true,
+        isNonstandard: null,
     },
     forestscurse: {
         inherit: true,
@@ -435,6 +501,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
+    geomancy: {
+        inherit: true,
+        isNonstandard: null,
+    },
 	grasspledge: {
 		inherit: true,
 		onAfterMoveSecondarySelf(source, target, move) {
@@ -457,6 +527,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			}
 		},
 	},
+    grasswhistle: {
+        inherit: true,
+        isNonstandard: null,
+    },
     gravapple: {
         inherit: true,
         onBasePower() {
@@ -614,6 +688,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
 			return pokemon.cureStatus() || success;
 		},
+		zMove: { effect: 'clearnegativeboost' },
+    },
+    kinesis: {
+        inherit: true,
+        isNonstandard: null,
+    },
+    kingsshield: {
+        inherit: true,
+        isNonstandard: null,
     },
     leechseed: {
         inherit: true,
@@ -640,6 +723,26 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 }
             },
         },
+    },
+    lifedew: {
+        inherit: true,
+        zMove: { effect: 'heal' },
+    },
+    lovelykiss: {
+        inherit: true,
+        isNonstandard: null,
+    },
+    luckychant: {
+        inherit: true,
+        isNonstandard: null,
+    },
+    lunarblessing: {
+        inherit: true,
+		zMove: { effect: 'heal' },
+    },
+    magiccoat: {
+        inherit: true,
+        isNonstandard: null,
     },
     magicpower: {
         inherit: true,
@@ -713,6 +816,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         },
     },
     matblock: {
+        inherit: true,
+        isNonstandard: null,
+    },
+    mefirst: {
         inherit: true,
         isNonstandard: null,
     },
@@ -850,6 +957,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             return this.clampIntRange(Math.floor(target.getUndynamaxedHP() / 2), 1);
 		},
     },
+    noretreat: {
+        inherit: true,
+		zMove: { effect: 'clearnegativeboost' },
+    },
+    obstruct: {
+        inherit: true,
+        isNonstandard: null,
+		zMove: { effect: 'clearnegativeboost' },
+    },
     octolock: {
         inherit: true,
         zMove: { boost: { atk: 2 } },
@@ -884,6 +1000,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         zMove: {basePower: 200},
     },
+    powder: {
+        inherit: true,
+        isNonstandard: null,
+    },
     powershift: {
         inherit: true,
         zMove: { boost: { atk: 1 } },
@@ -903,6 +1023,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         },
     },
     psycoshift: {
+        inherit: true,
+        isNonstandard: null,
+    },
+    purify: {
         inherit: true,
         isNonstandard: null,
     },
@@ -1000,9 +1124,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    refresh: {
+        inherit: true,
+        isNonstandard: null,
+    },
     return: {
         inherit: true,
         isNonstandard: null,
+    },
+    revivalblessing: {
+        inherit: true,
+		zMove: { effect: 'heal' },
     },
     roar: {
         inherit: true,
@@ -1107,6 +1239,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    shedtail: {
+        inherit: true,
+		zMove: { effect: 'heal' },
+    },
     shelter: {
         inherit: true,
         onHit(pokemon) {
@@ -1141,6 +1277,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 break;
             }
         },
+		zMove: { boost: { spd: 1 } },
     },
     silktrap: {
         inherit: true,
@@ -1227,12 +1364,20 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 this.add('-message', 'The murk strengthened the attack!');
                 modifier *= 1.5;
             }
-            if (this.field.isTerrain('electricterrain')){
+            if (this.field.isTerrain('electricterrain')) {
                 this.add('-message', 'The attack became hyper-charged!');
                 modifier *= 1.5;
             }
             return this.chainModify(modifier);
         },
+    },
+    snatch: {
+        inherit: true,
+        isNonstandard: null,
+    },
+    snowscape: {
+        inherit: true,
+        isNonstandard: null,
     },
     spicyextract: {
         inherit: true,
@@ -1336,6 +1481,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    stuffcheeks: {
+        inherit: true,
+		zMove: { boost: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
+    },
     stunspore: {
         inherit: true,
         onModifyMove(move) {
@@ -1376,6 +1525,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     tarshot: {
         inherit: true,
         zMove: { boost: { spa: 2 } },
+    },
+    teatime: {
+        inherit: true,
+		zMove: { boost: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },
     },
 	tectonicrage: {
 		inherit: true,
@@ -1488,6 +1641,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		volatileStatus: 'partiallytrapped',
 	},
+    trickortreat: {
+        inherit: true,
+        isNonstandard: null,
+    },
+    tidyup: {
+        inherit: true,
+		zMove: { effect: 'clearnegativeboost' },
+    },
     tripleaxel: {
         inherit: true,
         zMove: {basePower: 190},
@@ -1503,6 +1664,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     venomdrench: {
         inherit: true,
         isNonstandard: null,
+    },
+    victorydance: {
+        inherit: true,
+		zMove: { effect: 'clearnegativeboost' },
     },
 	waterpledge: {
 		inherit: true,
