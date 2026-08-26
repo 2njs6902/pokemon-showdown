@@ -547,11 +547,10 @@ export class Battle {
 					expectedStateLocation = handler.state.target.weatherState;
 				} else if (effect.effectType === 'Terrain') {
 					expectedStateLocation = handler.state.target.terrainState;
+				} else if (effect.effectType === 'Field') {
+					expectedStateLocation = handler.state.target.fieldState;
 				} else {
 					expectedStateLocation = handler.state.target.pseudoWeather[effect.id];
-				}
-				if (expectedStateLocation !== handler.state) {
-					continue;
 				}
 			}
 
