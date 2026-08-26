@@ -45,8 +45,9 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 			duration: 0,
 			onFieldStart(field, source, sourceEffect) {
 				this.field.fieldState.waterCounter = 0;
-				this.add('-fieldstart', 'forestfield');
-				this.add('-message', 'The field is abound with trees.');
+				const duration = this.field.fieldState.duration;
+				this.add('-fieldstart', 'Swamp Field', `[duration] ${duration}`);
+				this.add('-message', 'The field is swamped.');
 			},
 			onStart() {
 				// Remove every other custom field before starting Jungle Field.
