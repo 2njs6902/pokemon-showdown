@@ -206,25 +206,37 @@ export class Field {
 		return this.battle.dex.conditions.getByID(this.terrain);
 	}
 
-	setField(status: string | Effect, source: Pokemon | null = null, sourceEffect: Effect | null = null) {
+	setField(status: string | Condition, source: Pokemon | 'debug' | null = null, sourceEffect: Effect | null = null, duration?: number) {
 		status = this.battle.dex.conditions.get(status);
 		if (!sourceEffect && this.battle.effect) sourceEffect = this.battle.effect;
-		if (!source && this.battle.event?.target?.getSlot) source = this.battle.event.target as Pokemon;
-
+		if (!source && this.battle.event?.target) source = this.battle.event.target;
+		const pokemonSource: Pokemon | null = source === 'debug' ? null : source;
 		if (this.field === status.id) return false;
 		const prevField = this.field;
 		const prevFieldState = this.fieldState;
 		this.field = status.id;
 		this.fieldState = this.battle.initEffectState({
 			id: status.id,
-			source: source || undefined,
-			sourceSlot: source ? source.getSlot() : undefined,
-			duration: status.duration,
+			source: pokemonSource || undefined,
+			sourceSlot: pokemonSource ? pokemonSource.getSlot() : undefined,
+			duration: duration ?? status.duration,
 		});
-		if (status.durationCallback && source) {
-			this.fieldState.duration = status.durationCallback.call(this.battle, source, source, sourceEffect);
+		if (duration === undefined && status.durationCallback && pokemonSource) {
+			this.fieldState.duration = status.durationCallback.call(
+				this.battle,
+				pokemonSource,
+				pokemonSource,
+				sourceEffect
+			);
 		}
-		if (!this.battle.singleEvent('FieldStart', status, this.fieldState, this, source, sourceEffect)) {
+		if (!this.battle.singleEvent(
+			'FieldStart',
+			status,
+			this.fieldState,
+			this,
+			pokemonSource,
+			sourceEffect
+		)) {
 			this.field = prevField;
 			this.fieldState = prevFieldState;
 			return false;
@@ -238,13 +250,14 @@ export class Field {
 
 		if (this.field === status.id) {
 			this.fieldState.duration = duration;
+			this.battle.add('-fieldstart', status.name, `[duration] ${duration}`);
 			return false;
 		}
 
 		const previousField = this.field;
 		const previousFieldState = this.fieldState;
 
-		if (!this.setField(status, source, sourceEffect)) return false;
+		if (!this.setField(status, source, sourceEffect, duration)) return false;
 
 		if (previousField) {
 			this.previousField = {
@@ -253,7 +266,6 @@ export class Field {
 			};
 		}
 
-		this.fieldState.duration = duration;
 		return true;
 	}
 

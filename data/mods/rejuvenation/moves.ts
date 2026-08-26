@@ -565,8 +565,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				const duration = source.hasItem('amplifiedrock') ? 7 : 4;
 
 				if (this.field.isField('swampfield')) {
-					this.field.fieldState.duration = duration;
-					this.add('-message', `The pledges combined and reinforced the swamp!`);
+					this.field.setTemporaryField('swampfield', duration, source, move);
+					// this.add('-message', `The pledges combined and reinforced the swamp!`);
 				} else {
 					this.field.setTemporaryField('swampfield', duration, source, move);
 					this.add('-message', `The pledges combined and formed a swamp!`);
@@ -1742,8 +1742,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				const duration = source.hasItem('amplifiedrock') ? 7 : 4;
 
 				if (this.field.isField('swampfield')) {
-					this.field.fieldState.duration = duration;
-					this.add('-message', `The pledges combined and reinforced the swamp!`);
+					this.field.setTemporaryField('swampfield', duration, source, move);
+					// this.add('-message', `The pledges combined and reinforced the swamp!`);
 				} else {
 					this.field.setTemporaryField('swampfield', duration, source, move);
 					this.add('-message', `The pledges combined and formed a swamp!`);
