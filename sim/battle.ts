@@ -2050,6 +2050,9 @@ export class Battle {
 				case 'zpower':
 					this.add(msg, target, boostName, boostBy, '[zeffect]');
 					break;
+				case 'swampfieldspeed':
+					this.add(msg, target, boostName, boostBy, '[silent]');
+					break;
 				default:
 					if (!effect) break;
 					if (effect.effectType === 'Move') {

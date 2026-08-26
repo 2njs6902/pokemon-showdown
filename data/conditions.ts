@@ -1,4 +1,8 @@
 export const Conditions: import('../sim/dex-conditions').ConditionDataTable = {
+	swampfieldspeed: {
+		name: "Swamp Field Speed",
+		effectType: "Condition",
+	},
 	brn: {
 		name: 'brn',
 		effectType: 'Status',

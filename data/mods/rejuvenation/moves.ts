@@ -876,12 +876,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     mindblown: {
         inherit: true,
-        onTryMove() {
-            if (this.field.isField('swampfield')) {
-                this.add('-message', 'The dampness prevents the explosion!');
-                return false;
-            }
-        },
+		onTryMove(pokemon, target, move) {
+			if (this.field.isField('swampfield')) {
+				this.attrLastMove('[still]');
+				this.add('-message', 'The dampness prevents the explosion!');
+				return false;
+			}
+		},
     },
     miracleeye: {
         inherit: true,
@@ -937,25 +938,25 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             return this.chainModify(modifier);
         },
     }, 
-    mudshot: {
-        inherit: true,
-        onBasePower() {
-            if (this.field.isField('swampfield')) {
-                this.add('-message', 'The murk strengthened the attack!');
-                return this.chainModify(1.5);
-            }
-        },
-        onModifyMove(move) {
-            if (this.field.isField('swampfield')) {
-                move.secondary = {
-                    chance: 100,
-                    boosts: {
-                        spe: -2,
-                    },
-                };
-            }
-        },
-    },
+	mudshot: {
+		inherit: true,
+		onBasePower() {
+			if (this.field.isField('swampfield')) {
+				this.add('-message', 'The murk strengthened the attack!');
+				return this.chainModify(1.5);
+			}
+		},
+		onModifyMove(move) {
+			if (this.field.isField('swampfield')) {
+				move.secondaries = [{
+					chance: 100,
+					boosts: {
+						spe: -2,
+					},
+				}];
+			}
+		},
+	},
     mudslap: {
         inherit: true,
         onBasePower() {
@@ -1272,12 +1273,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     selfdestruct: {
         inherit: true,
-        onTryMove() {
-            if (this.field.isField('swampfield')) {
-                this.add('-message', 'The dampness prevents the explosion!');
-                return false;
-            }
-        },
+		onTryMove(pokemon, target, move) {
+			if (this.field.isField('swampfield')) {
+				this.attrLastMove('[still]');
+				this.add('-message', 'The dampness prevents the explosion!');
+				return false;
+			}
+		},
 		onModifyMove(move) {
 			move.additionalTypes ??= [];
 
@@ -1331,9 +1333,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         onModifyMove(move, pokemon) {
             switch (this.field.field) {
             case 'swampfield':
-                if (pokemon.hasType('Water')) {
-                    move.self = { boosts: { def: 3 } };
-                }
+                move.self = { boosts: { def: 3 } };
                 break;
             }
         },
@@ -1442,6 +1442,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             return this.chainModify(modifier);
         },
     },
+    snaptrap: {
+        inherit: true,
+        isNonstandard: null,
+    },
     snatch: {
         inherit: true,
         isNonstandard: null,
@@ -1532,19 +1536,19 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
-    strugglebug: {
-        inherit: true,
-        onModifyMove(move) {
-            if (this.field.isField('swampfield')) {
-                move.secondary = {
-                    chance: 100,
-                    boosts: {
-                        spa: -2,
-                    },
-                };
-            }
-        },
-    },
+	strugglebug: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isField('swampfield')) {
+				move.secondaries = [{
+					chance: 100,
+					boosts: {
+						spa: -2,
+					},
+				}];
+			}
+		},
+	},
     stuffcheeks: {
         inherit: true,
 		zMove: { boost: { atk: 1, def: 1, spa: 1, spd: 1, spe: 1 } },

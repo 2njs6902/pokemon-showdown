@@ -160,7 +160,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				])) return;
 
 				this.add('-message', `${pokemon.name}'s Speed sank...!`);
-				this.boost({ spe: trapped ? -2 : -1 }, pokemon);
+				this.boost({ spe: trapped ? -2 : -1 }, pokemon, null, this.dex.conditions.get('swampfieldspeed'));
 			},
 
 			onBasePower(basePower, attacker, defender, move) {
