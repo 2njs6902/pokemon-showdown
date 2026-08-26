@@ -20,6 +20,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	// },
     aircutter: {
         inherit: true,
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isField('forestfield')) {
+				move.additionalTypes.push('Grass');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onEffectiveness(typeMod, target, type) {
             if (this.field.isField('forestfield')){
                 return typeMod + this.dex.getEffectiveness('Grass', type);
@@ -34,6 +43,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     airslash: {
         inherit: true,
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isField('forestfield')) {
+				move.additionalTypes.push('Grass');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onEffectiveness(typeMod, target, type) {
             if (this.field.isField('forestfield')){
                 return typeMod + this.dex.getEffectiveness('Grass', type);
@@ -46,7 +64,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
-    aquaruing: {
+    aquaring: {
         inherit: true,
         condition: {
 			onStart(pokemon) {
@@ -54,7 +72,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onResidualOrder: 6,
 			onResidual(pokemon) {
-				this.heal(pokemon.baseMaxhp / (this.field.isField('forestfield') ? 8 : 16));
+				this.heal(pokemon.baseMaxhp / (this.field.isField('swampfield') ? 8 : 16));
 			},
 		},
     },
@@ -104,6 +122,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     breakingswipe: {
         inherit: true,
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isField('forestfield')) {
+				move.additionalTypes.push('Grass');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onEffectiveness(typeMod, target, type) {
             if (this.field.isField('forestfield')){
                 return typeMod + this.dex.getEffectiveness('Grass', type);
@@ -209,6 +236,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     cut: {
         inherit: true,
         isNonstandard: null,
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isField('forestfield')) {
+				move.additionalTypes.push('Grass');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onEffectiveness(typeMod, target, type) {
             if (this.field.isField('forestfield')){
                 return typeMod + this.dex.getEffectiveness('Grass', type);
@@ -414,13 +450,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         zMove: {basePower: 200},
     },
 	explosion: {
-        inherit: true,
-        onTryMove() {
-            if (this.field.isField('swampfield')) {
-                this.add('-message', 'The dampness prevents the explosion!');
-                return false;
-            }
-        },
+		inherit: true,
+		onTryMove(pokemon, target, move) {
+			if (this.field.isField('swampfield')) {
+				this.attrLastMove('[still]');
+				this.add('-message', 'The dampness prevents the explosion!');
+				return false;
+			}
+		},
 		onModifyMove(move) {
 			move.additionalTypes ??= [];
 
@@ -430,16 +467,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				move.additionalTypes = [];
 			}
 		},
-        onBasePower() {
-            if (this.field.isTerrain('electricterrain')){
-                this.add('-message', 'The explosion became hyper-charged!');
-                return this.chainModify(1.5);
-            }
-        },
-        onEffectiveness(typeMod, target, type) {
-            if (this.field.isTerrain('electricterrain')){
-                return typeMod + this.dex.getEffectiveness('Electric', type);
-            }
+		onBasePower() {
+			if (this.field.isTerrain('electricterrain')) {
+				this.add('-message', 'The explosion became hyper-charged!');
+				return this.chainModify(1.5);
+			}
+		},
+		onEffectiveness(typeMod, target, type) {
+			if (this.field.isTerrain('electricterrain')) {
+				return typeMod + this.dex.getEffectiveness('Electric', type);
+			}
 		},
 	},
     filletaway: {
@@ -490,6 +527,20 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     furycutter: {
         inherit: true,
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isField('forestfield')) {
+				move.additionalTypes.push('Grass');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
+        onEffectiveness(typeMod, target, type) {
+            if (this.field.isField('forestfield')){
+                return typeMod + this.dex.getEffectiveness('Grass', type);
+            }
+        },
         onBasePower() {
             if (this.field.isField('forestfield')) {
                 this.add('-message', 'A tree slammed down!');
@@ -1010,6 +1061,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     psychocut: {
         inherit: true,
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isField('forestfield')) {
+				move.additionalTypes.push('Grass');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onEffectiveness(typeMod, target, type) {
             if (this.field.isField('forestfield')){
                 return typeMod + this.dex.getEffectiveness('Grass', type);
@@ -1310,6 +1370,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     slash: {
         inherit: true,
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+
+			if (this.field.isField('forestfield')) {
+				move.additionalTypes.push('Grass');
+			} else {
+				move.additionalTypes = [];
+			}
+		},
         onEffectiveness(typeMod, target, type) {
             if (this.field.isField('forestfield')){
                 return typeMod + this.dex.getEffectiveness('Grass', type);
@@ -1352,7 +1421,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		onModifyMove(move) {
 			move.additionalTypes ??= [];
 
-			if (this.field.isTerrain('electricterrain')) {
+			if (this.field.isField('swampfield')) {
+				move.additionalTypes.push('Water');
+			} if (this.field.isTerrain('electricterrain')) {
 				move.additionalTypes.push('Electric');
 			} else {
 				move.additionalTypes = [];

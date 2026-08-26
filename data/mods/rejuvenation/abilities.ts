@@ -21,11 +21,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	dryskin: {
 		inherit: true,
-		onWeather(target, source, effect) {
+		onResidual(target) {
 			if (this.field.isField('swampfield')) {
 				this.add('-message', `${target.name}'s Dry Skin was healed by the murk!`);
-				this.heal(target.baseMaxhp / 16);
+				this.heal(target.baseMaxhp / 16, target);
 			}
+		},
+		onWeather(target, source, effect) {
 			if (target.hasItem('utilityumbrella')) return;
 			if (effect.id === 'raindance' || effect.id === 'primordialsea') {
 				this.heal(target.baseMaxhp / 8);
@@ -345,6 +347,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	sapsipper: {
 		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source && (move.type === 'Grass' || move.additionalTypes?.includes('Grass'))) {
+				if (!this.boost({ atk: 1 })) {
+					this.add('-immune', target, '[from] ability: Sap Sipper');
+				}
+				return null;
+			}
+		},
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {

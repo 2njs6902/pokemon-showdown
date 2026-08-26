@@ -92,7 +92,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				}
 			},
 
-			onEnd() {
+			onFieldEnd() {
 				this.add('-fieldend', 'Forest Field', '[message] The forest calms down.'
 				);
 			},
@@ -139,38 +139,38 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				this.boost(boost, target, pokemon);
 			},
 
-			onFieldResidualOrder: 27,
+			onFieldResidualOrder: 28,
 			onFieldResidual() {
-				if (!this.field.fieldState.duration) return;
+				for (const pokemon of this.getAllActive()) {
+					if (!pokemon || pokemon.fainted) continue;
 
+					const trapped = !!pokemon.volatiles['partiallytrapped'];
+
+					if (pokemon.status === 'slp' || pokemon.hasAbility('comatose')) {
+						this.add('-message', `${pokemon.name}'s strength is sapped by the swamp!`);
+						this.damage(pokemon.baseMaxhp / (trapped ? 8 : 16), pokemon);
+					}
+
+					if (!pokemon.isGrounded()) continue;
+					if (pokemon.hasItem(['heavydutyboots', 'clearamulet'])) continue;
+					if (pokemon.hasAbility([
+						'clearbody',
+						'propellertail',
+						'quickfeet',
+						'swiftswim',
+						'whitesmoke',
+					])) continue;
+
+					this.add('-message', `${pokemon.name}'s Speed sank...!`);
+					this.boost({ spe: trapped ? -2 : -1 }, pokemon);
+				}
+
+				if (!this.field.fieldState.duration) return;
 				this.field.fieldState.duration--;
 
 				if (this.field.fieldState.duration <= 0) {
 					this.field.clearField();
 				}
-			},
-
-			onResidualOrder: 28,
-			onResidual(pokemon) {
-				const trapped = !!pokemon.volatiles['partiallytrapped'];
-
-				if (pokemon.status === 'slp' || pokemon.hasAbility('comatose')) {
-					this.add('-message', `${pokemon.name}'s strength is sapped by the swamp!`);
-					this.damage(pokemon.baseMaxhp / (trapped ? 8 : 16), pokemon);
-				}
-
-				if (!pokemon.isGrounded()) return;
-				if (pokemon.hasItem(['heavydutyboots', 'clearamulet'])) return;
-				if (pokemon.hasAbility([
-					'clearbody',
-					'propellertail',
-					'quickfeet',
-					'swiftswim',
-					'whitesmoke',
-				])) return;
-
-				this.add('-message', `${pokemon.name}'s Speed sank...!`);
-				this.boost({ spe: trapped ? -2 : -1 }, pokemon);
 			},
 
 			onBasePower(basePower, attacker, defender, move) {
@@ -199,7 +199,7 @@ export const Moves: import('../sim/dex-moves').MoveDataTable = {
 				this.add('-message', 'The field is swamped.');
 			},
 
-			onEnd() {
+			onFieldEnd() {
 				this.add('-fieldend', 'Swamp Field', '[message] The swamp recedes.');
 			},
 		},
