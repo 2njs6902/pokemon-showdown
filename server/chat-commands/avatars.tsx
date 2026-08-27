@@ -34,6 +34,12 @@ function getLocalTrainers(): string[] {
 }
 const AVATARS_FILE = 'config/avatars.json';
 
+/**
+ * Avatar IDs should be in one of these formats:
+ * - 'cynthia' - official avatars in https://play.pokemonshowdown.com/sprites/trainers/
+ * - '#splxraiders' - hosted custom avatars in https://play.pokemonshowdown.com/sprites/trainers-custom/
+ * - 'example.png' - side server custom avatars in config/avatars/ in your server
+ */
 type AvatarID = string;
 const AVATAR_FORMATS_MESSAGE = Config.serverid === 'showdown' ?
 	"Custom avatars start with '#', like '#splxraiders'." :

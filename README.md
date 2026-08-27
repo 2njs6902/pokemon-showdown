@@ -1,6 +1,8 @@
 Pokémon Showdown
 ========================================================================
 
+PCR IS UP TO DATE WITH MAIN AS OF AUGUST 26TH
+
 Navigation: [Website][1] | **Server repository** | [Client repository][2] | [Dex repository][3]
 
   [1]: http://pokemonshowdown.com/

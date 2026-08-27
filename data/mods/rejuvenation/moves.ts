@@ -1221,7 +1221,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         onModifyMove(move) {
             if (!this.field.field && this.field.isTerrain('')) return;
 
-            move.secondary = null;
             move.secondaries = [];
 
             switch (this.field.field) {
@@ -1345,10 +1344,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             inherit: true,
             onTryHitPriority: 3,
             onTryHit(target, source, move) {
-                if (!move.flags['protect'] || (move.category === 'Status' && !this.field.isField('forestfield'))) {
-                    if (move.isZ || move.isMax) target.getMoveHitData(move).zBrokeProtect = true;
-                    return;
-                }
+				if (this.checkMoveBypassesProtect(move, source, target, false)) return;
                 if (move.smartTarget) {
                     move.smartTarget = false;
                 } else {

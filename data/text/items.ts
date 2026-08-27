@@ -11,11 +11,11 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	},
 	absolite: {
 		name: "Absolite",
-		shortDesc: "If held by an Absol, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by an Absol, this item allows it to Mega Evolve into Mega Absol in battle.",
 	},
 	absolitez: {
 		name: "Absolite Z",
-		shortDesc: "If held by an Absol, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by an Absol, this item allows it to Mega Evolve into Mega Absol Z in battle.",
 	},
 	absorbbulb: {
 		name: "Absorb Bulb",
@@ -248,15 +248,15 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	},
 	charizarditeg: {
 		name: "Charizardite G",
-		shortDesc: "If held by a Charizard, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Charizard, this item allows it to Mega Evolve in battle Giga Charizard.",
 	},
 	charizarditex: {
 		name: "Charizardite X",
-		shortDesc: "If held by a Charizard, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Charizard, this item allows it to Mega Evolve into Mega Charizard X.",
 	},
 	charizarditey: {
 		name: "Charizardite Y",
-		shortDesc: "If held by a Charizard, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Charizard, this item allows it to Mega Evolve into Mega Charizard Y.",
 	},
 	chartiberry: {
 		name: "Charti Berry",
@@ -763,11 +763,11 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	},
 	garchompite: {
 		name: "Garchompite",
-		shortDesc: "If held by a Garchomp, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Garchomp, this item allows it to Mega Evolve into Mega Garchomp.",
 	},
 	garchompitez: {
 		name: "Garchompite Z",
-		shortDesc: "If held by a Garchomp, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Garchomp, this item allows it to Mega Evolve into Mega Garchomp Z.",
 	},
 	gardevoirite: {
 		name: "Gardevoirite",
@@ -1025,7 +1025,7 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	},
 	kinglerite: {
 		name: "Kinglerite",
-		shortDesc: "If held by a Kingler, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Kingler, this item allows it to Mega Evolve in battle Giga Kingler.",
 	},
 	kingsrock: {
 		name: "King's Rock",
@@ -1133,11 +1133,11 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	},
 	lucarionite: {
 		name: "Lucarionite",
-		shortDesc: "If held by a Lucario, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Lucario, this item allows it to Mega Evolve into Mega Lucario in battle.",
 	},
 	lucarionitez: {
 		name: "Lucarionite Z",
-		shortDesc: "If held by a Lucario, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Lucario, this item allows it to Mega Evolve into Mega Lucario Z in battle.",
 	},
 	luckypunch: {
 		name: "Lucky Punch",
@@ -1307,11 +1307,11 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	},
 	mewtwonitex: {
 		name: "Mewtwonite X",
-		shortDesc: "If held by a Mewtwo, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Mewtwo, this item allows it to Mega Evolve into Mega Mewtwo X in battle.",
 	},
 	mewtwonitey: {
 		name: "Mewtwonite Y",
-		shortDesc: "If held by a Mewtwo, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Mewtwo, this item allows it to Mega Evolve into Mega Mewtwo Y in battle.",
 	},
 	micleberry: {
 		name: "Micle Berry",
@@ -1612,11 +1612,11 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	},
 	raichunitex: {
 		name: "Raichunite X",
-		shortDesc: "If held by a Raichu, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Raichu, this item allows it to Mega Evolve into Mega Raichu X in battle.",
 	},
 	raichunitey: {
 		name: "Raichunite Y",
-		shortDesc: "If held by a Raichu, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Raichu, this item allows it to Mega Evolve into Mega Raichu Y in battle.",
 	},
 	rarebone: {
 		name: "Rare Bone",
@@ -1664,7 +1664,7 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	},
 	rillaboomite: {
 		name: "Rillaboomite",
-		shortDesc: "If held by a Rillaboom, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Rillaboom, this item allows it to Mega Evolve in battle Giga Rillaboom.",
 	},
 	rindoberry: {
 		name: "Rindo Berry",
@@ -1774,7 +1774,7 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 		shortDesc: "Holder's critical hit ratio is raised by 1 stage.",
 	},
 	scovillainite: {
-		name: "Scovilainite",
+		name: "Scovillainite",
 		shortDesc: "If held by a Scovillain, this item allows it to Mega Evolve in battle.",
 	},
 	scraftinite: {
@@ -1858,6 +1858,9 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	slowbronite: {
 		name: "Slowbronite",
 		shortDesc: "If held by a Slowbro, this item allows it to Mega Evolve in battle.",
+		champions: {
+			shortDesc: "If held by a Slowbro (not Galarian Slowbro), this item allows it to Mega Evolve.",
+		},
 	},
 	smoothrock: {
 		name: "Smooth Rock",
@@ -2487,7 +2490,7 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 	},
 	venusauriteg: {
 		name: "Venusaurite G",
-		shortDesc: "If held by a Venusaur, this item allows it to Mega Evolve in battle.",
+		shortDesc: "If held by a Venusaur, this item allows it to Mega Evolve in battle Giga Venusaur.",
 	},
 	victreebelite: {
 		name: "Victreebelite",
@@ -2573,13 +2576,13 @@ export const ItemsText: { [id: IDEntry]: ItemText } = {
 		name: "Zap Plate",
 		shortDesc: "Holder's Electric-type attacks have 1.2x power. Judgment is Electric type.",
 	},
-	zoomlens: {
-		name: "Zoom Lens",
-		shortDesc: "The accuracy of attacks by the holder is 1.2x if it moves after its target.",
-	},
 	zeraorite: {
 		name: "Zeraorite",
 		shortDesc: "If held by a Zeraora, this item allows it to Mega Evolve in battle.",
+	},
+	zoomlens: {
+		name: "Zoom Lens",
+		shortDesc: "The accuracy of attacks by the holder is 1.2x if it moves after its target.",
 	},
 	zygardite: {
 		name: "Zygardite",
