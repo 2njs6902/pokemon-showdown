@@ -208,12 +208,17 @@ export class Field {
 
 	setField(status: string | Condition, source: Pokemon | 'debug' | null = null, sourceEffect: Effect | null = null, duration?: number) {
 		status = this.battle.dex.conditions.get(status);
+		if (!status.exists) return false;
 		if (!sourceEffect && this.battle.effect) sourceEffect = this.battle.effect;
 		if (!source && this.battle.event?.target) source = this.battle.event.target;
 		const pokemonSource: Pokemon | null = source === 'debug' ? null : source;
 		if (this.field === status.id) return false;
 		const prevField = this.field;
 		const prevFieldState = this.fieldState;
+		const prevFieldEffect = this.getField();
+		if (prevField) {
+			this.battle.singleEvent('FieldEnd', prevFieldEffect, prevFieldState, this);
+		}
 		this.field = status.id;
 		this.fieldState = this.battle.initEffectState({
 			id: status.id,
@@ -239,6 +244,9 @@ export class Field {
 		)) {
 			this.field = prevField;
 			this.fieldState = prevFieldState;
+			if (prevField) {
+				this.battle.singleEvent('FieldStart', prevFieldEffect, prevFieldState, this);
+			}
 			return false;
 		}
 		this.battle.eachEvent('FieldChange', sourceEffect);
@@ -278,6 +286,12 @@ export class Field {
 			this.field = this.previousField.id;
 			this.fieldState = this.previousField.state;
 			this.previousField = null;
+			const restoredField = this.getField();
+			const restoredSource = this.fieldState.source || null;
+			this.battle.singleEvent(
+				'FieldStart', restoredField, this.fieldState, this,
+				restoredSource, this.fieldState.sourceEffect || null
+			);
 			this.battle.eachEvent('FieldChange');
 			return true;
 		}

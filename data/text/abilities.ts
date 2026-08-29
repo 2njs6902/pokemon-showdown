@@ -539,11 +539,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		desc: "This Pokemon receives 1/2 damage from contact moves, but double damage from Fire moves.",
 		shortDesc: "This Pokemon takes 1/2 damage from contact moves, 2x damage from Fire moves.",
 	},
-	foamspray: {
-		name: "Foam Spray",
-		desc: "Lowers Defence of adjacent Pokemon when hit.",
-		shortDesc: "Lowers Defence of adjacent Pokemon when hit.",
-	},
 	forecast: {
 		name: "Forecast",
 		desc: "If this Pokemon is a Castform, its type changes to the current weather condition's type, except Sandstorm. This effect is prevented if this Pokemon is holding a Utility Umbrella and the weather is Rain Dance or Sunny Day.",
@@ -831,11 +826,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 			shortDesc: "On switch-in, this Pokemon's Attack is raised by 1 stage.",
 		},
 	},
-	invigorate: {
-		name: "Invigorate",
-		desc: "Amplifies the healing effects of allies by 20%.",
-		shortDesc: "Amplifies the healing effects of allies by 20%.",
-	},
 	ironbarbs: {
 		name: "Iron Barbs",
 		desc: "Pokemon making contact with this Pokemon lose 1/8 of their maximum HP, rounded down.",
@@ -847,11 +837,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "Iron Fist",
 		desc: "This Pokemon's punch-based attacks have their power multiplied by 1.2.",
 		shortDesc: "This Pokemon's punch-based attacks have 1.2x power. Sucker Punch is not boosted.",
-	},
-	junglebeat: {
-		name: "Jungle Beat",
-		desc: "Sound-based moves deal 1.3x more damage and deal 0.5x less damage to this Pokemon. Grass-Type moves count as Sound-based.",
-		shortDesc: "Sound-based moves deal 1.3x damage and deal 0.5x damage to this Pokemon, Grass-type moves count as Sound-based.",
 	},
 	justified: {
 		name: "Justified",
@@ -1026,11 +1011,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	megasol: {
 		name: "Mega Sol",
 		shortDesc: "This Pokemon's moves are used as if the effects of Sunny Day were active.",
-	},
-	memoryleak: {
-		name: "Memory Leak",
-		desc: "This Pokemon passes stat boosts to its partner Pokemon.",
-		shortDesc: "This Pokemon passes stat boosts to its partner Pokemon.",
 	},
 	merciless: {
 		name: "Merciless",
@@ -1342,11 +1322,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "Poison Touch",
 		desc: "This Pokemon's contact moves have a 30% chance of poisoning. This effect comes after a move's inherent secondary effect chance.",
 		shortDesc: "This Pokemon's contact moves have a 30% chance of poisoning.",
-	},
-	pollenflight: {
-		name: "Pollenflight",
-		desc: "Pollen dealing 1/16th HP damage to all non-seeded, non-Grass Type Pokémon is released into the air at the end of the turn. User heals for the damage dealt.",
-		shortDesc: "Deals 1/16th HP damage to all non-seeded, non-Grass Type Pokémon the end of the turn. User heals for the damage dealt."
 	},
 	powerconstruct: {
 		name: "Power Construct",
@@ -1989,13 +1964,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 
 		start: "  [POKEMON]'s Sword of Ruin weakened the Defense of all surrounding Pokémon!",
 	},
-	swornduty: {
-		name: "Sworn Duty",
-		desc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
-		shortDesc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
-
-		heal: "  [Source] shared its mead with [Pokemon]!",
-	},
 	symbiosis: {
 		name: "Symbiosis",
 		desc: "If an ally uses its item, this Pokemon gives its item to that ally immediately. Does not activate if the ally's item was stolen or knocked off, or if the ally used an Eject Button or Eject Pack.",
@@ -2294,11 +2262,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "White Smoke",
 		shortDesc: "Prevents other Pokemon from lowering this Pokemon's stat stages.",
 	},
-	wildfire: {
-		name: "Wildfire",
-		desc: "A wildfire is unleashed dealing 1/16th HP damage to non-Fire types. Damage is doubled against burned opponents.",
-		shortDesc: "Deals 1/16th HP damage to non-Fire types; doubled if burned.",
-	},
 	wimpout: {
 		name: "Wimp Out",
 		desc: "When this Pokemon has more than 1/2 its maximum HP and takes damage bringing it to 1/2 or less of its maximum HP, it immediately switches out to a chosen ally. This effect applies after all hits from a multi-hit move. This effect is prevented if the move had a secondary effect removed by the Sheer Force Ability. This effect applies to both direct and indirect damage, except Curse and Substitute on use, Belly Drum, Pain Split, and confusion damage.",
@@ -2370,5 +2333,44 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		shortDesc: "When used, Gravity/Heal Block/Safeguard/Tailwind/Room effects last 2 more turns.",
 
 		activate: "  [POKEMON] extends [MOVE] by 2 turns!",
+	},
+
+	//Rejuvenation
+	foamspray: {
+		name: "Foam Spray",
+		desc: "Lowers Defence of adjacent Pokemon when hit.",
+		shortDesc: "Lowers Defence of adjacent Pokemon when hit.",
+	},
+	invigorate: {
+		name: "Invigorate",
+		desc: "Amplifies the healing effects of allies by 20%.",
+		shortDesc: "Amplifies the healing effects of allies by 20%.",
+	},
+	junglebeat: {
+		name: "Jungle Beat",
+		desc: "Sound-based moves deal 1.3x more damage and deal 0.5x less damage to this Pokemon. Grass-Type moves count as Sound-based.",
+		shortDesc: "Sound-based moves deal 1.3x damage and deal 0.5x damage to this Pokemon, Grass-type moves count as Sound-based.",
+	},
+	memoryleak: {
+		name: "Memory Leak",
+		desc: "This Pokemon passes stat boosts to its partner Pokemon.",
+		shortDesc: "This Pokemon passes stat boosts to its partner Pokemon.",
+	},
+	pollenflight: {
+		name: "Pollenflight",
+		desc: "Pollen dealing 1/16th HP damage to all non-seeded, non-Grass Type Pokémon is released into the air at the end of the turn. User heals for the damage dealt.",
+		shortDesc: "Deals 1/16th HP damage to all non-seeded, non-Grass Type Pokémon the end of the turn. User heals for the damage dealt."
+	},
+	swornduty: {
+		name: "Sworn Duty",
+		desc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
+		shortDesc: "On switch-in, this Pokemon restores 1/4 of its ally's maximum HP, rounded down.",
+
+		heal: "  [Source] shared its mead with [Pokemon]!",
+	},
+	wildfire: {
+		name: "Wildfire",
+		desc: "A wildfire is unleashed dealing 1/16th HP damage to non-Fire types. Damage is doubled against burned opponents.",
+		shortDesc: "Deals 1/16th HP damage to non-Fire types; doubled if burned.",
 	},
 };

@@ -1,23 +1,463 @@
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     // ================ Info ===================
     // Up to date as of V14.0.20
+    // ================ New Fields ===================
 
 
-    // chloroblast: {
-    //     inherit: true,
-	// 	num: 835,
-	// 	accuracy: 95,
-	// 	basePower: 150,
-	// 	category: "Special",
-	// 	name: "Chloroblast",
+    // ================ Rejuvenation Moves ===================
+	irritation: {
+		num: 6902,
+		accuracy: 100,
+		basePower: 60,
+		basePowerCallback(pokemon, target, move) {
+			if (target.status || target.hasAbility('comatose')) {
+				this.debug('BP doubled from status condition');
+				return move.basePower * 2;
+			}
+			return move.basePower;
+		},
+		category: "Special",
+		name: "Irritation",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		target: "normal",
+		type: "Bug",
+		zMove: { basePower: 160 },
+		contestType: "Clever",
+	},	
+	slashandburn: {
+		num: 6903,
+		accuracy: 90,
+		basePower: 90,
+		category: "Physical",
+		name: "Slash and Burn",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		secondary: {
+			chance: 10,
+			status: 'brn',
+		},
+		target: "normal",
+		type: "Grass",
+		contestType: "Cute",
+	},
+	wakeupshock: {
+		num: 6904,
+		accuracy: 100,
+		basePower: 80,
+		basePowerCallback(pokemon, target, move) {
+		if (target.status === 'slp' || target.hasAbility('comatose')) {
+			this.debug('BP doubled on sleeping target');
+			return move.basePower * 2;
+		}
+		return move.basePower;
+		},
+		category: "Physical",
+		name: "Wake-Up Shock",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		onHit(target) {
+			if (target.status === 'slp') target.cureStatus();
+		},
+		target: "normal",
+		type: "Electric",
+		contestType: "Tough",
+
+	},
+	vileassault: {
+		num: 6905,
+		accuracy: 100,
+		basePower: 90,
+		basePowerCallback(pokemon, target, move) {
+			// You can't get here unless the pursuit succeeds
+			if (target.beingCalledBack || target.switchFlag) {
+				this.debug('Pursuit damage boost');
+				return move.basePower * 2;
+			}
+			return move.basePower;
+		},
+		category: "Physical",
+		name: "Vile Assault",
+		pp: 15,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		beforeTurnCallback(pokemon) {
+			for (const target of pokemon.foes()) {
+				target.addVolatile('pursuit');
+				const data = target.volatiles['pursuit'];
+				if (!data.sources) {
+					data.sources = [];
+				}
+				data.sources.push(pokemon);
+			}
+		},
+		onModifyMove(move, source, target) {
+			if (target?.beingCalledBack || target?.switchFlag) move.accuracy = true;
+		},
+		condition: {
+			duration: 1,
+			onBeforeSwitchOut(pokemon) {
+				this.debug('Pursuit start');
+				let alreadyAdded = false;
+				pokemon.removeVolatile('destinybond');
+				for (const source of this.effectState.sources) {
+					if (!source.isAdjacent(pokemon) || !this.queue.cancelMove(source) || !source.hp) continue;
+					if (!alreadyAdded) {
+						this.add('-activate', pokemon, 'move: Pursuit');
+						alreadyAdded = true;
+					}
+					// Run through each action in queue to check if the Pursuit user is supposed to Mega Evolve this turn.
+					// If it is, then Mega Evolve before moving.
+					if (source.canMegaEvo || source.canUltraBurst || source.canTerastallize) {
+						for (const [actionIndex, action] of this.queue.entries()) {
+							if (action.pokemon === source) {
+								if (action.choice === 'megaEvo') {
+									this.actions.runMegaEvo(source);
+								} else if (action.choice === 'terastallize') {
+									// Also a "forme" change that happens before moves, though only possible in NatDex
+									this.actions.terastallize(source);
+								} else {
+									continue;
+								}
+								this.queue.list.splice(actionIndex, 1);
+								break;
+							}
+						}
+					}
+					this.actions.runMove('pursuit', source, source.getLocOf(pokemon));
+				}
+			},
+		},
+		target: "normal",
+		type: "Poison",
+		contestType: "Clever",
+
+	},
+	stackingshot: {
+		num: 6906,
+		accuracy: 100,
+		basePower: 40,
+		basePowerCallback(pokemon, target, move) {
+			pokemon.addVolatile('furycutter');
+			const bp = this.clampIntRange(move.basePower * pokemon.volatiles['furycutter'].multiplier, 1, 160);
+			this.debug(`BP: ${bp}`);
+			return bp;
+		},
+		category: "Physical",
+		name: "Stacking Shot",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		target: "normal",
+		type: "Fighting",
+		contestType: "Cool",
+	},
+	etherealtempest: {
+		num: 6907,
+		accuracy: 100,
+		basePower: 90,
+		category: "Special",
+		name: "Ethereal Tempest",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		secondary: {
+			chance: 20,
+			status: 'par',
+		},
+		target: "normal",
+		type: "Flying",
+		contestType: "Tough",
+	},
+	deluge: {
+		num: 6908,
+		accuracy: 100,
+		basePower: 60,
+		basePowerCallback(pokemon, target, move) {
+			const damagedByTarget = pokemon.attackedBy.some(
+				p => p.source === target && p.damage > 0 && p.thisTurn
+			);
+			if (damagedByTarget) {
+				this.debug(`BP doubled for getting hit by ${target}`);
+				return move.basePower * 2;
+			}
+			return move.basePower;
+		},
+		category: "Physical",
+		name: "Deluge",
+		pp: 10,
+		priority: -4,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		target: "normal",
+		type: "Water",
+		contestType: "Tough",
+	},
+	arenitewall: {
+		num: 6909,
+		accuracy: true,
+		basePower: 0,
+		category: "Status",
+		name: "Arenite Wall",
+		pp: 20,
+		priority: 0,
+		flags: { snatch: 1, metronome: 1 },
+		sideCondition: 'arenitewall',
+		onTry() {
+			return this.field.isWeather(['sandstorm']);
+		},
+		condition: {
+			duration: 5,
+			durationCallback(target, source, effect) {
+				if (source?.hasItem('lightclay')) {
+					return 8;
+				}
+				return 5;
+			},
+			onAnyModifyDamage(damage, source, target, move) {
+				if (target !== source && this.effectState.target.hasAlly(target)) {
+					if (target.getMoveHitData(move).typeMod > 0) {
+						this.debug('Arenite Wall weaken');
+						if (this.activePerHalf > 1) return this.chainModify([2732, 4096]);
+						return this.chainModify(0.5);
+					}
+				}
+			},
+			onSideStart(side) {
+				this.add('-sidestart', side, 'move: Arenite Wall');
+			},
+			onSideResidualOrder: 26,
+			onSideResidualSubOrder: 11,
+			onSideEnd(side) {
+				this.add('-sideend', side, 'move: Arenite Wall');
+			},
+		},
+		target: "allySide",
+		type: "Ground",
+		zMove: { boost: { def: 1 } },
+		contestType: "Beautiful",
+	},
+    // Not Available in Rejuvenation (Yet?)
+
+	// quicksilverspear: {
+	// 	num: 6910,
+	// 	accuracy: 75,
+	// 	basePower: 80,
+	// 	category: "Physical",
+	// 	name: "Quicksilver Spear",
 	// 	pp: 5,
 	// 	priority: 0,
 	// 	flags: { protect: 1, mirror: 1, metronome: 1 },
-	// 	// Recoil implemented in battle-actions.ts
-	// 	secondary: null,
+	// 	onHit(target, source, move) {
+	// 		return target.addVolatile('trapped', source, move, 'trapper');
+	// 	},
+	// 	secondary: {
+	// 		chance: 100,
+	// 		boosts: {
+	// 			spe: -1,
+	// 		},
+	// 	},
 	// 	target: "normal",
-	// 	type: "Grass",
+	// 	type: "Steel",
+	// 	contestType: "Beautiful",
 	// },
+	poisonsweep: {
+		num: 6911,
+		accuracy: 100,
+		basePower: 50,
+		category: "Physical",
+		name: "Poison Sweep",
+		pp: 10,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
+		secondary: {
+			chance: 30,
+			boosts: {
+				spe: -1,
+			},
+		},
+		target: "normal",
+		type: "Poison",
+		contestType: "Clever",
+	},
+	mudbarrage: {
+		num: 6912,
+		accuracy: 95,
+		basePower: 25,
+		category: "Special",
+		name: "Mud Barrage",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1},
+        onBasePower() {
+            if (this.field.isField('swampfield')) {
+                this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+		multihit: [2, 5],
+		target: "normal",
+		type: "Ground",
+		zMove: { basePower: 140 },
+		contestType: "Tough",
+	},
+	mirrorbeam: {
+		num: 6913,
+		accuracy: 100,
+		basePower: 90,
+		category: "Special",
+		name: "Mirror Beam",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		onModifyType(move, pokemon) {
+			const types = pokemon.getTypes();
+			let type = types[1];
+			if (type === 'Bird') type = '???';
+			if (type === '???' && types[0]) type = types[0];
+			move.type = type;
+		},
+		target: "normal",
+		type: "Steel",
+		contestType: "Beautiful",
+	},
+	magmadrift: {
+		num: 6914,
+		accuracy: 100,
+		basePower: 90,
+		category: "Special",
+		name: "Magma Drift",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, nonsky: 1, metronome: 1 },
+		target: "allAdjacent",
+		type: "Fire",
+		contestType: "Beautiful",
+	},
+	hexingslash: {
+		num: 6915,
+		accuracy: 100,
+		basePower: 90,
+		category: "Physical",
+		name: "Hexing Slash",
+		pp: 15,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, heal: 1, metronome: 1, slicing: 1 },
+		drain: [1, 2],
+		secondary: {
+			chance: 30,
+			status: 'psn',
+		},
+		target: "normal",
+		type: "Ghost",
+	},
+	hoarfrostmoon: {
+		num: 6916,
+		accuracy: 90,
+		basePower: 90,
+		category: "Special",
+		name: "Hoarfrost Moon",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		secondary: {
+			chance: 50,
+			self: {
+				boosts: {
+					spa: 1,
+				},
+			},
+		},
+		target: "normal",
+		type: "Ice",
+		contestType: "Beautiful",
+	},
+	solarflare: {
+		num: 6917,
+		accuracy: 100,
+		basePower: 95,
+		category: "Physical",
+		name: "Solar Flare",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, metronome: 1 },
+		secondary: {
+			chance: 50,
+			self: {
+				boosts: {
+					atk: 1,
+				},
+			},
+		},
+		target: "normal",
+		type: "Fire",
+		contestType: "Beautiful",
+	},
+	injection: {
+		num: 6918,
+		accuracy: 100,
+		basePower: 75,
+		category: "Special",
+		name: "Injection",
+		pp: 10,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, heal: 1, metronome: 1 },
+		drain: [1, 2],
+		target: "normal",
+		type: "Steel",
+		contestType: "Clever",
+	},
+	cauterize: {
+		num: 6919,
+		accuracy: 100,
+		basePower: 90,
+		category: "Special",
+		name: "Cauterize",
+		pp: 15,
+		priority: 0,
+		flags: { protect: 1, mirror: 1, allyanim: 1, metronome: 1, bullet: 1 },
+		onTryHit(target, source, move) {
+			if (source.isAlly(target)) {
+				move.basePower = 0;
+				move.infiltrates = true;
+			}
+		},
+		onTryMove(source, target, move) {
+			if (source.isAlly(target) && source.volatiles['healblock']) {
+				this.attrLastMove('[still]');
+				this.add('cant', source, 'move: Heal Block', move);
+				return false;
+			}
+		},
+		onHit(target, source, move) {
+			if (source.isAlly(target)) {
+				if (!this.heal(Math.floor(target.baseMaxhp * 0.5))) {
+					return this.NOT_FAIL;
+				}
+			}
+		},
+		target: "normal",
+		type: "Fire",
+		contestType: "Cute",
+	},
+	radiantclaw: {
+		num: 6920,
+		accuracy: 100,
+		basePower: 120,
+		category: "Physical",
+		name: "Radiant Claw",
+		pp: 15,
+		priority: 0,
+		flags: { contact: 1, protect: 1, mirror: 1, distance: 1, metronome: 1 },
+		recoil: [33, 100],
+		target: "any",
+		type: "Fairy",
+		contestType: "Cool",
+	},
+
+    // ================ Changed Moves ===================
     aircutter: {
         inherit: true,
 		onModifyMove(move) {
@@ -143,6 +583,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    brickbreak: {
+        inherit: true,
+		onTryHit(pokemon) {
+			// will shatter screens through sub, before you hit
+			pokemon.side.removeSideCondition('reflect');
+			pokemon.side.removeSideCondition('lightscreen');
+			pokemon.side.removeSideCondition('auroraveil');
+			pokemon.side.removeSideCondition('arenitewall');
+		},
+    },
     brine: {
         inherit: true,
         onBasePower() {
@@ -227,6 +677,61 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     courtchange: {
         inherit: true,
+		onHitField(target, source) {
+			const sideConditions = [
+				'mist', 'lightscreen', 'reflect', 'spikes', 'safeguard', 'tailwind', 'toxicspikes', 'stealthrock', 'waterpledge', 'firepledge', 'grasspledge', 'stickyweb', 'auroraveil', 'arenitewall', 'luckychant', 'gmaxsteelsurge', 'gmaxcannonade', 'gmaxvinelash', 'gmaxwildfire', 'gmaxvolcalith',
+			];
+			let success = false;
+			if (this.gameType === 'freeforall') {
+				// the list of all sides in clockwise order
+				const sides = [this.sides[0], this.sides[3]!, this.sides[1], this.sides[2]!];
+				const temp: { [k: number]: typeof source.side.sideConditions } = { 0: {}, 1: {}, 2: {}, 3: {} };
+				for (const side of sides) {
+					for (const id in side.sideConditions) {
+						if (!sideConditions.includes(id)) continue;
+						temp[side.n][id] = side.sideConditions[id];
+						delete side.sideConditions[id];
+						success = true;
+					}
+				}
+				for (let i = 0; i < 4; i++) {
+					const sourceSideConditions = temp[sides[i].n];
+					const targetSide = sides[(i + 1) % 4]; // the next side in rotation
+					for (const id in sourceSideConditions) {
+						targetSide.sideConditions[id] = sourceSideConditions[id];
+						targetSide.sideConditions[id].target = targetSide;
+					}
+				}
+			} else {
+				const sourceSideConditions = source.side.sideConditions;
+				const targetSideConditions = source.side.foe.sideConditions;
+				const sourceTemp: typeof sourceSideConditions = {};
+				const targetTemp: typeof targetSideConditions = {};
+				for (const id in sourceSideConditions) {
+					if (!sideConditions.includes(id)) continue;
+					sourceTemp[id] = sourceSideConditions[id];
+					delete sourceSideConditions[id];
+					success = true;
+				}
+				for (const id in targetSideConditions) {
+					if (!sideConditions.includes(id)) continue;
+					targetTemp[id] = targetSideConditions[id];
+					delete targetSideConditions[id];
+					success = true;
+				}
+				for (const id in sourceTemp) {
+					targetSideConditions[id] = sourceTemp[id];
+					targetSideConditions[id].target = source.side.foe;
+				}
+				for (const id in targetTemp) {
+					sourceSideConditions[id] = targetTemp[id];
+					sourceSideConditions[id].target = source.side;
+				}
+			}
+			if (!success) return false;
+			this.add('-swapsideconditions');
+			this.add('-activate', source, 'move: Court Change');
+		},
 		zMove: { effect: 'clearnegativeboost' },
     },
     craftyshield: {
@@ -269,6 +774,30 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 move.self = { boosts: { def: 2, spd: 2 } };
             }
         },
+    },
+    defog: {
+        inherit: true,
+		onHit(target, source, move) {
+			let success = false;
+			if (!target.volatiles['substitute'] || move.infiltrates) success = !!this.boost({ evasion: -1 });
+			const removeAll = ['spikes', 'toxicspikes', 'stealthrock', 'stickyweb', 'gmaxsteelsurge'];
+			const removeTarget = ['reflect', 'lightscreen', 'auroraveil', 'arenitewall', 'safeguard', 'mist', ...removeAll];
+			for (const targetCondition of removeTarget) {
+				if (target.side.removeSideCondition(targetCondition)) {
+					if (!removeAll.includes(targetCondition)) continue;
+					this.add('-sideend', target.side, this.dex.conditions.get(targetCondition).name, '[from] move: Defog', `[of] ${source}`);
+					success = true;
+				}
+			}
+			for (const sideCondition of removeAll) {
+				if (source.side.removeSideCondition(sideCondition)) {
+					this.add('-sideend', source.side, this.dex.conditions.get(sideCondition).name, '[from] move: Defog', `[of] ${source}`);
+					success = true;
+				}
+			}
+			this.field.clearTerrain();
+			return success;
+		},
     },
     dive: {
         inherit: true,
@@ -888,15 +1417,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
-    mudbarrage: {
-        inherit: true,
-        onBasePower() {
-            if (this.field.isField('swampfield')) {
-                this.add('-message', 'The murk strengthened the attack!');
-                return this.chainModify(1.5);
-            }
-        },
-    },
     mudbomb: {
         inherit: true,
         onBasePower() {
@@ -1060,6 +1580,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         zMove: { boost: { atk: 1 } },
     },
+    psychicfangs: {
+        inherit: true,
+		onTryHit(pokemon) {
+			// will shatter screens through sub, before you hit
+			pokemon.side.removeSideCondition('reflect');
+			pokemon.side.removeSideCondition('lightscreen');
+			pokemon.side.removeSideCondition('auroraveil');
+			pokemon.side.removeSideCondition('arenitewall');
+		},
+    },
     psychocut: {
         inherit: true,
 		onModifyMove(move) {
@@ -1090,6 +1620,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     purify: {
         inherit: true,
         isNonstandard: null,
+    },
+    ragingbull: {
+        inherit: true,
+		onTryHit(pokemon) {
+			// will shatter screens through sub, before you hit
+			pokemon.side.removeSideCondition('reflect');
+			pokemon.side.removeSideCondition('lightscreen');
+			pokemon.side.removeSideCondition('auroraveil');
+			pokemon.side.removeSideCondition('arenitewall');
+		},
     },
     reflecttype: {
         inherit: true,

@@ -1,4 +1,171 @@
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
+	//New Abilities
+	pollenflight: {
+		onResidualOrder: 8,
+		onResidualSubOrder: 1,
+		onResidual(pokemon) {
+			if (!pokemon.hp) return;
+
+			let totalDamage = 0;
+			let activated = false;
+
+			for (const target of this.getAllActive()) {
+				if (
+					target === pokemon ||
+					!target.hp ||
+					target.hasType('Grass') ||
+					target.volatiles['leechseed']
+				) {
+					continue;
+				}
+
+				if (!activated) {
+					this.add('-ability', pokemon, 'Pollenflight');
+					activated = true;
+				}
+
+				const damage = this.damage(
+					target.baseMaxhp / 16,
+					target,
+					pokemon,
+					this.dex.abilities.get('pollenflight')
+				);
+
+				if (damage) {
+					totalDamage += damage;
+				}
+			}
+
+			if (totalDamage && pokemon.hp) {
+				this.heal(totalDamage, pokemon, pokemon);
+			}
+		},
+		flags: {},
+		name: "Pollenflight",
+		rating: 3,
+		num: 6906,
+	},
+	swornduty: {
+		onSwitchInPriority: -2,
+		onStart(pokemon) {
+			for (const ally of pokemon.adjacentAllies()) {
+				this.heal(ally.baseMaxhp / 4, ally, pokemon);
+			}
+		},
+		flags: {},
+		name: "Sworn Duty",
+		rating: 0,
+		num: 6907,
+	},
+	memoryleak: {
+		onAfterEachBoost(boost, target, source, effect) {
+			// Only trigger when the Pokémon WITH Memory Leak got boosted.
+			if (target !== this.effectState.target) return;
+
+			const ally = target.allies()[0];
+			if (!ally || ally.fainted) return;
+
+			const copiedBoosts: SparseBoostsTable = {};
+
+			let stat: BoostID;
+			for (stat in boost) {
+				// Only copy positive stat changes.
+				if (boost[stat]! > 0) {
+					copiedBoosts[stat] = boost[stat];
+				}
+			}
+
+			if (!Object.keys(copiedBoosts).length) return;
+
+			this.add('-activate', target, 'ability: Memory Leak');
+
+			this.boost(
+				copiedBoosts,
+				ally,
+				target,
+				this.effect
+			);
+		},
+		flags: {},
+		name: "Memory Leak",
+		rating: 3,
+		num: 6908,
+	},
+	foamspray: {
+		onDamagingHit(damage, target, source, move) {
+			let activated = false;
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon === target || pokemon.fainted) continue;
+
+				if (!activated) {
+					this.add('-ability', target, 'Foam Spray');
+					activated = true;
+				}
+
+				this.boost({ def: (this.field.isField('swampfield') ? -2 : -1) }, pokemon, target, null, true);
+			}
+		},
+		flags: {},
+		name: "Foam Spray",
+		rating: 3,
+		num: 6909,
+	},
+	invigorate: {
+		onAnyTryHeal(damage, target, source, effect) {
+			const holder = this.effectState.target;
+
+			// Only boost healing received by the holder's allies.
+			if (!target.isAlly(holder) || target === holder) return;
+
+			return this.chainModify([6, 5]);
+		},
+		flags: {},
+		name: "Invigorate",
+		rating: 3,
+		num: 6910,
+	},
+	wildfire: {
+		onResidualOrder: 8,
+		onResidualSubOrder: 1,
+		onResidual(pokemon) {
+			if (!pokemon.hp) return;
+			if (pokemon.hasType('Fire')) return;
+			if (this.field.isField('forestfield')) {
+				this.damage(pokemon.baseMaxhp / 6, pokemon, null);
+			} else {
+				this.damage(pokemon.baseMaxhp / (pokemon.status === 'brn' ? 8 : 16), pokemon, null);
+			}
+		},
+		flags: {},
+		name: "Wildfire",
+		rating: 3,
+		num: 6911,
+	},
+	junglebeat: {
+		onModifyMove(move, pokemon) {
+			if (move.type === 'Grass') {
+				move.flags['sound'] = 1;
+			}
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			if (move.flags['sound']) {
+				this.debug('Jungle Beat sound boost');
+				return this.chainModify(this.field.isField('forestfield') ? 1.5 : [5325, 4096]);
+			}
+		},
+		onSourceModifyDamage(damage, source, target, move) {
+			if (move.flags['sound']) {
+				this.debug('Jungle Beat sound resistance');
+				return this.chainModify(0.5);
+			}
+		},
+		flags: {},
+		name: "Jungle Beat",
+		rating: 4,
+		num: 6912,
+	},
+
+	//Edited Abillities
 	battery: {
 		inherit: true,
 		onAllyBasePower(basePower, attacker, defender, move) {
@@ -78,22 +245,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
-	foamspray: {
-		inherit: true,
-		onDamagingHit(damage, target, source, move) {
-			let activated = false;
-			for (const pokemon of this.getAllActive()) {
-				if (pokemon === target || pokemon.fainted) continue;
-
-				if (!activated) {
-					this.add('-ability', target, 'Foam Spray');
-					activated = true;
-				}
-
-				this.boost({ def: (this.field.isField('swampfield') ? -2 : -1) }, pokemon, target, null, true);
-			}
-		},
-	},
 	galvanize: {
 		inherit: true,
 		onBasePower(basePower, pokemon, target, move) {
@@ -149,15 +300,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.debug('Hadron Engine boost');
 				this.add('-message', `${attacker.name} used the Electric Terrain to energize its futuristic engine!`);
 				return this.chainModify([5461, 4096]);
-			}
-		},
-	},
-	junglebeat: {
-		inherit: true,
-		onBasePower(basePower, attacker, defender, move) {
-			if (move.flags['sound']) {
-				this.debug('Jungle Beat sound boost');
-				return this.chainModify(this.field.isField('forestfield') ? 1.5 : [5325, 4096]);
 			}
 		},
 	},
@@ -459,18 +601,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onResidual(pokemon) {
 			if (this.field.isField('swampfield')  && pokemon.isGrounded()) {
 				this.boost({def: 2});
-			}
-		},
-	},
-	wildfire: {
-		inherit: true,
-		onResidual(pokemon) {
-			if (!pokemon.hp) return;
-			if (pokemon.hasType('Fire')) return;
-			if (this.field.isField('forestfield')) {
-				this.damage(pokemon.baseMaxhp / 6, pokemon, null);
-			} else {
-				this.damage(pokemon.baseMaxhp / (pokemon.status === 'brn' ? 8 : 16), pokemon, null);
 			}
 		},
 	},
