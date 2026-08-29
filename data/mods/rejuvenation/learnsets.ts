@@ -43823,7 +43823,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			yawn: ["9E"],
 		},
 	},
-	shelloswestaevian: {
+	shellosaeviumwest: {
 		learnset: {
 			acidarmor: ["9L22"],
 			afteryou: ["9T"],
@@ -43914,7 +43914,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			yawn: ["9E"],
 		},
 	},
-	shelloseastaevian: {
+	shellosaeviumeast: {
 		learnset: {
 			acidarmor: ["9L22"],
 			afteryou: ["9T"],
@@ -44132,7 +44132,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			yawn: ["9E"],
 		},
 	},
-	gastrodonwestaevian: {
+	gastrodonaeviumwest: {
 		learnset: {
 			acidarmor: ["9L22"],
 			afteryou: ["9T"],
@@ -44237,7 +44237,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			yawn: ["9E"],
 		},
 	},
-	gastrodoneastaevian: {
+	gastrodonaeviumeast: {
 		learnset: {
 			acidarmor: ["9L22"],
 			afteryou: ["9T"],
