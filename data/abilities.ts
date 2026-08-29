@@ -438,7 +438,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 			if (boost.def && boost.def < 0) {
 				delete boost.def;
 				if (!(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
-					this.add("-fail", target, "unboost", "Defense", "[from] ability: Big Pecks", `[of] ${target}`);
+					this.add('-fail', target, 'unboost', 'def', '[from] ability: Big Pecks', `[of] ${target}`);
 				}
 			}
 		},
@@ -522,7 +522,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				}
 			}
 			if (showMsg && !(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
-				this.add("-fail", target, "unboost", "[from] ability: Clear Body", `[of] ${target}`);
+				this.add('-fail', target, 'unboost', '[from] ability: Clear Body', `[of] ${target}`);
 			}
 		},
 		flags: { breakable: 1 },
@@ -1557,7 +1557,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				}
 			}
 			if (showMsg && !(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
-				this.add("-fail", target, "unboost", "[from] ability: Full Metal Body", `[of] ${target}`);
+				this.add('-fail', target, 'unboost', '[from] ability: Full Metal Body', `[of] ${target}`);
 			}
 		},
 		flags: {},
@@ -1933,7 +1933,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 			if (boost.atk && boost.atk < 0) {
 				delete boost.atk;
 				if (!(effect as ActiveMove).secondaries) {
-					this.add("-fail", target, "unboost", "Attack", "[from] ability: Hyper Cutter", `[of] ${target}`);
+					this.add('-fail', target, 'unboost', 'atk', '[from] ability: Hyper Cutter', `[of] ${target}`);
 				}
 			}
 		},
@@ -2030,7 +2030,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 			if (boost.accuracy && boost.accuracy < 0) {
 				delete boost.accuracy;
 				if (!(effect as ActiveMove).secondaries) {
-					this.add("-fail", target, "unboost", "accuracy", "[from] ability: Illuminate", `[of] ${target}`);
+					this.add('-fail', target, 'unboost', 'accuracy', '[from] ability: Illuminate', `[of] ${target}`);
 				}
 			}
 		},
@@ -2118,30 +2118,6 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		rating: 5,
 		num: 150,
 	},
-	inexorable: {
-		onBasePowerPriority: 21, //Same as analytic (for now)
-		onBasePower(basePower, pokemon, target, move) {
-			if (move.type !== 'Dragon') return;
-
-			let boosted = true;
-			for (const target of this.getAllActive()) {
-				if (target === pokemon) continue;
-				// If the target pokemon moves BEFORE us, then you arent the first pokemon and therefore break
-				if (this.queue.willMove(target) && !this.queue.willMove(pokemon)) {
-					boosted = false;
-					break;
-				}
-			}
-			if (boosted) {
-				this.debug('Inexorable boost');
-				return this.chainModify([5325, 4096]);
-			}
-		},
-		flags: {},
-		name: "Inexorable",
-		rating: 4, //Fealt it was fitting
-		num: 6902,
-	},
 	infiltrator: {
 		onModifyMove(move) {
 			move.infiltrates = true;
@@ -2171,7 +2147,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		onTryBoost(boost, target, source, effect) {
 			if (effect.name === 'Intimidate' && boost.atk) {
 				delete boost.atk;
-				this.add('-fail', target, 'unboost', 'Attack', '[from] ability: Inner Focus', `[of] ${target}`);
+				this.add('-fail', target, 'unboost', 'atk', '[from] ability: Inner Focus', `[of] ${target}`);
 			}
 		},
 		flags: { breakable: 1 },
@@ -2277,7 +2253,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 			if (boost.accuracy && boost.accuracy < 0) {
 				delete boost.accuracy;
 				if (!(effect as ActiveMove).secondaries) {
-					this.add("-fail", target, "unboost", "accuracy", "[from] ability: Keen Eye", `[of] ${target}`);
+					this.add('-fail', target, 'unboost', 'accuracy', '[from] ability: Keen Eye', `[of] ${target}`);
 				}
 			}
 		},
@@ -2447,36 +2423,6 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		name: "Long Reach",
 		rating: 1,
 		num: 203,
-	},
-	lunaridol: {
-		onModifyAtkPriority: 5,
-		onModifyAtk(atk, attacker, defender, move) {
-			if (move.type === 'Ice') {
-				return this.chainModify(1.5);
-			}
-		},
-		onModifySpAPriority: 5,
-		onModifySpA(atk, attacker, defender, move) {
-			let mod = 1;
-
-			// Weather boost
-			if (this.field.isWeather(['hail', 'snowscape'])) {
-				mod *= 1.5;
-			}
-
-			// Ice move boost
-			if (move.type === 'Ice') {
-				mod *= 1.5;
-			}
-
-			if (mod !== 1) {
-				return this.chainModify(mod);
-			}
-		},
-		flags: {},
-		name: "Lunar Idol",
-		rating: 5,
-		num: 6903,
 	},
 	magicbounce: {
 		onTryHitPriority: 1,
@@ -2666,7 +2612,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 			if (boost.accuracy && boost.accuracy < 0) {
 				delete boost.accuracy;
 				if (!(effect as ActiveMove).secondaries) {
-					this.add("-fail", target, "unboost", "accuracy", "[from] ability: Mind's Eye", `[of] ${target}`);
+					this.add('-fail', target, 'unboost', 'accuracy', '[from] ability: Mind\'s Eye', `[of] ${target}`);
 				}
 			}
 		},
@@ -3074,7 +3020,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		onTryBoost(boost, target, source, effect) {
 			if (effect.name === 'Intimidate' && boost.atk) {
 				delete boost.atk;
-				this.add('-fail', target, 'unboost', 'Attack', '[from] ability: Oblivious', `[of] ${target}`);
+				this.add('-fail', target, 'unboost', 'atk', '[from] ability: Oblivious', `[of] ${target}`);
 			}
 		},
 		flags: { breakable: 1 },
@@ -3203,7 +3149,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		onTryBoost(boost, target, source, effect) {
 			if (effect.name === 'Intimidate' && boost.atk) {
 				delete boost.atk;
-				this.add('-fail', target, 'unboost', 'Attack', '[from] ability: Own Tempo', `[of] ${target}`);
+				this.add('-fail', target, 'unboost', 'atk', '[from] ability: Own Tempo', `[of] ${target}`);
 			}
 		},
 		flags: { breakable: 1 },
@@ -3853,58 +3799,6 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		rating: 3,
 		num: 120,
 	},
-	reflector: {
-	onStart(pokemon) {
-		let target = pokemon.foes()[0];
-
-		if (this.gameType === 'doubles') {
-		target =
-			pokemon.foes().find(foe => foe.position === pokemon.position) ||
-			pokemon.foes()[0];
-		}
-
-		if (!target) return;
-
-		const originalTypes = [...pokemon.getTypes()];
-		const finalTypes = [...originalTypes];
-		const gainedTypes: string[] = [];
-
-		for (const type of target.getTypes()) {
-		if (!originalTypes.includes(type)) {
-			finalTypes.push(type);
-			gainedTypes.push(type);
-		}
-		}
-
-		pokemon.m.reflectorTypes = gainedTypes;
-
-		this.add('-ability', pokemon, 'Reflector', '[of] ' + target);
-		pokemon.setType(finalTypes);
-		if (gainedTypes.length) {
-			this.add('-start', pokemon, 'typechange', finalTypes.join('/'));
-			this.add('-message', `${pokemon.name} gained the ${gainedTypes.join('/')} type${gainedTypes.length > 1 ? 's' : ''}!`);
-		}
-	},
-	onSourceModifyDamage(damage, attacker, defender, move) {
-		const gainedTypes =
-		defender.m.reflectorTypes as string[] | undefined;
-
-		if (gainedTypes?.includes(move.type)) {
-		this.debug(`Reflector resisted mirrored ${move.type} typing`);
-		return this.chainModify(0.5);
-		}
-	},
-	onEnd(pokemon) {
-		delete pokemon.m.reflectorTypes;
-	},
-	onSwitchOut(pokemon) {
-		delete pokemon.m.reflectorTypes;
-	},
-	flags: {},
-	name: "Reflector",
-	rating: 3,
-	num: 6905,
-	},
 	refrigerate: {
 		onModifyTypePriority: -1,
 		onModifyType(move, pokemon) {
@@ -4184,7 +4078,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		onTryBoost(boost, target, source, effect) {
 			if (effect.name === 'Intimidate' && boost.atk) {
 				delete boost.atk;
-				this.add('-fail', target, 'unboost', 'Attack', '[from] ability: Scrappy', `[of] ${target}`);
+				this.add('-fail', target, 'unboost', 'atk', '[from] ability: Scrappy', `[of] ${target}`);
 			}
 		},
 		flags: {},
@@ -4488,36 +4382,6 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 		name: "Snow Warning",
 		rating: 4,
 		num: 117,
-	},
-	solaridol: {
-		onModifyAtkPriority: 5,
-		onModifyAtk(atk, pokemon, defender, move) {
-			let mod = 1;
-
-			// Weather boost
-			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
-				mod *= 1.5;
-			}
-
-			// Ice move boost
-			if (move.type === 'Fire') {
-				mod *= 1.5;
-			}
-
-			if (mod !== 1) {
-				return this.chainModify(mod);
-			}
-		},
-		onModifySpAPriority: 5,
-		onModifySpA(atk, attacker, defender, move) {
-			if (move.type === 'Fire') {
-				return this.chainModify(1.5);
-			}
-		},
-		flags: {},
-		name: "Solar Idol",
-		rating: 5,
-		num: 6904,
 	},
 	solarpower: {
 		onModifySpAPriority: 5,
@@ -5608,7 +5472,7 @@ export const Abilities: import('../sim/dex-abilities').AbilityDataTable = {
 				}
 			}
 			if (showMsg && !(effect as ActiveMove).secondaries && effect.id !== 'octolock') {
-				this.add("-fail", target, "unboost", "[from] ability: White Smoke", `[of] ${target}`);
+				this.add('-fail', target, 'unboost', '[from] ability: White Smoke', `[of] ${target}`);
 			}
 		},
 		flags: { breakable: 1 },

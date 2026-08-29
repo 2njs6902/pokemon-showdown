@@ -110,6 +110,30 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 3,
 		num: 6909,
 	},
+	inexorable: {
+		onBasePowerPriority: 21, //Same as analytic (for now)
+		onBasePower(basePower, pokemon, target, move) {
+			if (move.type !== 'Dragon') return;
+
+			let boosted = true;
+			for (const target of this.getAllActive()) {
+				if (target === pokemon) continue;
+				// If the target pokemon moves BEFORE us, then you arent the first pokemon and therefore break
+				if (this.queue.willMove(target) && !this.queue.willMove(pokemon)) {
+					boosted = false;
+					break;
+				}
+			}
+			if (boosted) {
+				this.debug('Inexorable boost');
+				return this.chainModify([5325, 4096]);
+			}
+		},
+		flags: {},
+		name: "Inexorable",
+		rating: 4, //Fealt it was fitting
+		num: 6902,
+	},
 	invigorate: {
 		onAnyTryHeal(damage, target, source, effect) {
 			const holder = this.effectState.target;
@@ -123,6 +147,118 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Invigorate",
 		rating: 3,
 		num: 6910,
+	},
+	lunaridol: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Ice') {
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			let mod = 1;
+
+			// Weather boost
+			if (this.field.isWeather(['hail', 'snowscape'])) {
+				mod *= 1.5;
+			}
+
+			// Ice move boost
+			if (move.type === 'Ice') {
+				mod *= 1.5;
+			}
+
+			if (mod !== 1) {
+				return this.chainModify(mod);
+			}
+		},
+		flags: {},
+		name: "Lunar Idol",
+		rating: 5,
+		num: 6903,
+	},
+	reflector: {
+		onStart(pokemon) {
+			let target = pokemon.foes()[0];
+
+			if (this.gameType === 'doubles') {
+			target =
+				pokemon.foes().find(foe => foe.position === pokemon.position) ||
+				pokemon.foes()[0];
+			}
+
+			if (!target) return;
+
+			const originalTypes = [...pokemon.getTypes()];
+			const finalTypes = [...originalTypes];
+			const gainedTypes: string[] = [];
+
+			for (const type of target.getTypes()) {
+			if (!originalTypes.includes(type)) {
+				finalTypes.push(type);
+				gainedTypes.push(type);
+			}
+			}
+
+			pokemon.m.reflectorTypes = gainedTypes;
+
+			this.add('-ability', pokemon, 'Reflector', '[of] ' + target);
+			pokemon.setType(finalTypes);
+			if (gainedTypes.length) {
+				this.add('-start', pokemon, 'typechange', finalTypes.join('/'));
+				this.add('-message', `${pokemon.name} gained the ${gainedTypes.join('/')} type${gainedTypes.length > 1 ? 's' : ''}!`);
+			}
+		},
+		onSourceModifyDamage(damage, attacker, defender, move) {
+			const gainedTypes =
+			defender.m.reflectorTypes as string[] | undefined;
+
+			if (gainedTypes?.includes(move.type)) {
+			this.debug(`Reflector resisted mirrored ${move.type} typing`);
+			return this.chainModify(0.5);
+			}
+		},
+		onEnd(pokemon) {
+			delete pokemon.m.reflectorTypes;
+		},
+		onSwitchOut(pokemon) {
+			delete pokemon.m.reflectorTypes;
+		},
+		flags: {},
+		name: "Reflector",
+		rating: 3,
+		num: 6905,
+	},
+	solaridol: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, pokemon, defender, move) {
+			let mod = 1;
+
+			// Weather boost
+			if (['sunnyday', 'desolateland'].includes(pokemon.effectiveWeather())) {
+				mod *= 1.5;
+			}
+
+			// Ice move boost
+			if (move.type === 'Fire') {
+				mod *= 1.5;
+			}
+
+			if (mod !== 1) {
+				return this.chainModify(mod);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			if (move.type === 'Fire') {
+				return this.chainModify(1.5);
+			}
+		},
+		flags: {},
+		name: "Solar Idol",
+		rating: 5,
+		num: 6904,
 	},
 	wildfire: {
 		onResidualOrder: 8,

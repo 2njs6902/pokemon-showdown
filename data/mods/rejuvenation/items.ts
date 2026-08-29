@@ -1,4 +1,121 @@
 export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
+	// Rejuvenation Items
+	venusauriteg: {
+		name: "Venusaurite G",
+		spritenum: 608,
+		megaStone: { "Venusaur": "Venusaur-Giga" },
+		itemUser: ["Venusaur"],
+		onTakeItem(item, source) {
+			return !item.megaStone?.[source.baseSpecies.baseSpecies];
+		},
+		num: 6902,
+		gen: 9,
+	},
+	telluricseed: {
+		name: "Telluric Seed",
+		spritenum: 0,
+		fling: {
+			basePower: 10,
+		},
+		onSwitchInPriority: -1,
+		onStart(pokemon) {
+			if (!pokemon.ignoringItem() && this.field.isField(['forestfield', 'swampfield'])) {
+				pokemon.useItem();
+			}
+		},
+		onTerrainChange(pokemon) {
+			if (this.field.isField(['forestfield', 'swampfield'])) {
+				pokemon.useItem();
+			}
+		},
+		onUse(pokemon) {
+			switch (this.field.field) {
+			case 'forestfield':
+				pokemon.addVolatile('spikyshield');
+				break;
+			case 'swampfield':
+				this.boost({ def: 1 }, pokemon);
+				pokemon.setAbility('clearbody');
+				break;
+			}
+		},
+		num: 6903,
+		gen: 9,
+	},
+	kinglerite: {
+		name: "Kinglerite",
+		spritenum: 608,
+		megaStone: { "Kingler": "Kingler-Giga" },
+		itemUser: ["Kingler"],
+		onTakeItem(item, source) {
+			return !item.megaStone?.[source.baseSpecies.baseSpecies];
+		},
+		num: 6904,
+		gen: 9,
+	},
+	charizarditeg: {
+		name: "Charizardite G",
+		spritenum: 587,
+		megaStone: { "Charizard": "Charizard-Giga" },
+		itemUser: ["Charizard"],
+		onTakeItem(item, source) {
+			return !item.megaStone?.[source.baseSpecies.baseSpecies];
+		},
+		num: 6905,
+		gen: 9,
+	},
+	rillaboomite: {
+		name: "Rillaboomite",
+		spritenum: 608,
+		megaStone: { "Rillaboom": "Rillaboom-Giga" },
+		itemUser: ["Rillaboom"],
+		onTakeItem(item, source) {
+			return !item.megaStone?.[source.baseSpecies.baseSpecies];
+		},
+		num: 6906,
+		gen: 9,
+	},
+	amplifiedrock: {
+		name: "Amplified Rock",
+		gen: 9,
+		num: 6907,
+	},
+	elementalseed: {
+		name: "Elemental Seed",
+		spritenum: 0,
+		fling: {
+			basePower: 10,
+		},
+		onSwitchInPriority: -1,
+		onStart(pokemon) {
+			if (!pokemon.ignoringItem() && this.field.isUnlayeredTerrain(['electricterrain'])) {
+				pokemon.useItem();
+			}
+		},
+		onTerrainChange(pokemon) {
+			if (this.field.isUnlayeredTerrain(['electricterrain'])) {
+				pokemon.useItem();
+			}
+		},
+		onUse(pokemon) {
+			switch (this.field.terrain) {
+			case 'electricterrain':
+				this.boost({ spe: 1 }, pokemon);
+				pokemon.addVolatile('charge');
+				break;
+			}
+		},
+		num: 6908,
+		gen: 9,
+	},
+	everstone: {
+		name: "Everstone",
+		spritenum: 0,
+		num: 6909,
+		gen: 9,
+	},
+	
+	
 	absorbbulb: {
 		inherit: true,
 	},
@@ -829,16 +946,9 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		gen: 9,
 		isNonstandard: null,
 	},
-	telluricseed: {
-		inherit: true,
-	},
 	venusaurite: {
 		inherit: true,
 		gen: 9,
-		isNonstandard: null,
-	},
-	venusauriteg: {
-		inherit: true,
 		isNonstandard: null,
 	},
 	watergem: {

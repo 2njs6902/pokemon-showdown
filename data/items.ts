@@ -1,5 +1,4 @@
 export const Items: import('../sim/dex-items').ItemDataTable = {
-	// Number of next item is 6910
 	abilityshield: {
 		name: "Ability Shield",
 		spritenum: 746,
@@ -259,11 +258,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 658,
 		gen: 6,
 		isNonstandard: "Past",
-	},
-	amplifiedrock: {
-		name: "Amplified Rock",
-		gen: 9,
-		num: 6907,
 	},
 	apicotberry: {
 		name: "Apicot Berry",
@@ -790,17 +784,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 249,
 		gen: 2,
-	},
-	charizarditeg: {
-		name: "Charizardite G",
-		spritenum: 587,
-		megaStone: { "Charizard": "Charizard-Giga" },
-		itemUser: ["Charizard"],
-		onTakeItem(item, source) {
-			return !item.megaStone?.[source.baseSpecies.baseSpecies];
-		},
-		num: 6905,
-		gen: 9,
 	},
 	charizarditex: {
 		name: "Charizardite X",
@@ -1844,34 +1827,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		gen: 7,
 		isNonstandard: "Past",
 	},
-	elementalseed: {
-		name: "Elemental Seed",
-		spritenum: 0,
-		fling: {
-			basePower: 10,
-		},
-		onSwitchInPriority: -1,
-		onStart(pokemon) {
-			if (!pokemon.ignoringItem() && this.field.isUnlayeredTerrain(['electricterrain'])) {
-				pokemon.useItem();
-			}
-		},
-		onTerrainChange(pokemon) {
-			if (this.field.isUnlayeredTerrain(['electricterrain'])) {
-				pokemon.useItem();
-			}
-		},
-		onUse(pokemon) {
-			switch (this.field.terrain) {
-			case 'electricterrain':
-				this.boost({ spe: 1 }, pokemon);
-				pokemon.addVolatile('charge');
-				break;
-			}
-		},
-		num: 6908,
-		gen: 9,
-	},
 	emboarite: {
 		name: "Emboarite",
 		spritenum: 552,
@@ -1905,12 +1860,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onEat() { },
 		num: 208,
 		gen: 3,
-	},
-	everstone: {
-		name: "Everstone",
-		spritenum: 0,
-		num: 6909,
-		gen: 9,
 	},
 	eviolite: {
 		name: "Eviolite",
@@ -3252,17 +3201,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		onEat: false,
 		num: 170,
 		gen: 3,
-	},
-	kinglerite: {
-		name: "Kinglerite",
-		spritenum: 608,
-		megaStone: { "Kingler": "Kingler-Giga" },
-		itemUser: ["Kingler"],
-		onTakeItem(item, source) {
-			return !item.megaStone?.[source.baseSpecies.baseSpecies];
-		},
-		num: 6904,
-		gen: 9,
 	},
 	kingsrock: {
 		name: "King's Rock",
@@ -5258,17 +5196,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 1115,
 		gen: 8,
 	},
-	rillaboomite: {
-		name: "Rillaboomite",
-		spritenum: 608,
-		megaStone: { "Rillaboom": "Rillaboom-Giga" },
-		itemUser: ["Rillaboom"],
-		onTakeItem(item, source) {
-			return !item.megaStone?.[source.baseSpecies.baseSpecies];
-		},
-		num: 6906,
-		gen: 9,
-	},
 	rindoberry: {
 		name: "Rindo Berry",
 		spritenum: 409,
@@ -6348,37 +6275,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		num: 2649,
 		gen: 9,
 		isNonstandard: "Future",
-	},
-	telluricseed: {
-		name: "Telluric Seed",
-		spritenum: 0,
-		fling: {
-			basePower: 10,
-		},
-		onSwitchInPriority: -1,
-		onStart(pokemon) {
-			if (!pokemon.ignoringItem() && this.field.isField(['forestfield', 'swampfield'])) {
-				pokemon.useItem();
-			}
-		},
-		onTerrainChange(pokemon) {
-			if (this.field.isField(['forestfield', 'swampfield'])) {
-				pokemon.useItem();
-			}
-		},
-		onUse(pokemon) {
-			switch (this.field.field) {
-			case 'forestfield':
-				pokemon.addVolatile('spikyshield');
-				break;
-			case 'swampfield':
-				this.boost({ def: 1 }, pokemon);
-				pokemon.setAbility('clearbody');
-				break;
-			}
-		},
-		num: 6903,
-		gen: 9,
 	},
 	terrainextender: {
 		name: "Terrain Extender",
@@ -7565,17 +7461,6 @@ export const Items: import('../sim/dex-items').ItemDataTable = {
 		},
 		num: 1123,
 		gen: 8,
-	},
-	venusauriteg: {
-		name: "Venusaurite G",
-		spritenum: 608,
-		megaStone: { "Venusaur": "Venusaur-Giga" },
-		itemUser: ["Venusaur"],
-		onTakeItem(item, source) {
-			return !item.megaStone?.[source.baseSpecies.baseSpecies];
-		},
-		num: 6902,
-		gen: 9,
 	},
 	venusaurite: {
 		name: "Venusaurite",
