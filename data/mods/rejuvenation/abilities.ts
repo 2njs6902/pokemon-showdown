@@ -325,8 +325,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	dryskin: {
 		inherit: true,
 		onResidual(target) {
-			if (this.field.isField('swampfield')) {
-				this.add('-message', `${target.name}'s Dry Skin was healed by the murk!`);
+			if (this.field.isField('swampfield') || this.field.isTerrain('mistyterrain')) {
+				if (this.field.isField('swampfield')) this.add('-message', `${target.name}'s Dry Skin was healed by the murk!`);
+				else if (this.field.isTerrain('mistyterrain')) this.add('-message', `${target.name} was healed a little by the mist!`);
 				this.heal(target.baseMaxhp / 16, target);
 			}
 		},
@@ -476,16 +477,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
-	minus: {
+	marvelscale: {
 		inherit: true,
-		onModifySpA(spa, pokemon) {
-			if (this.field.isTerrain('electricterrain')) {
+		onModifyDef(def, pokemon) {
+			if (pokemon.status || this.field.isTerrain('mistyterrain')) {
 				return this.chainModify(1.5);
-			}
-			for (const allyActive of pokemon.allies()) {
-				if (allyActive.hasAbility(['minus', 'plus'])) {
-					return this.chainModify(1.5);
-				}
 			}
 		},
 	},
@@ -534,6 +530,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	minus: {
+		inherit: true,
+		onModifySpA(spa, pokemon) {
+			if (this.field.isTerrain('electricterrain')) {
+				return this.chainModify(1.5);
+			}
+			for (const allyActive of pokemon.allies()) {
+				if (allyActive.hasAbility(['minus', 'plus'])) {
+					return this.chainModify(1.5);
+				}
+			}
+		},
+	},
+	mistysurge: {
+		inherit: true,
+		onStart(source) {
+			if (this.field.setTerrain('mistyterrain')) {
+				this.field.terrainState.duration = source.hasItem('amplifiedrock') ? 8 : 5;
+			}
+		},
+	},
 	motordrive: {
 		inherit: true,
 		onTryHit(target, source, move) {
@@ -566,6 +583,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.debug('Overgrow boost');
 				return this.chainModify(1.5);
 			}
+		},
+	},
+	pixilate: {
+		inherit: true,
+		onBasePower(basePower, pokemon, target, move) {
+			if (move.typeChangerBoosted === this.effect) return this.chainModify(this.field.isTerrain('mistyterrain') ? 1.5 : 1.2);
 		},
 	},
 	plus: {
@@ -654,6 +677,15 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	soulheart: {
+		inherit: true,
+		onAnyFaint() {
+			if (this.field.isUnlayeredTerrain('mistyterrain')) {
+				this.boost({ spa: 1, spd: 1 }, this.effectState.target);
+			}
+			else this.boost({ spa: 1 }, this.effectState.target);
+		},
+	},
 	static: {
 		inherit: true,
 		onDamagingHit(damage, target, source, move) {
@@ -736,6 +768,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
 			if (this.field.isField('swampfield')  && pokemon.isGrounded()) {
+				this.boost({def: 2});
+			}
+		},
+		onSwitchIn(pokemon) {
+			if (this.field.isTerrain('mistyterrain')) {
 				this.boost({def: 2});
 			}
 		},

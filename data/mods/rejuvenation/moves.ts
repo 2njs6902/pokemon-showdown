@@ -512,13 +512,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onResidualOrder: 6,
 			onResidual(pokemon) {
-				this.heal(pokemon.baseMaxhp / (this.field.isField('swampfield') ? 8 : 16));
+                const boosted = this.field.isField('swampfield') || this.field.isUnlayeredTerrain('mistyterrain');
+				this.heal(pokemon.baseMaxhp / (boosted ? 8 : 16));
 			},
 		},
     },
     aromatherapy: {
         inherit: true,
         isNonstandard: null,
+    },
+    aromaticmist: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('mistyterrain')) {
+                move.boosts = { spd: 2 };
+            }
+        },
     },
     attackorder: {
         inherit: true,
@@ -532,6 +541,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             if (this.field.isField('swampfield')) {
                 const stat = this.sample(['atk', 'def', 'spa', 'spd', 'spe'] as const);
                 this.boost({ [stat]: -1 }, target, source);
+            }
+        },
+    },
+    aurasphere: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
             }
         },
     },
@@ -630,13 +648,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 break;
 
             default:
-                if (this.field.isTerrain('electricterrain')) {
+                if (this.field.isUnlayeredTerrain('electricterrain')) {
                     newType = 'Electric';
-                } else if (this.field.isTerrain('grassyterrain')) {
+                } else if (this.field.isUnlayeredTerrain('grassyterrain')) {
                     newType = 'Grass';
-                } else if (this.field.isTerrain('mistyterrain')) {
+                } else if (this.field.isUnlayeredTerrain('mistyterrain')) {
                     newType = 'Fairy';
-                } else if (this.field.isTerrain('psychicterrain')) {
+                } else if (this.field.isUnlayeredTerrain('psychicterrain')) {
                     newType = 'Psychic';
                 }
                 break;
@@ -666,6 +684,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		zMove: { effect: 'clearnegativeboost' },
     },
+    clearsmog: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     coaching: {
         inherit: true,
 		zMove: { boost: { atk: 1 } },
@@ -674,6 +701,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
 		zMove: { boost: { spd: 1 } },
+    },
+    cosmicpower: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('mistyterrain')) {
+                move.self = { boosts: { def: 2, spd: 2 } };
+            }
+        },
     },
     courtchange: {
         inherit: true,
@@ -763,6 +798,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
 
 	},
+    darkpulse: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isUnlayeredTerrain('mistyterrain')) {
+                this.add('-message', 'The mist softened the attack...');
+                return this.chainModify(0.5);
+            }
+        },
+    },
     decorate: {
         inherit: true,
 		zMove: { effect: 'heal' },
@@ -827,6 +871,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     doodle: {
         inherit: true,
 		zMove: { effect: 'clearnegativeboost' },
+    },
+    doomdesire: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
     },
     doubleironbash: {
         inherit: true,
@@ -981,9 +1034,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	explosion: {
 		inherit: true,
 		onTryMove(pokemon, target, move) {
-			if (this.field.isField('swampfield')) {
+			if (this.field.isField('swampfield') || this.field.isUnlayeredTerrain('mistyterrain')) {
 				this.attrLastMove('[still]');
-				this.add('-message', 'The dampness prevents the explosion!');
+                if (this.field.isUnlayeredTerrain('mistyterrain')) this.add('-message', 'The damp mist prevents the explosion...');
+				else if (this.field.isField('swampfield')) this.add('-message', 'The dampness prevents the explosion!');
 				return false;
 			}
 		},
@@ -1191,6 +1245,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
 		},
     },
+    hydrosteam: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     hydrovortex: {
         inherit: true,
         onEffectiveness(typeMod, target, type) {
@@ -1210,6 +1273,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         onBasePower() {
             if (this.field.isField('swampfield')) {
                 this.add('-message', 'The murk strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
+    icywind: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
                 return this.chainModify(1.5);
             }
         },
@@ -1324,6 +1396,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
+    magicalleaf: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     magicpower: {
         inherit: true,
         zMove: { boost: { spa: 1 } },
@@ -1417,6 +1498,94 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
+    mist: {
+        inherit: true,
+        onAfterMoveSecondarySelf(source, target, move) {
+            if (source.hasItem('everstone')) return;
+            if (this.field.setTerrain('mistyterrain', source, move)) {
+                this.field.terrainState.duration = source.hasItem('amplifiedrock') ? 6 : 3;
+            }
+        },
+    },
+    mistball: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
+	mistyterrain: {
+        inherit: true,
+		condition: {
+			effectType: 'Terrain',
+			duration: 5,
+			durationCallback(source, effect) {
+				if (source?.hasItem('amplifiedrock')) {
+					return 8;
+				}
+				return 5;
+			},
+			onSetStatus(status, target, source, effect) {
+				if (!target.isGrounded() || target.isSemiInvulnerable()) return;
+				if (effect && ((effect as Move).status || effect.id === 'yawn')) {
+					this.add('-activate', target, 'move: Misty Terrain');
+                    this.add('-message', `${target.name} is protected by the Misty Terrain!`);
+				}
+				return false;
+			},
+			onTryAddVolatile(status, target, source, effect) {
+				if (!target.isGrounded() || target.isSemiInvulnerable()) return;
+				if (status.id === 'confusion') {
+					if (effect.effectType === 'Move' && !effect.secondaries) this.add('-activate', target, 'move: Misty Terrain');
+                    this.add('-message', `${target.name} is protected by the Misty Terrain!`);
+					return null;
+				}
+			},
+			onBasePowerPriority: 6,
+			onBasePower(basePower, attacker, defender, move) {
+				if (move.type === 'Dragon') {
+					this.debug('misty terrain weaken');
+                    this.add('-message', 'The Misty Terrain weakened the attack!');
+					return this.chainModify(0.5);
+				}
+                if (move.type === 'Fairy') {
+                    this.debug('misty terrain strengthen');
+                    this.add('-message', 'The Misty Terrain strengthened the attack!');
+                    return this.chainModify(this.field.isUnlayeredTerrain('mistyterrain') ? 1.5 : 1.3);
+                }
+			},
+			onModifySpDPriority: 6,
+            onModifySpD(spd, pokemon) {
+                if (this.field.isUnlayeredTerrain('mistyterrain') && pokemon.types.includes('Fairy')) {
+                    this.debug('misty terrain spd boost');
+                    return this.chainModify(1.5);
+                }
+            },
+			onFieldStart(field, source, effect) {
+				if (effect?.effectType === 'Ability') {
+					this.add('-fieldstart', 'move: Misty Terrain', '[from] ability: ' + effect.name, `[of] ${source}`);
+				} else {
+					this.add('-fieldstart', 'move: Misty Terrain');
+				}
+			},
+			onFieldResidualOrder: 27,
+			onFieldResidualSubOrder: 7,
+			onFieldEnd() {
+				this.add('-fieldend', 'Misty Terrain');
+			},
+		},
+	},
+    moongeistbeam: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     mudbomb: {
         inherit: true,
         onBasePower() {
@@ -1490,6 +1659,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
+    mysticalfire: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     naturepower: {
         inherit: true,
         isNonstandard: null,
@@ -1503,13 +1681,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 move = 'muddywater';
                 break;
             default:
-                if (this.field.isTerrain('electricterrain')) {
+                if (this.field.isUnlayeredTerrain('electricterrain')) {
                     move = 'thunderbolt';
-                } else if (this.field.isTerrain('grassyterrain')) {
+                } else if (this.field.isUnlayeredTerrain('grassyterrain')) {
                     move = 'energyball';
-                } else if (this.field.isTerrain('mistyterrain')) {
-                    move = 'moonblast';
-                } else if (this.field.isTerrain('psychicterrain')) {
+                } else if (this.field.isUnlayeredTerrain('mistyterrain')) {
+                    move = 'mistball';
+                } else if (this.field.isUnlayeredTerrain('psychicterrain')) {
                     move = 'psychic';
                 }
                 break;
@@ -1528,6 +1706,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
             return this.clampIntRange(Math.floor(target.getUndynamaxedHP() / 2), 1);
 		},
+    },
+    nightdaze: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isUnlayeredTerrain('mistyterrain')) {
+                this.add('-message', 'The mist softened the attack...');
+                return this.chainModify(0.5);
+            }
+        },
     },
     noretreat: {
         inherit: true,
@@ -1781,24 +1968,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 break;
 
             default:
-                if (this.field.isTerrain('electricterrain')) {
+                if (this.field.isUnlayeredTerrain('electricterrain')) {
                     move.secondaries.push({
                         chance: 30,
                         status: 'par',
                     });
-                } else if (this.field.isTerrain('grassyterrain')) {
+                } else if (this.field.isUnlayeredTerrain('grassyterrain')) {
                     move.secondaries.push({
                         chance: 30,
                         status: 'slp',
                     });
-                } else if (this.field.isTerrain('mistyterrain')) {
+                } else if (this.field.isUnlayeredTerrain('mistyterrain')) {
                     move.secondaries.push({
                         chance: 30,
                         boosts: {
                             spa: -1,
                         },
                     });
-                } else if (this.field.isTerrain('psychicterrain')) {
+                } else if (this.field.isUnlayeredTerrain('psychicterrain')) {
                     move.secondaries.push({
                         chance: 30,
                         boosts: {
@@ -1840,6 +2027,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    shadowball: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isUnlayeredTerrain('mistyterrain')) {
+                this.add('-message', 'The mist softened the attack...');
+                return this.chainModify(0.5);
+            }
+        },
+    },
     shedtail: {
         inherit: true,
 		zMove: { effect: 'heal' },
@@ -1860,9 +2056,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 }
                 // } else if (this.field.isTerrain('grassyterrain')) {
                 //     move = 'energyball';
-                // } else if (this.field.isTerrain('mistyterrain')) {
-                //     move = 'moonblast';
-                // } else if (this.field.isTerrain('psychicterrain')) {
+                else if (this.field.isTerrain('mistyterrain')) {
+                    pokemon.addVolatile('sheltermisty');
+                }
+                // else if (this.field.isTerrain('psychicterrain')) {
                 //     move = 'psychic';
                 // }
                 break;
@@ -1903,6 +2100,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             },
         },
 		zMove: { boost: { def: 1 } },
+    },
+    silverwind: {
+        inherit: true,
+        isNonstandard: null,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
     },
     slash: {
         inherit: true,
@@ -1978,6 +2185,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             return this.chainModify(modifier);
         },
     },
+    smog: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     snaptrap: {
         inherit: true,
         isNonstandard: null,
@@ -1997,20 +2213,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     spiderweb: {
         inherit: true,
         isNonstandard: null,
-    },
-    stickyweb: {
-        inherit: true,
-        condition: {
-            onSideStart(side) {
-                this.add('-sidestart', side, 'move: Sticky Web');
-            },
-            onSwitchIn(pokemon) {
-                if (!pokemon.isGrounded() || pokemon.hasItem('heavydutyboots')) return;
-                this.add('-activate', pokemon, 'move: Sticky Web');
-                const speedDrop = this.field.isField('forestfield') ? -2 : -1;
-                this.boost({ spe: speedDrop }, pokemon, pokemon.side.foe.active[0], this.dex.getActiveMove('stickyweb'));
-            },
-        },
     },
 	spikes: {
 		inherit: true,
@@ -2036,6 +2238,38 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 		},
 	},
+    springtidestorm: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
+    steameruption: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
+    stickyweb: {
+        inherit: true,
+        condition: {
+            onSideStart(side) {
+                this.add('-sidestart', side, 'move: Sticky Web');
+            },
+            onSwitchIn(pokemon) {
+                if (!pokemon.isGrounded() || pokemon.hasItem('heavydutyboots')) return;
+                this.add('-activate', pokemon, 'move: Sticky Web');
+                const speedDrop = this.field.isField('forestfield') ? -2 : -1;
+                this.boost({ spe: speedDrop }, pokemon, pokemon.side.foe.active[0], this.dex.getActiveMove('stickyweb'));
+            },
+        },
+    },
     stokedsparksurfer: {
         inherit: true,
         onAfterMoveSecondarySelf(source, target, move) {
@@ -2044,6 +2278,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
 	},
+    strangesteam: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('mistyterrain')) {
+                this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     strengthsap: {
         inherit: true,
         onHit(target, source) {
@@ -2124,6 +2367,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 modifier *= 1.5;
             }
             return this.chainModify(modifier);
+        },
+    },
+    sweetkiss: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('mistyterrain')) {
+                move.accuracy = 100;
+            }
+        },
+    },
+    sweetscent: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('mistyterrain')) {
+                move.boosts = { evasion: -2, def: -1, spd: -1};
+            }
         },
     },
     tarshot: {
@@ -2319,6 +2578,31 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 move.recoil = [0, 1];
             }
         },
+    },
+    wish: {
+        inherit: true,
+		condition: {
+			onStart(pokemon, source) {
+				this.effectState.hp = (this.field.isUnlayeredTerrain('mistyterrain') ? source.maxhp*0.75 : source.maxhp / 2);
+				this.effectState.startingTurn = this.getOverflowedTurnCount();
+				if (this.effectState.startingTurn === 255) {
+					this.hint(`In Gen 8+, Wish will never resolve when used on the ${this.turn}th turn.`);
+				}
+			},
+			onResidualOrder: 4,
+			onResidual(target: Pokemon) {
+				if (this.getOverflowedTurnCount() <= this.effectState.startingTurn) return;
+				target.side.removeSlotCondition(this.getAtSlot(this.effectState.sourceSlot), 'wish');
+			},
+			onEnd(target) {
+				if (target && !target.fainted) {
+					const damage = this.heal(this.effectState.hp, target, target);
+					if (damage) {
+						this.add('-heal', target, target.getHealth, '[from] move: Wish', '[wisher] ' + this.effectState.source.name);
+					}
+				}
+			},
+		},
     },
 };
  

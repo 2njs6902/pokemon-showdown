@@ -945,11 +945,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "Long Reach",
 		shortDesc: "This Pokemon's attacks do not make contact with the target.",
 	},
-	lunaridol: {
-		name: "Lunar Idol",
-		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Ice moves by 1.5. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
-		shortDesc: "Grants Levitate. Ice moves have 1.5x power. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
-	},
 	magicbounce: {
 		name: "Magic Bounce",
 		desc: "This Pokemon is unaffected by certain non-damaging moves directed at it and will instead use such moves against the original user. Moves reflected in this way are unable to be reflected again by this or Magic Coat's effect. Spikes, Stealth Rock, Sticky Web, and Toxic Spikes can only be reflected once per side, by the leftmost Pokemon under this or Magic Coat's effect. The Lightning Rod and Storm Drain Abilities redirect their respective moves before this Ability takes effect.",
@@ -1762,11 +1757,6 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 			shortDesc: "On switch-in, this Pokemon summons Hail.",
 		},
 	},
-	solaridol: {
-		name: "Solar Idol",
-		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Fire moves by 1.5. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
-		shortDesc: "Grants Levitate. Fire moves have 1.5x power. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
-	},
 	solarpower: {
 		name: "Solar Power",
 		desc: "If Sunny Day is active, this Pokemon's Special Attack is multiplied by 1.5 and it loses 1/8 of its maximum HP, rounded down, at the end of each turn. These effects are prevented if the Pokemon is holding a Utility Umbrella.",
@@ -2351,6 +2341,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		desc: "Sound-based moves deal 1.3x more damage and deal 0.5x less damage to this Pokemon. Grass-Type moves count as Sound-based.",
 		shortDesc: "Sound-based moves deal 1.3x damage and deal 0.5x damage to this Pokemon, Grass-type moves count as Sound-based.",
 	},
+	lunaridol: {
+		name: "Lunar Idol",
+		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Ice moves by 1.5. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
+		shortDesc: "Grants Levitate. Ice moves have 1.5x power. If Hail is active, this Pokemon's Special Attack is multiplied by 1.5.",
+	},
 	memoryleak: {
 		name: "Memory Leak",
 		desc: "This Pokemon passes stat boosts to its partner Pokemon.",
@@ -2360,6 +2355,11 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 		name: "Pollenflight",
 		desc: "Pollen dealing 1/16th HP damage to all non-seeded, non-Grass Type Pokémon is released into the air at the end of the turn. User heals for the damage dealt.",
 		shortDesc: "Deals 1/16th HP damage to all non-seeded, non-Grass Type Pokémon the end of the turn. User heals for the damage dealt."
+	},
+	solaridol: {
+		name: "Solar Idol",
+		desc: "Grants the bearer the effect of Levitate and boosts the power of this Pokemon's Fire moves by 1.5. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
+		shortDesc: "Grants Levitate. Fire moves have 1.5x power. If Sun is active, this Pokemon's Attack is multiplied by 1.5.",
 	},
 	swornduty: {
 		name: "Sworn Duty",

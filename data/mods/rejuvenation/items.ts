@@ -88,12 +88,12 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		onSwitchInPriority: -1,
 		onStart(pokemon) {
-			if (!pokemon.ignoringItem() && this.field.isUnlayeredTerrain(['electricterrain'])) {
+			if (!pokemon.ignoringItem() && this.field.isUnlayeredTerrain(['electricterrain', 'mistyterrain'])) {
 				pokemon.useItem();
 			}
 		},
 		onTerrainChange(pokemon) {
-			if (this.field.isUnlayeredTerrain(['electricterrain'])) {
+			if (this.field.isUnlayeredTerrain(['electricterrain', 'mistyterrain'])) {
 				pokemon.useItem();
 			}
 		},
@@ -102,6 +102,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			case 'electricterrain':
 				this.boost({ spe: 1 }, pokemon);
 				pokemon.addVolatile('charge');
+				break;
+			case 'mistyterrain':
+				this.boost({ spd: 1 }, pokemon);
+				pokemon.addVolatile('wish');
 				break;
 			}
 		},

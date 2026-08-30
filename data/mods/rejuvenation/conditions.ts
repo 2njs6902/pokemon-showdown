@@ -208,6 +208,14 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			}
 		},
 	},
+	sheltermisty: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (move.type === 'Fairy') {
+				return this.chainModify(0.5);
+			}
+		},
+	},
 	shelterswamp: {
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
