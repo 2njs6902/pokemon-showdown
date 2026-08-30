@@ -5396,6 +5396,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	meowth: {
 		learnset: {
+			//Shadow Pokemon Moves
+			destinybond: ["9S0"],
+			tailslap: ["9S0"],
+
 			aerialace: ["9M"],
 			agility: ["9T"],
 			amnesia: ["9T"],
@@ -5496,6 +5500,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			workup: ["9M"],
 			zapcannon: ["9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["destinybond", "tailslap", "bite"],
+			},
+		],
 	},
 	meowthalola: {
 		learnset: {
@@ -8455,6 +8466,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	ponyta: {
 		learnset: {
+			// Shadow Pokemon Moves
+			fellstinger: ["9S0"],
+
 			agility: ["9L20", "9T"],
 			allyswitch: ["9T"],
 			attract: ["9M"],
@@ -8516,6 +8530,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wildcharge: ["9M"],
 			willowisp: ["9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["highhorsepower", "fellstinger", "flamewheel", "hypnosis"],
+			},
+		],
 	},
 	ponytagalar: {
 		learnset: {
@@ -21035,6 +21056,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	wooper: {
 		learnset: {
+			// Shadow Pokemon Moves
+			lavaplume: ["9S0"],
+			refresh: ["9S0"],
+
 			acidspray: ["9E", "9M"],
 			afteryou: ["9E", "9T"],
 			amnesia: ["9L32", "9T"],
@@ -21125,6 +21150,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			whirlpool: ["9M"],
 			yawn: ["9L21"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["lavaplume", "refresh", "muddywater", "recover"],
+			},
+		],
 	},
 	wooperpaldea: {
 		learnset: {
@@ -34862,6 +34894,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	cacnea: {
 		learnset: {
+			// Shadow Pokemon Moves
+			obstruct: ["9S0"],
+			fakeout: ["9S0"],
+
 			absorb: ["9L4"],
 			acid: ["9E"],
 			arenitewall: ["9M"],
@@ -34961,6 +34997,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			venoshock: ["9M"],
 			worryseed: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["obstruct", "fakeout", "toxicspikes", "leechseed"],
+			},
+		],
 	},
 	cacturne: {
 		learnset: {
@@ -38202,6 +38245,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	snorunt: {
 		learnset: {
+			// Shadow Pokemon Moves
+			naturepower: ["9S0"],
+			stealthrock: ["9S0"],
+			shadowsneak: ["9S0"],
+
 			astonish: ["9L1"],
 			attract: ["9M"],
 			avalanche: ["9M"],
@@ -38258,6 +38306,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			waterpulse: ["9T"],
 			weatherball: ["9L50", "9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["naturepower", "stealthrock", "iceshard", "shadowsneak"],
+			},
+		],
 	},
 	snoruntaevium: {
 		learnset: {
@@ -45955,6 +46010,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	bonsly: {
 		learnset: {
+			// Shadow Pokemon Moves
+			accelerock: ["9S0"],
+			shiftgear: ["9S0"],
+
 			afteryou: ["9T"],
 			attract: ["9M"],
 			block: ["9L12", "9T"],
@@ -46025,6 +46084,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			trailblaze: ["9T"],
 			uproar: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["accelerock", "shiftgear", "mimic", "rocktomb"],
+			},
+		],
 	},
 	mimejr: {
 		learnset: {
@@ -47841,6 +47907,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	finneon: {
 		learnset: {
+			// Shadow Pokemon Moves
+			quiverdance: ["9S0"],
+
 			acrobatics: ["9M"],
 			agility: ["9E", "9T"],
 			alluringvoice: ["9T"],
@@ -47907,6 +47976,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			waterpulse: ["9L22", "9T"],
 			whirlpool: ["9L38", "9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["tailwind", "quiverdance", "aquaring", "waterpulse"],
+			},
+		],
 	},
 	finneonxenpurgisguardian1: {
 		learnset: {
@@ -56426,6 +56502,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	pidove: {
 		learnset: {
+			// Shadow Pokemon Moves
+			honeclaws: ["9S0"],
+
 			aerialace: ["9M"],
 			agility: ["9T"],
 			aircutter: ["9L16"],
@@ -56477,6 +56556,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wish: ["9E"],
 			workup: ["9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["honeclaws", "dualwingbeat", "detect", "roost"],
+			},
+		],
 	},
 	pidoveaevium: {
 		learnset: {
@@ -62938,6 +63024,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	vanillite: {
 		learnset: {
+			// Shadow Pokemon Moves
+			memento: ["9S0"],
+			willowisp: ["9S0"],
+
 			acidarmor: ["9L32"],
 			allyswitch: ["9T"],
 			astonish: ["9L1"],
@@ -62991,6 +63081,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			uproar: ["9L28", "9T"],
 			waterpulse: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["memento", "willowisp", "mist", "icebeam"],
+			},
+		],
 	},
 	vanillish: {
 		learnset: {
