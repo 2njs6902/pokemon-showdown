@@ -25,6 +25,17 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		section: "Rejuvenation",
 	},
 	{
+		name: "[Gen 9] Rejuvenation DuoType Tourney 1",
+    	desc: `Unofficial Rejuvenation Mod for Pokemon Showdown`,
+		mod: 'rejuvenation',
+		ruleset: [
+			'Rejuvenation',
+			"Max Level = 30",
+			"Default Level = 30",
+		],
+	},
+
+	{
 		name: "[Gen 9] Rejuvenation DuoType",
     	desc: `Unofficial Rejuvenation Mod for Pokemon Showdown`,
 		mod: 'rejuvenation',
