@@ -126,6 +126,177 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			this.add('-fieldend', 'Frozen Dimensional Field');
 		},
 	},
+	corrosivemistfield: {
+		name: "Corrosive Mist Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Corrosive Mist Field');
+			this.add('-message', 'Corrosive mist settles on the field!');
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon?.hasAbility('watercompaction')) {
+					this.boost({ def: 2 }, pokemon, pokemon, this.dex.abilities.get('watercompaction'));
+				}
+				if (pokemon?.hasItem('elementalseed') && !pokemon.ignoringItem()) {
+					pokemon.useItem();
+				}
+			}
+		},
+		onModifyMove(move, pokemon) {
+			move.additionalTypes ??= [];
+			if (move.category === 'Special' && move.type === 'Flying') {
+				move.additionalTypes.push('Poison');
+			}
+			if (['appleacid', 'bubble', 'bubblebeam', 'sparklingaria', 'energyball'].includes(move.id)) {
+				move.additionalTypes.push('Poison');
+			}
+			if (move.id === 'mistyexplosion' && pokemon.isGrounded()) {
+				move.additionalTypes.push('Poison');
+			}
+		},
+		onModifyCritRatio(critRatio, source) {
+			if (source.hasAbility('merciless')) return 5;
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			let modifier = 1;
+			if (move.type === 'Fire') {
+				this.add('-message', 'The toxic mist caught flame!');
+				modifier *= 1.5;
+			}
+			if (['appleacid', 'bubble', 'bubblebeam', 'sparklingaria', 'acidspray', 'clearsmog', 'smog'].includes(move.id)) {
+				this.add('-message', 'The poison strengthened the attack!');
+				modifier *= 1.5;
+			}
+			if (move.id === 'mistyexplosion' && attacker.isGrounded()) {
+				this.add('-message', 'The poison strengthened the attack!');
+				modifier *= 1.5;
+			}
+			if (attacker.hasAbility('corrosion')) modifier *= 1.5;
+			if (attacker.hasAbility('toxicboost') && move.category === 'Physical') modifier *= 1.5;
+
+			const transitionMoves = [
+				'gravity', 'seedflare', 'bleakwindstorm', 'defog', 'gust', 'hurricane',
+				'razorwind', 'tailwind', 'twister', 'whirlwind', 'supersonicskystrike',
+				'burningjealousy', 'eruption', 'explosion', 'firepledge', 'flameburst',
+				'heatwave', 'incinerate', 'lavaplume', 'mindblown', 'searingshot',
+				'selfdestruct', 'infernooverdrive',
+			];
+			if (transitionMoves.includes(move.id)) modifier *= 1.3;
+			if (modifier !== 1) return this.chainModify(modifier);
+		},
+		onFieldResidualOrder: 28,
+		onFieldResidual() {
+			const active = this.getAllActive().filter(pokemon => pokemon && !pokemon.fainted);
+			for (const pokemon of active) {
+				if (pokemon.hasAbility('dryskin')) {
+					if (pokemon.hasType('Poison')) {
+						this.add('-message', `${pokemon.name} was healed by poison!`);
+						this.heal(pokemon.baseMaxhp / 8, pokemon);
+					} else if (!pokemon.hasType('Steel')) {
+						this.add('-message', `${pokemon.name} absorbed the poison!`);
+						this.damage(pokemon.baseMaxhp / 8, pokemon);
+					}
+				}
+				if (pokemon.hasAbility('poisonheal') && !['psn', 'tox'].includes(pokemon.status)) {
+					this.add('-message', `${pokemon.name} was healed by the poison!`);
+					this.heal(pokemon.baseMaxhp / 8, pokemon);
+				}
+			}
+
+			if (active.some(pokemon => pokemon.hasAbility('neutralizinggas'))) return;
+			let poisoned = false;
+			for (const pokemon of active) {
+				if (pokemon.hasType(['Poison', 'Steel']) || pokemon.status) continue;
+				if (pokemon.setStatus('psn', null, this.effect)) poisoned = true;
+			}
+			if (poisoned) this.add('-message', 'The Pokémon were poisoned by the corrosive mist!');
+		},
+		onAfterMove(source, target, move) {
+			if (move.id === 'gravity') {
+				this.field.clearField();
+				this.add('-message', 'The toxic mist collected on the ground!');
+				this.field.setField('corrosivefield', source, move);
+				return;
+			}
+			if (move.id === 'seedflare') {
+				this.field.clearField();
+				this.add('-message', 'The polluted mist was purified!');
+				this.field.setTerrain('mistyterrain', source, move);
+				return;
+			}
+			const windMoves = [
+				'bleakwindstorm', 'defog', 'gust', 'hurricane', 'razorwind',
+				'supersonicskystrike', 'tailwind', 'twister', 'whirlwind',
+			];
+			if (windMoves.includes(move.id)) {
+				this.field.clearField();
+				this.add('-message', 'The mist was blown away!');
+				return;
+			}
+			const combustionMoves = [
+				'burningjealousy', 'eruption', 'explosion', 'firepledge', 'flameburst',
+				'heatwave', 'incinerate', 'lavaplume', 'mindblown', 'searingshot',
+				'selfdestruct', 'infernooverdrive',
+			];
+			if (!combustionMoves.includes(move.id)) return;
+
+			this.field.clearField();
+			const dampUser = this.getAllActive().find(pokemon =>
+				pokemon && !pokemon.fainted && pokemon.hasAbility('damp')
+			);
+			if (dampUser) {
+				this.add('-ability', dampUser, 'Damp');
+				return;
+			}
+
+			this.add('-message', 'The toxic mist combusted!');
+			for (const pokemon of this.getAllActive()) {
+				if (!pokemon || pokemon.fainted) continue;
+				if (pokemon.hasAbility('flashfire')) continue;
+				if (pokemon.volatiles['commanding'] || pokemon.isSemiInvulnerable()) continue;
+				if (
+					pokemon.isProtected() || pokemon.side.getSideCondition('wideguard') ||
+					pokemon.side.getSideCondition('matblock') || pokemon.side.getSideCondition('quickguard') ||
+					pokemon.side.getSideCondition('craftyshield')
+				) continue;
+
+				let damage = pokemon.hp;
+				if (pokemon.hp === pokemon.maxhp && pokemon.hasAbility('sturdy')) {
+					this.add('-ability', pokemon, 'Sturdy');
+					damage = pokemon.hp - 1;
+				} else if (pokemon.hp === pokemon.maxhp && pokemon.volatiles['endure']) {
+					this.add('-activate', pokemon, 'move: Endure');
+					damage = pokemon.hp - 1;
+				}
+				if (damage > 0) this.damage(damage, pokemon, source, move);
+			}
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Corrosive Mist Field');
+		},
+	},
+	corrosivefield: {
+		name: "Corrosive Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Corrosive Field');
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Corrosive Field');
+		},
+	},
+	underwaterfield: {
+		name: "Underwater Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Underwater Field');
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Underwater Field');
+		},
+	},
 	swampfieldspeed: {
 		name: "Swamp Field Speed",
 		effectType: "Condition",
@@ -212,6 +383,14 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Fairy') {
+				return this.chainModify(0.5);
+			}
+		},
+	},
+	sheltercorrosivemist: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (move.type === 'Poison' || move.additionalTypes?.includes('Poison')) {
 				return this.chainModify(0.5);
 			}
 		},

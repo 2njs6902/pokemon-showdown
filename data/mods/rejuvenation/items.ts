@@ -88,7 +88,10 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		},
 		onSwitchInPriority: -1,
 		onStart(pokemon) {
-			if (!pokemon.ignoringItem() && this.field.isUnlayeredTerrain(['electricterrain', 'mistyterrain'])) {
+			if (!pokemon.ignoringItem() && (
+				this.field.isUnlayeredTerrain(['electricterrain', 'mistyterrain']) ||
+				this.field.isField('corrosivemistfield')
+			)) {
 				pokemon.useItem();
 			}
 		},
@@ -98,6 +101,11 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			}
 		},
 		onUse(pokemon) {
+			if (this.field.isField('corrosivemistfield')) {
+				this.boost({ atk: 1, spa: 1 }, pokemon);
+				pokemon.trySetStatus('tox', pokemon, this.effect);
+				return;
+			}
 			switch (this.field.terrain) {
 			case 'electricterrain':
 				this.boost({ spe: 1 }, pokemon);

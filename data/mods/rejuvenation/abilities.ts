@@ -302,6 +302,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 
 	//Edited Abillities
+	aftermath: {
+		inherit: true,
+		onDamagingHitOrder: 1,
+		onDamagingHit(damage, target, source, move) {
+			if (!target.hp && this.checkMoveMakesContact(move, source, target, true)) {
+				this.damage(
+					source.baseMaxhp * (this.field.isField('corrosivemistfield') ? 0.5 : 0.25),
+					source,
+					target
+				);
+			}
+		},
+	},
 	battery: {
 		inherit: true,
 		onAllyBasePower(basePower, attacker, defender, move) {
@@ -487,10 +500,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	mimicry: {
 		inherit: true,
-		onTerrainChange(pokemon) {
+			onTerrainChange(pokemon) {
 			let types;
 
 			switch (this.field.field) {
+			case 'corrosivemistfield':
+				types = ['Poison'];
+				break;
 			case 'forestfield':
 				types = ['Bug'];
 				break;
@@ -527,6 +543,18 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			} else {
 				this.add('-activate', pokemon, 'ability: Mimicry');
 				this.add('-end', pokemon, 'typechange', '[silent]');
+			}
+		},
+	},
+	toxicchain: {
+		inherit: true,
+		onSourceDamagingHit(damage, target, source, move) {
+			if (target.hasAbility('shielddust') || target.hasItem('covertcloak')) return;
+			if (!this.randomChance(3, 10)) return;
+			if (this.field.isField('corrosivemistfield')) {
+				target.setStatus('tox', source, this.effect, true);
+			} else {
+				target.trySetStatus('tox', source);
 			}
 		},
 	},
@@ -635,6 +663,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onModifySpe(spe, pokemon) {
 			if (pokemon.status || this.field.isUnlayeredTerrain('electricterrain')) {
 				return this.chainModify(1.5);
+			}
+		},
+	},
+	pastelveil: {
+		inherit: true,
+		onAnyModifyDamage(damage, source, target, move) {
+			const holder = this.effectState.target;
+			if (
+				move.type === 'Poison' && this.field.isTerrain('mistyterrain', target) &&
+				(target === holder || target.isAlly(holder))
+			) {
+				this.debug('Pastel Veil weakened a Poison-type attack in the mist');
+				return this.chainModify(0.5);
 			}
 		},
 	},
@@ -772,7 +813,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		onSwitchIn(pokemon) {
-			if (this.field.isTerrain('mistyterrain')) {
+			if (this.field.isTerrain('mistyterrain') || this.field.isField('corrosivemistfield')) {
 				this.boost({def: 2});
 			}
 		},

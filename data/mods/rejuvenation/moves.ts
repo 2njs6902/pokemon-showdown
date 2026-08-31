@@ -1,4 +1,10 @@
 export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
+	acidarmor: {
+		inherit: true,
+		onModifyMove(move) {
+			move.boosts = { def: this.field.isField('corrosivemistfield') ? 3 : 2 };
+		},
+	},
     // ================ Info ===================
     // Up to date as of V14.0.20
     // ================ New Fields ===================
@@ -512,6 +518,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onResidualOrder: 6,
 			onResidual(pokemon) {
+				if (this.field.isField('corrosivemistfield')) {
+					if (pokemon.hasType(['Poison', 'Steel'])) {
+						this.heal(pokemon.baseMaxhp / 16);
+					} else {
+						this.add('-message', `${pokemon.name}'s Aqua Ring absorbed the poison!`);
+						this.damage(pokemon.baseMaxhp / 16, pokemon);
+					}
+					return;
+				}
                 const boosted = this.field.isField('swampfield') || this.field.isUnlayeredTerrain('mistyterrain');
 				this.heal(pokemon.baseMaxhp / (boosted ? 8 : 16));
 			},
@@ -559,7 +574,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     barbbarrage: {
         inherit: true,
-        zMove: {basePower: 160},
+		zMove: {basePower: 160},
+		onBasePower(basePower, pokemon, target) {
+			if (this.field.isField('corrosivemistfield') || target.status === 'psn' || target.status === 'tox') {
+				return this.chainModify(2);
+			}
+		},
     },
     barrier: {
         inherit: true,
@@ -640,6 +660,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             let newType = 'Normal';
 
             switch (this.field.field) {
+			case 'corrosivemistfield':
+				newType = 'Poison';
+				break;
             case 'forestfield':
                 newType = 'Bug';
                 break;
@@ -701,6 +724,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
 		zMove: { boost: { spd: 1 } },
+		onHit(target, source) {
+			const item = target.takeItem(source);
+			if (item) {
+				this.add('-enditem', target, item.name, '[from] move: Corrosive Gas', `[of] ${source}`);
+				if (this.field.isField('corrosivemistfield')) {
+					this.boost({ atk: -1, def: -1, spa: -1, spd: -1, spe: -1 }, target, source);
+				}
+			} else {
+				this.add('-fail', target, 'move: Corrosive Gas');
+			}
+		},
     },
     cosmicpower: {
         inherit: true,
@@ -1350,6 +1384,19 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
+	floralhealing: {
+		inherit: true,
+		onHit(target, source) {
+			const success = !!this.heal(
+				target.baseMaxhp * (this.field.isTerrain('grassyterrain') ? 2 / 3 : 1 / 2),
+				target, source
+			);
+			if (success && this.field.isField('corrosivemistfield')) {
+				target.trySetStatus('psn', source);
+			}
+			return success;
+		},
+	},
     leechseed: {
         inherit: true,
         condition: {
@@ -1378,7 +1425,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     lifedew: {
         inherit: true,
-        zMove: { effect: 'heal' },
+		zMove: { effect: 'heal' },
+		heal: undefined,
+		onHit(target, source) {
+			const success = !!this.heal(target.baseMaxhp / 4, target, source);
+			if (success && this.field.isField('corrosivemistfield')) {
+				target.trySetStatus('psn', source);
+			}
+			return success;
+		},
     },
     lovelykiss: {
         inherit: true,
@@ -1545,6 +1600,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onBasePowerPriority: 6,
 			onBasePower(basePower, attacker, defender, move) {
+				const windMoves = [
+					'bleakwindstorm', 'defog', 'gust', 'hurricane', 'razorwind',
+					'supersonicskystrike', 'tailwind', 'twister', 'whirlwind',
+				];
+				const corrosiveMoves = ['clearsmog', 'corrosivegas', 'poisongas', 'smog'];
+				const corrosion = (this.field.terrainState as any).corrosionCounter || 0;
+				if (
+					windMoves.includes(move.id) || move.id === 'acidownpour' ||
+					(corrosiveMoves.includes(move.id) && corrosion + 1 >= 2)
+				) {
+					return this.chainModify(1.3);
+				}
 				if (move.type === 'Dragon') {
 					this.debug('misty terrain weaken');
                     this.add('-message', 'The Misty Terrain weakened the attack!');
@@ -1564,11 +1631,45 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 }
             },
 			onFieldStart(field, source, effect) {
+				if (this.field.isField([
+					'corrosivemistfield', 'frozendimensionalfield', 'underwaterfield',
+				])) {
+					return false;
+				}
 				if (effect?.effectType === 'Ability') {
 					this.add('-fieldstart', 'move: Misty Terrain', '[from] ability: ' + effect.name, `[of] ${source}`);
 				} else {
 					this.add('-fieldstart', 'move: Misty Terrain');
 				}
+				(this.field.terrainState as any).corrosionCounter = 0;
+				this.add('-message', 'Mist settles on the field');
+			},
+			onAfterMove(source, target, move) {
+				if (!this.field.isTerrain('mistyterrain')) return;
+				const windMoves = [
+					'bleakwindstorm', 'defog', 'gust', 'hurricane', 'razorwind',
+					'supersonicskystrike', 'tailwind', 'twister', 'whirlwind',
+				];
+				if (windMoves.includes(move.id)) {
+					this.field.clearTerrain();
+					this.add('-message', 'The mist was blown away!');
+					return;
+				}
+
+				const corrosiveMoves = ['clearsmog', 'corrosivegas', 'poisongas', 'smog'];
+				const state = this.field.terrainState as any;
+				if (move.id === 'acidownpour') {
+					state.corrosionCounter = 2;
+				} else if (corrosiveMoves.includes(move.id)) {
+					state.corrosionCounter = (state.corrosionCounter || 0) + 1;
+				} else {
+					return;
+				}
+				if (state.corrosionCounter < 2) return;
+
+				this.field.clearTerrain();
+				this.add('-message', 'The mist was corroded!');
+				this.field.setField('corrosivemistfield', source, move);
 			},
 			onFieldResidualOrder: 27,
 			onFieldResidualSubOrder: 7,
@@ -1674,6 +1775,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         onTryHit(target, pokemon) {
             let move = 'triattack';
             switch (this.field.field) {
+			case 'corrosivemistfield':
+				move = 'corrosivegas';
+				break;
             case 'forestfield':
                 move = 'woodhammer';
                 break;
@@ -1951,6 +2055,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             move.secondaries = [];
 
             switch (this.field.field) {
+			case 'corrosivemistfield':
+				move.secondaries.push({ chance: 30, status: 'psn' });
+				break;
             case 'forestfield':
                 move.secondaries.push({
                     chance: 100,
@@ -2036,6 +2143,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+	smokescreen: {
+		inherit: true,
+		onModifyMove(move) {
+			move.boosts = { accuracy: this.field.isField('corrosivemistfield') ? -2 : -1 };
+		},
+	},
     shedtail: {
         inherit: true,
 		zMove: { effect: 'heal' },
@@ -2044,6 +2157,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         onHit(pokemon) {
             switch (this.field.field) {
+			case 'corrosivemistfield':
+				pokemon.addVolatile('sheltercorrosivemist');
+				break;
             case 'forestfield':
                 pokemon.addVolatile('shelterforest');
                 break;
@@ -2420,6 +2536,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		onModifyType(move, pokemon) {
             switch (this.field.field) {
+				case 'corrosivemistfield':
+					move.type = 'Poison';
+					break;
                 case 'forestfield':
                     move.type = 'Bug';
                     break;
@@ -2504,6 +2623,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		volatileStatus: 'partiallytrapped',
 	},
+	toxic: {
+		inherit: true,
+		onModifyMove(move, pokemon) {
+			if (pokemon.hasType('Poison')) {
+				move.accuracy = true;
+			} else if (this.field.isField('corrosivemistfield')) {
+				move.accuracy = 100;
+			}
+		},
+	},
     trickortreat: {
         inherit: true,
         isNonstandard: null,
@@ -2527,7 +2656,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     venomdrench: {
         inherit: true,
         isNonstandard: null,
+		onHit(target, source, move) {
+			if (
+				this.field.isField('corrosivemistfield') ||
+				target.status === 'psn' || target.status === 'tox'
+			) {
+				return !!this.boost({ atk: -1, spa: -1, spe: -1 }, target, source, move);
+			}
+			return false;
+		},
     },
+	venoshock: {
+		inherit: true,
+		onBasePower(basePower, source, target) {
+			if (
+				this.field.isField('corrosivemistfield') ||
+				target.status === 'psn' || target.status === 'tox'
+			) {
+				return this.chainModify(2);
+			}
+		},
+	},
     victorydance: {
         inherit: true,
 		zMove: { effect: 'clearnegativeboost' },
@@ -2605,4 +2754,3 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		},
     },
 };
- 
