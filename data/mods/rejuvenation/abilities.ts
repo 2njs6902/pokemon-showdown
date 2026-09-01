@@ -1,3 +1,7 @@
+function moveHasType(move: ActiveMove, type: string) {
+	return move.type === type || !!move.additionalTypes?.includes(type);
+}
+
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
 	//New Abilities
 	pollenflight: {
@@ -214,8 +218,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			const gainedTypes =
 			defender.m.reflectorTypes as string[] | undefined;
 
-			if (gainedTypes?.includes(move.type)) {
-			this.debug(`Reflector resisted mirrored ${move.type} typing`);
+			const resistedType = gainedTypes?.find(type => moveHasType(move, type));
+
+			if (resistedType) {
+			this.debug(`Reflector resisted mirrored ${resistedType} typing`);
 			return this.chainModify(0.5);
 			}
 		},
@@ -339,6 +345,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	dryskin: {
 		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source && moveHasType(move, 'Water')) {
+				if (!this.heal(target.baseMaxhp / 4)) {
+					this.add('-immune', target, '[from] ability: Dry Skin');
+				}
+				return null;
+			}
+		},
 		onResidual(target) {
 			if (this.field.isField('swampfield') || this.field.isTerrain('mistyterrain')) {
 				if (this.field.isField('swampfield')) this.add('-message', `${target.name}'s Dry Skin was healed by the murk!`);
@@ -352,6 +366,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.heal(target.baseMaxhp / 8);
 			} else if (effect.id === 'sunnyday' || effect.id === 'desolateland') {
 				this.damage(target.baseMaxhp / 8, target, target);
+			}
+		},
+	},
+	eartheater: {
+		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source && moveHasType(move, 'Ground')) {
+				if (!this.heal(target.baseMaxhp / 4)) {
+					this.add('-immune', target, '[from] ability: Earth Eater');
+				}
+				return null;
 			}
 		},
 	},
@@ -378,6 +403,18 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 						source.setStatus('psn', target);
 					}
 				}
+			}
+		},
+	},
+	flashfire: {
+		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source && moveHasType(move, 'Fire')) {
+				move.accuracy = true;
+				if (!target.addVolatile('flashfire')) {
+					this.add('-immune', target, '[from] ability: Flash Fire');
+				}
+				return null;
 			}
 		},
 	},
@@ -455,6 +492,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	justified: {
+		inherit: true,
+		onDamagingHit(damage, target, source, move) {
+			if (moveHasType(move, 'Dark')) {
+				this.boost({ atk: 1 });
+			}
+		},
+	},
 	leafguard: {
 		inherit: true,
 		onSetStatus(status, target, source, effect) {
@@ -479,11 +524,22 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	lightningrod: {
 		inherit: true,
 		onTryHit(target, source, move) {
-			if (target !== source  && (move.type === 'Electric' || move.additionalTypes?.includes('Electric'))) {
+			if (target !== source && moveHasType(move, 'Electric')) {
 				if (!this.boost({ spa: 1 })) {
 					this.add('-immune', target, '[from] ability: Lightning Rod');
 				}
 				return null;
+			}
+		},
+		onAnyRedirectTarget(target, source, source2, move) {
+			if (!moveHasType(move, 'Electric') || move.flags['pledgecombo']) return;
+			const redirectTarget = ['randomNormal', 'adjacentFoe'].includes(move.target) ? 'normal' : move.target;
+			if (this.validTarget(this.effectState.target, source, redirectTarget)) {
+				if (move.smartTarget) move.smartTarget = false;
+				if (this.effectState.target !== target) {
+					this.add('-activate', this.effectState.target, 'ability: Lightning Rod');
+				}
+				return this.effectState.target;
 			}
 		},
 		onStart(pokemon) {
@@ -584,7 +640,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	motordrive: {
 		inherit: true,
 		onTryHit(target, source, move) {
-			if (target !== source  && (move.type === 'Electric' || move.additionalTypes?.includes('Electric'))) {
+			if (target !== source && moveHasType(move, 'Electric')) {
 				if (!this.boost({ spe: 1 })) {
 					this.add('-immune', target, '[from] ability: Motor Drive');
 				}
@@ -673,7 +729,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onAnyModifyDamage(damage, source, target, move) {
 			const holder = this.effectState.target;
 			if (
-				move.type === 'Poison' && this.field.isTerrain('mistyterrain', target) &&
+				moveHasType(move, 'Poison') && this.field.isTerrain('mistyterrain', target) &&
 				(target === holder || target.isAlly(holder))
 			) {
 				this.debug('Pastel Veil weakened a Poison-type attack in the mist');
@@ -683,6 +739,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	rattled: {
 		inherit: true,
+		onDamagingHit(damage, target, source, move) {
+			if (['Dark', 'Bug', 'Ghost'].some(type => moveHasType(move, type))) {
+				this.boost({ spe: 1 });
+			}
+		},
 		onSwitchIn() {
 			if (this.field.isField('swampfield')) {
 				this.boost({ spe: 1 });
@@ -692,11 +753,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	sapsipper: {
 		inherit: true,
 		onTryHit(target, source, move) {
-			if (target !== source && (move.type === 'Grass' || move.additionalTypes?.includes('Grass'))) {
+			if (target !== source && moveHasType(move, 'Grass')) {
 				if (!this.boost({ atk: 1 })) {
 					this.add('-immune', target, '[from] ability: Sap Sipper');
 				}
 				return null;
+			}
+		},
+		onAllyTryHitSide(target, source, move) {
+			if (source === this.effectState.target || !target.isAlly(source)) return;
+			if (moveHasType(move, 'Grass')) {
+				this.boost({ atk: 1 }, this.effectState.target);
 			}
 		},
 		onResidualOrder: 28,
@@ -736,6 +803,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				if (this.field.isUnlayeredTerrain('electricterrain') ? this.randomChance(6, 10) : this.randomChance(3, 10)) {
 					source.trySetStatus('par', target);
 				}
+			}
+		},
+	},
+	steamengine: {
+		inherit: true,
+		onDamagingHit(damage, target, source, move) {
+			if (['Water', 'Fire'].some(type => moveHasType(move, type))) {
+				this.boost({ spe: 6 });
 			}
 		},
 	},
@@ -786,10 +861,40 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	stormdrain: {
+		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source && moveHasType(move, 'Water')) {
+				if (!this.boost({ spa: 1 })) {
+					this.add('-immune', target, '[from] ability: Storm Drain');
+				}
+				return null;
+			}
+		},
+		onAnyRedirectTarget(target, source, source2, move) {
+			if (!moveHasType(move, 'Water') || move.flags['pledgecombo']) return;
+			const redirectTarget = ['randomNormal', 'adjacentFoe'].includes(move.target) ? 'normal' : move.target;
+			if (this.validTarget(this.effectState.target, source, redirectTarget)) {
+				if (move.smartTarget) move.smartTarget = false;
+				if (this.effectState.target !== target) {
+					this.add('-activate', this.effectState.target, 'ability: Storm Drain');
+				}
+				return this.effectState.target;
+			}
+		},
+	},
+	thermalexchange: {
+		inherit: true,
+		onDamagingHit(damage, target, source, move) {
+			if (moveHasType(move, 'Fire')) {
+				this.boost({ atk: 1 });
+			}
+		},
+	},
 	voltabsorb: {
 		inherit: true,
 		onTryHit(target, source, move) {
-			if (target !== source && (move.type === 'Electric' || move.additionalTypes?.includes('Electric'))) {
+			if (target !== source && moveHasType(move, 'Electric')) {
 				if (!this.heal(target.baseMaxhp / 4)) {
 					this.add('-immune', target, '[from] ability: Volt Absorb');
 				}
@@ -807,6 +912,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	watercompaction: {
 		inherit: true,
+		onDamagingHit(damage, target, source, move) {
+			if (moveHasType(move, 'Water')) {
+				this.boost({ def: 2 });
+			}
+		},
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
@@ -817,6 +927,28 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onSwitchIn(pokemon) {
 			if (this.field.isTerrain('mistyterrain') || this.field.isField('corrosivemistfield')) {
 				this.boost({def: 2});
+			}
+		},
+	},
+	waterabsorb: {
+		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source && moveHasType(move, 'Water')) {
+				if (!this.heal(target.baseMaxhp / 4)) {
+					this.add('-immune', target, '[from] ability: Water Absorb');
+				}
+				return null;
+			}
+		},
+	},
+	wellbakedbody: {
+		inherit: true,
+		onTryHit(target, source, move) {
+			if (target !== source && moveHasType(move, 'Fire')) {
+				if (!this.boost({ def: 2 })) {
+					this.add('-immune', target, '[from] ability: Well-Baked Body');
+				}
+				return null;
 			}
 		},
 	},

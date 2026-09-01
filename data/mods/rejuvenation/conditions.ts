@@ -154,6 +154,11 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 				move.additionalTypes.push('Poison');
 			}
 		},
+		onEffectiveness(typeMod, target, type, move) {
+			if (move.additionalTypes?.includes('Poison')) {
+				return typeMod + this.dex.getEffectiveness('Poison', type);
+			}
+		},
 		onModifyCritRatio(critRatio, source) {
 			if (source.hasAbility('merciless')) return 5;
 		},
@@ -366,7 +371,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 	shelterelectric: {
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
-			if (move.type === 'Electric') {
+			if (move.type === 'Electric' || move.additionalTypes?.includes('Electric')) {
 				return this.chainModify(0.5);
 			}
 		},
@@ -374,7 +379,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 	shelterforest: {
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
-			if (move.type === 'Bug') {
+			if (move.type === 'Bug' || move.additionalTypes?.includes('Bug')) {
 				return this.chainModify(0.5);
 			}
 		},
@@ -382,7 +387,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 	sheltermisty: {
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
-			if (move.type === 'Fairy') {
+			if (move.type === 'Fairy' || move.additionalTypes?.includes('Fairy')) {
 				return this.chainModify(0.5);
 			}
 		},
@@ -398,7 +403,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 	shelterswamp: {
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
-			if (move.type === 'Water') {
+			if (move.type === 'Water' || move.additionalTypes?.includes('Water')) {
 				return this.chainModify(0.5);
 			}
 		},

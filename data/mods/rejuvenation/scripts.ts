@@ -56,4 +56,40 @@ export const Scripts: ModdedBattleScriptsData = {
 			return recoilDamage;
 		},
 	},
+	pokemon: {
+		/** A Rejuvenation move is immune if any of its active types is immune. */
+		runImmunity(source, message) {
+			if (!source) return true;
+			const move = typeof source === 'string' ? null : source;
+			const types = typeof source === 'string' ? [source] : [source.type, ...(source.additionalTypes || [])];
+
+			for (const type of new Set(types)) {
+				if (move?.ignoreImmunity && (move.ignoreImmunity === true || move.ignoreImmunity[type])) continue;
+				if (!type || type === '???') continue;
+				if (!this.battle.dex.types.isName(type)) {
+					throw new Error("Use runStatusImmunity for " + type);
+				}
+
+				const negateImmunity = !this.battle.runEvent('NegateImmunity', this, type);
+				const notImmune = type === 'Ground' ?
+					this.isGrounded(negateImmunity) :
+					negateImmunity || this.battle.dex.getImmunity(type, this);
+				if (notImmune) continue;
+				if (!message) return false;
+				if (notImmune === null) {
+					if (this.hasAbility('levitate')) {
+						this.battle.add('-immune', this, '[from] ability: Levitate');
+					} else if (this.hasAbility('eelevate')) {
+						this.battle.add('-immune', this, '[from] ability: Eelevate');
+					} else {
+						this.battle.add('-immune', this);
+					}
+				} else {
+					this.battle.add('-immune', this);
+				}
+				return false;
+			}
+			return true;
+		},
+	},
 };

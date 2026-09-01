@@ -958,7 +958,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		condition: {
 			effectType: 'Terrain',
 			duration: 5,
-			durationCallback(source) {
+			durationCallback(source, source2, effect) {
+				if (['iondeluge', 'plasmafists'].includes(effect?.id || '')) {
+					return source?.hasItem('amplifiedrock') ? 6 : 3;
+				}
+				if (effect?.id === 'stokedsparksurfer') return 3;
 				if (source?.hasItem('amplifiedrock')) {
 					return 8;
 				}
@@ -989,10 +993,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onFieldStart(field, source, effect) {
 			    if (this.field.isField('frozendimensionalfield')) return;
+				const duration = `[duration] ${this.field.terrainState.duration || 0}`;
 				if (effect?.effectType === 'Ability') {
-					this.add('-fieldstart', 'move: Electric Terrain', '[from] ability: ' + effect.name, `[of] ${source}`);
+					this.add('-fieldstart', 'move: Electric Terrain', '[from] ability: ' + effect.name, `[of] ${source}`, duration);
 				} else {
-					this.add('-fieldstart', 'move: Electric Terrain');
+					this.add('-fieldstart', 'move: Electric Terrain', duration);
 				}
 				this.add('-message', 'The field is hyper-charged!');
 			},
@@ -1576,7 +1581,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		condition: {
 			effectType: 'Terrain',
 			duration: 5,
-			durationCallback(source, effect) {
+			durationCallback(source, source2, effect) {
+				if (effect?.id === 'mist') {
+					return source?.hasItem('amplifiedrock') ? 6 : 3;
+				}
 				if (source?.hasItem('amplifiedrock')) {
 					return 8;
 				}
@@ -1636,10 +1644,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				])) {
 					return false;
 				}
+				const duration = `[duration] ${this.field.terrainState.duration || 0}`;
 				if (effect?.effectType === 'Ability') {
-					this.add('-fieldstart', 'move: Misty Terrain', '[from] ability: ' + effect.name, `[of] ${source}`);
+					this.add('-fieldstart', 'move: Misty Terrain', '[from] ability: ' + effect.name, `[of] ${source}`, duration);
 				} else {
-					this.add('-fieldstart', 'move: Misty Terrain');
+					this.add('-fieldstart', 'move: Misty Terrain', duration);
 				}
 				(this.field.terrainState as any).corrosionCounter = 0;
 				this.add('-message', 'Mist settles on the field');
@@ -2269,23 +2278,23 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     smackdown: {
         inherit: true,
-        onEffectiveness(typeMod, target, type) {
-            if (this.field.isField('swampfield')){
-                return typeMod + this.dex.getEffectiveness('Water', type);
-            }
-            if (this.field.isTerrain('electricterrain')){
-                return typeMod + this.dex.getEffectiveness('Electric', type);
-            }
-        },
+		onEffectiveness(typeMod, target, type) {
+			if (this.field.isField('swampfield')) {
+				typeMod += this.dex.getEffectiveness('Water', type);
+			}
+			if (this.field.isTerrain('electricterrain')) {
+				typeMod += this.dex.getEffectiveness('Electric', type);
+			}
+			return typeMod;
+		},
 		onModifyMove(move) {
-			move.additionalTypes ??= [];
+			move.additionalTypes = [];
 
 			if (this.field.isField('swampfield')) {
 				move.additionalTypes.push('Water');
-			} if (this.field.isTerrain('electricterrain')) {
+			}
+			if (this.field.isTerrain('electricterrain')) {
 				move.additionalTypes.push('Electric');
-			} else {
-				move.additionalTypes = [];
 			}
 		},
         onBasePower() {
@@ -2585,9 +2594,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (this.field.isTerrain('electricterrain')) {
 				move.additionalTypes.push('Electric');
 			}
-            else {
-                move.additionalTypes = [];
-            }
 		},
 		onEffectiveness(typeMod, target, type, move) {
 			if (move.type !== 'Ground') return;
