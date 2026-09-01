@@ -265,11 +265,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onResidualSubOrder: 1,
 		onResidual(pokemon) {
 			if (!pokemon.hp) return;
-			if (pokemon.hasType('Fire')) return;
-			if (this.field.isField('forestfield')) {
-				this.damage(pokemon.baseMaxhp / 6, pokemon, null);
-			} else {
-				this.damage(pokemon.baseMaxhp / (pokemon.status === 'brn' ? 8 : 16), pokemon, null);
+			for (const target of pokemon.foes()) {
+				if (!target.hp || target.hasType('Fire')) continue;
+				if (this.field.isField('forestfield')) {
+					this.damage(target.baseMaxhp / 6, target, pokemon);
+				} else {
+					this.damage(target.baseMaxhp / (target.status === 'brn' ? 8 : 16), target, pokemon);
+				}
 			}
 		},
 		flags: {},
