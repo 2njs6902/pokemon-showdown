@@ -4,7 +4,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		effectType: 'Field',
 		duration: 0,
 		onFieldStart() {
-			this.add('-fieldstart', 'Concert Venue', "[message] Let's get HYPED!");
+			this.add('-fieldstart', 'Concert Venue', `[duration] ${this.field.fieldState.duration || 0}`, "[message] Let's get HYPED!");
 		},
 		onFieldEnd() {
 			this.add('-fieldend', 'Concert Venue', '[message] The hype died down.');
@@ -120,7 +120,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		effectType: 'Field',
 		duration: 0,
 		onFieldStart() {
-			this.add('-fieldstart', 'Frozen Dimensional Field');
+			this.add('-fieldstart', 'Frozen Dimensional Field', `[duration] ${this.field.fieldState.duration || 0}`);
 		},
 		onFieldEnd() {
 			this.add('-fieldend', 'Frozen Dimensional Field');
@@ -131,7 +131,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		effectType: 'Field',
 		duration: 0,
 		onFieldStart() {
-			this.add('-fieldstart', 'Corrosive Mist Field');
+			this.add('-fieldstart', 'Corrosive Mist Field', `[duration] ${this.field.fieldState.duration || 0}`);
 			this.add('-message', 'Corrosive mist settles on the field!');
 			for (const pokemon of this.getAllActive()) {
 				if (pokemon?.hasAbility('watercompaction')) {
@@ -280,7 +280,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		effectType: 'Field',
 		duration: 0,
 		onFieldStart() {
-			this.add('-fieldstart', 'Corrosive Field');
+			this.add('-fieldstart', 'Corrosive Field', `[duration] ${this.field.fieldState.duration || 0}`);
 		},
 		onFieldEnd() {
 			this.add('-fieldend', 'Corrosive Field');
@@ -291,7 +291,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		effectType: 'Field',
 		duration: 0,
 		onFieldStart() {
-			this.add('-fieldstart', 'Underwater Field');
+			this.add('-fieldstart', 'Underwater Field', `[duration] ${this.field.fieldState.duration || 0}`);
 		},
 		onFieldEnd() {
 			this.add('-fieldend', 'Underwater Field');
