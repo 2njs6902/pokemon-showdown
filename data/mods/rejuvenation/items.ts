@@ -147,6 +147,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 	},
 	berryjuice: {
 		inherit: true,
+		isNonstandard: null,
 	},
 	berrysweet: {
 		inherit: true,
