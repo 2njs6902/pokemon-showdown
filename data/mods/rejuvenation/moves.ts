@@ -932,6 +932,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         zMove: {basePower: 200},
     },
+    dualchop: {
+        inherit: true,
+        isNonstandard: null,
+    },
     dualwingbeat: {
         inherit: true,
         zMove: {basePower: 160},
@@ -993,11 +997,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onFieldStart(field, source, effect) {
 			    if (this.field.isField('frozendimensionalfield')) return;
-				const duration = `[duration] ${this.field.terrainState.duration || 0}`;
+				let minimumDuration = 5;
+				let maximumDuration = 8;
+				if (['iondeluge', 'plasmafists'].includes(effect?.id || '')) {
+					minimumDuration = 3;
+					maximumDuration = 6;
+				} else if (effect?.id === 'stokedsparksurfer') {
+					minimumDuration = 3;
+					maximumDuration = 0;
+				}
+				const duration = `[duration] ${minimumDuration}`;
+				const durationArgs = maximumDuration ? [duration, `[durationmax] ${maximumDuration}`] : [duration];
 				if (effect?.effectType === 'Ability') {
-					this.add('-fieldstart', 'move: Electric Terrain', '[from] ability: ' + effect.name, `[of] ${source}`, duration);
+					this.add('-fieldstart', 'move: Electric Terrain', '[from] ability: ' + effect.name, `[of] ${source}`, ...durationArgs);
 				} else {
-					this.add('-fieldstart', 'move: Electric Terrain', duration);
+					this.add('-fieldstart', 'move: Electric Terrain', ...durationArgs);
 				}
 				this.add('-message', 'The field is hyper-charged!');
 			},
@@ -1119,10 +1133,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			if (this.field.isUnlayeredTerrain('electricterrain')) return;
 			pokemon.addVolatile('focuspunch');
 		},
-        onTryMove(source) {
-            if (this.field.isUnlayeredTerrain('electricterrain')){
-                this.add('-message', `${source.name} lost its focus and couldn't move!`);
-                return false;
+		onTryMove(source) {
+			if (this.field.isUnlayeredTerrain('electricterrain')){
+				this.attrLastMove('[still]');
+				this.add('-message', `${source.name} lost its focus and couldn't move!`);
+				return false;
             }
         },
     },
@@ -2353,11 +2368,21 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				this.effectState.layers++;
 			},
 			onSwitchIn(pokemon) {
-				if (!pokemon.isGrounded() || pokemon.hasItem('heavydutyboots')) return;
+				if (pokemon.hasItem('heavydutyboots')) return;
 				const damageAmounts = [0, 3, 4, 6];
 				if (this.field.isTerrain('electricterrain')) {
-					this.damage(damageAmounts[this.effectState.layers] * pokemon.maxhp / 24, pokemon, null, this.dex.conditions.get('electrifiedspikes'));
+					if (!this.dex.getImmunity('Electric', pokemon)) return;
+					let typeMod = 0;
+					for (const type of pokemon.getTypes()) {
+						typeMod += this.dex.getEffectiveness('Electric', type);
+					}
+					typeMod = this.clampIntRange(typeMod, -6, 6);
+					this.damage(
+						damageAmounts[this.effectState.layers] * pokemon.maxhp * (2 ** typeMod) / 24,
+						pokemon, null, this.dex.conditions.get('spikes')
+					);
 				} else {
+					if (!pokemon.isGrounded()) return;
 					this.damage(damageAmounts[this.effectState.layers] * pokemon.maxhp / 24);
 				}
 			},

@@ -334,6 +334,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	comatose: {
 			inherit: true,
+			onStart(pokemon) {
+				if (!this.field.isUnlayeredTerrain('electricterrain')) {
+					this.add('-ability', pokemon, 'Comatose');
+				}
+			},
 			onSetStatus(status, target, source, effect) {
 				if (this.field.isUnlayeredTerrain('electricterrain')) {
 					return;
