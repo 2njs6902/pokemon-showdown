@@ -1417,6 +1417,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			return success;
 		},
 	},
+    leaftornado: {
+        inherit: true,
+        isNonstandard: null,
+    },
     leechseed: {
         inherit: true,
         condition: {
