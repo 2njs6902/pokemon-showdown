@@ -1168,8 +1168,8 @@ export class TeamValidator {
 		}
 		for (const moveName of set.moves) {
 			const move = dex.moves.get(moveName);
-			if (move.id === 'hiddenpower' && move.type !== 'Normal') {
-				if (!set.hpType) {
+			if (move.id === 'hiddenpower' && (move.type !== 'Normal' || move.name !== 'Hidden Power')) {
+				if (!set.hpType || dex.currentMod === 'rejuvenation') {
 					set.hpType = move.type;
 				} else if (set.hpType !== move.type && ruleTable.has('obtainablemisc')) {
 					problems.push(`${name}'s Hidden Power type ${set.hpType} is incompatible with Hidden Power ${move.type}`);
@@ -1978,6 +1978,7 @@ export class TeamValidator {
 		const ruleTable = this.ruleTable;
 
 		setHas['move:' + move.id] = true;
+		if (this.dex.currentMod === 'rejuvenation' && move.id === 'hiddenpower') return null;
 
 		let banReason = ruleTable.check('move:' + move.id);
 		if (banReason) {
