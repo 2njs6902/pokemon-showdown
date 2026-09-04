@@ -3005,7 +3005,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	nidoranm: {
 		learnset: {
 			// Special Encounter Move
-			moonlight: ["9S0"],
+			morningsun: ["9S0"],
 			
 			amnesia: ["9T"],
 			attract: ["9M"],

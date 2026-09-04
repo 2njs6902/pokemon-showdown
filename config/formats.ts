@@ -32,6 +32,7 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 			'Rejuvenation',
 			"Max Level = 30",
 			"Default Level = 30",
+			"Item Clause = 1",
 		],
 	},
 

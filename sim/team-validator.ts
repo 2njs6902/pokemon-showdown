@@ -1176,7 +1176,7 @@ export class TeamValidator {
 				}
 			}
 		}
-		if (set.hpType && maxedIVs && ruleTable.has('obtainablemisc')) {
+		if (set.hpType && maxedIVs && ruleTable.has('obtainablemisc') && dex.currentMod !== 'rejuvenation') {
 			if (dex.gen <= 2) {
 				const HPdvs = dex.types.get(set.hpType).HPdvs;
 				set.ivs = { hp: 30, atk: 30, def: 30, spa: 30, spd: 30, spe: 30 };
@@ -2150,7 +2150,10 @@ export class TeamValidator {
 				}
 			}
 		}
-		if ((eventData.shiny === true && !set.shiny) || (!eventData.shiny && set.shiny)) {
+		// Rejuvenation's event and purified Shadow Pokemon moves do not lock shininess.
+		if (dex.currentMod !== 'rejuvenation' && (
+			(eventData.shiny === true && !set.shiny) || (!eventData.shiny && set.shiny)
+		)) {
 			if (fastReturn) return true;
 			const shinyReq = eventData.shiny ? ` be shiny` : ` not be shiny`;
 			problems.push(`${name} must${shinyReq}${etc}.`);
@@ -2182,8 +2185,8 @@ export class TeamValidator {
 			}
 
 			if (canBottleCap) {
-				// IVs can be overridden but Hidden Power type can't
-				if (Object.keys(eventData.ivs).length >= 6) {
+				// Rejuvenation stores Hidden Power type independently of IVs.
+				if (dex.currentMod !== 'rejuvenation' && Object.keys(eventData.ivs).length >= 6) {
 					const requiredHpType = dex.getHiddenPower(eventData.ivs as StatsTable).type;
 					if (set.hpType && set.hpType !== requiredHpType) {
 						if (fastReturn) return true;
@@ -2210,11 +2213,11 @@ export class TeamValidator {
 				}
 			}
 			// The perfect IV count affects Hidden Power availability
-			if (dex.gen >= 3 && requiredIVs >= 3 && set.hpType === 'Fighting') {
+			if (dex.currentMod !== 'rejuvenation' && dex.gen >= 3 && requiredIVs >= 3 && set.hpType === 'Fighting') {
 				if (fastReturn) return true;
 				problems.push(`${name} can't use Hidden Power Fighting because it must have at least three perfect IVs${etc}.`);
 			} else if (
-				dex.gen >= 3 && requiredIVs >= 5 && set.hpType &&
+				dex.currentMod !== 'rejuvenation' && dex.gen >= 3 && requiredIVs >= 5 && set.hpType &&
 				!['Dark', 'Dragon', 'Electric', 'Steel', 'Ice'].includes(set.hpType)
 			) {
 				if (fastReturn) return true;
