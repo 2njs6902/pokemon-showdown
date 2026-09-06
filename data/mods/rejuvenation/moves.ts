@@ -2688,6 +2688,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		volatileStatus: 'partiallytrapped',
 	},
+    tidyup: {
+        inherit: true,
+		zMove: { effect: 'clearnegativeboost' },
+    },
 	toxic: {
 		inherit: true,
 		onModifyMove(move, pokemon) {
@@ -2702,16 +2706,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
-    tidyup: {
-        inherit: true,
-		zMove: { effect: 'clearnegativeboost' },
-    },
     tripleaxel: {
         inherit: true,
         zMove: {basePower: 190},
     },
     tripledive: {
         inherit: true,
+        basePower: 35,
         zMove: {basePower: 175},
     },
     twinbeam: {

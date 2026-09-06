@@ -1202,7 +1202,7 @@ export class TeamValidator {
 		const diancieException = species.name === 'Diancie' && !set.shiny;
 		const has3PerfectIVs = setSources.minSourceGen() >= 6 && isLegendary && !diancieException;
 
-		if (set.hpType === 'Fighting' && ruleTable.has('obtainablemisc')) {
+		if (dex.currentMod !== 'rejuvenation' && set.hpType === 'Fighting' && ruleTable.has('obtainablemisc')) {
 			if (has3PerfectIVs) {
 				// Legendary Pokemon must have at least 3 perfect IVs in gen 6+
 				problems.push(`${name} must not have Hidden Power Fighting because it starts with 3 perfect IVs because it's a Gen 6+ legendary.`);
@@ -1230,14 +1230,16 @@ export class TeamValidator {
 			}
 		}
 
-		if (set.hpType && !canBottleCap) {
-			const ivHpType = dex.getHiddenPower(set.ivs).type;
-			if (set.hpType !== ivHpType) {
-				problems.push(`${name} has Hidden Power ${set.hpType}, but its IVs are for Hidden Power ${ivHpType}.`);
-			}
-		} else if (set.hpType) {
-			if (!this.possibleBottleCapHpType(set.hpType, set.ivs)) {
-				problems.push(`${name} has Hidden Power ${set.hpType}, but its IVs don't allow this even with (Bottle Cap) Hyper Training.`);
+		if (dex.currentMod !== 'rejuvenation') {
+			if (set.hpType && !canBottleCap) {
+				const ivHpType = dex.getHiddenPower(set.ivs).type;
+				if (set.hpType !== ivHpType) {
+					problems.push(`${name} has Hidden Power ${set.hpType}, but its IVs are for Hidden Power ${ivHpType}.`);
+				}
+			} else if (set.hpType) {
+				if (!this.possibleBottleCapHpType(set.hpType, set.ivs)) {
+					problems.push(`${name} has Hidden Power ${set.hpType}, but its IVs don't allow this even with (Bottle Cap) Hyper Training.`);
+				}
 			}
 		}
 
