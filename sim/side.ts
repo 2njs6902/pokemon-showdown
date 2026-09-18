@@ -171,6 +171,7 @@ export class Side {
 
 	name: string;
 	avatar: string;
+	title = '';
 	foe: Side = null!; // set in battle.start()
 	/** Only exists in multi battle, for the allied side */
 	allySide: Side | null = null; // set in battle.start()

@@ -416,6 +416,8 @@ type TypeInfo = import('./dex-data').TypeInfo;
 interface PlayerOptions {
 	name?: string;
 	avatar?: string;
+	/** Server-authorized battle title ID; never supplied by a player's team. */
+	title?: string;
 	rating?: number;
 	team?: PokemonSet[] | string | null;
 	seed?: PRNGSeed;

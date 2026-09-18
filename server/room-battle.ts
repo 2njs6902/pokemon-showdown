@@ -20,6 +20,7 @@ import type { Tournament } from './tournaments/index';
 import type { RoomSettings } from './rooms';
 import type { BestOfGame } from './room-battle-bestof';
 import type { GameTimerSettings } from '../sim/dex-formats';
+import { battleTitles } from './battle-titles';
 
 type ChannelIndex = 0 | 1 | 2 | 3 | 4;
 export type PlayerIndex = 1 | 2 | 3 | 4;
@@ -991,6 +992,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 		const options = {
 			name: user.name,
 			avatar: user.avatar,
+			title: battleTitles.get(user),
 		};
 		void this.stream.write(`>player ${player.slot} ` + JSON.stringify(options));
 	}
@@ -1065,6 +1067,7 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			const options = {
 				name: player.name,
 				avatar: user ? `${user.avatar}` : '',
+				title: battleTitles.get(user),
 				team: playerOpts.team || undefined,
 				rating: Math.round(playerOpts.rating || 0),
 			};
@@ -1158,18 +1161,20 @@ export class RoomBattle extends RoomGame<RoomBattlePlayer> {
 			const options = {
 				name: player.name,
 				avatar: user.avatar,
+				title: battleTitles.get(user),
 				team: playerOpts?.team,
 			};
 			void this.stream.write(`>player ${slot} ` + JSON.stringify(options));
 			if (playerOpts) player.hasTeam = true;
 
-			this.room.add(`|player|${slot}|${player.name}|${user.avatar}|`);
+			this.room.add(`|player|${slot}|${player.name}|${user.avatar}||${battleTitles.get(user)}`);
 			Chat.runHandlers('onBattleJoin', slot as string, user, this);
 		} else {
 			player.active = false;
 			player.knownActive = false;
 			const options = {
 				name: '',
+				title: '',
 			};
 			void this.stream.write(`>player ${slot} ` + JSON.stringify(options));
 
