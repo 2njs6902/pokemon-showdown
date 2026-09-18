@@ -327,7 +327,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		inherit: true,
 		onAllyBasePower(basePower, attacker, defender, move) {
 			if (attacker !== this.effectState.target && move.category === 'Special') {
-				this.debug('Battery boost');
+				this.debug('Battery boost ' + (this.field.isUnlayeredTerrain('electricterrain') ? '(1.5x)' : '(1.3x)'));
 				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.5 : 1.3));
 			}
 		},
@@ -443,6 +443,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		inherit: true,
 		onBasePower(basePower, pokemon, target, move) {
 			if (this.field.isUnlayeredTerrain('electricterrain')) {
+				this.debug('Galvanize boost by ' + (this.field.isUnlayeredTerrain('electricterrain') ? '1.5x' : '1.3x'));
 				return this.chainModify(1.5);
 			}
 		},
@@ -513,16 +514,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					this.add('-immune', target, '[from] ability: Leaf Guard');
 				}
 				return false;
-			}
-		},
-	},
-	longreach: {
-		inherit: true,
-		onSourceModifyAccuracy(accuracy, target, source, move) {
-			if (this.field.isField('forestfield')) {
-				if (typeof accuracy !== 'number') return;
-				this.debug('longreach in forestfield - hindering accuracy');
-				return this.chainModify(0.9);
 			}
 		},
 	},
@@ -624,11 +615,12 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	minus: {
 		inherit: true,
 		onModifySpA(spa, pokemon) {
-			if (this.field.isTerrain('electricterrain')) {
+			if (this.field.isTerrain('electricterrain') || (pokemon.hasItem('minuncrest') && pokemon.baseSpecies.baseSpecies === 'Minun')) {
+				this.field.isTerrain('electricterrain') ? this.debug('Minus Electric Terrain Boost (1.5x)') : this.debug('Minus Crest Boost (1.5x)');
 				return this.chainModify(1.5);
 			}
 			for (const allyActive of pokemon.allies()) {
-				if (allyActive.hasAbility(['minus', 'plus'])) {
+				if (allyActive.hasAbility(['minus', 'plus']) || allyActive.hasItem('minuncrest')) {
 					return this.chainModify(1.5);
 				}
 			}
@@ -685,11 +677,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	plus: {
 		inherit: true,
 		onModifySpA(spa, pokemon) {
-			if (this.field.isTerrain('electricterrain')) {
+			if (this.field.isTerrain('electricterrain') || (pokemon.hasItem('pluslecrest') && pokemon.baseSpecies.baseSpecies === 'Plusle')) {
 				return this.chainModify(1.5);
 			}
 			for (const allyActive of pokemon.allies()) {
-				if (allyActive.hasAbility(['minus', 'plus'])) {
+				if (allyActive.hasAbility(['minus', 'plus']) || allyActive.hasItem('pluslecrest')) {
 					return this.chainModify(1.5);
 				}
 			}
@@ -725,6 +717,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		inherit: true,
 		onModifySpe(spe, pokemon) {
 			if (pokemon.status || this.field.isUnlayeredTerrain('electricterrain')) {
+				this.debug('Quick Feet Speed Boost (1.5x)');
 				return this.chainModify(1.5);
 			}
 		},
@@ -806,6 +799,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onDamagingHit(damage, target, source, move) {
 			if (this.checkMoveMakesContact(move, source, target)) {
 				if (this.field.isUnlayeredTerrain('electricterrain') ? this.randomChance(6, 10) : this.randomChance(3, 10)) {
+					this.debug('Static ability triggered by contact in ' + (this.field.isUnlayeredTerrain('electricterrain') ? 'Electric Terrain (6/10 chance)' : 'normal conditions (3/10 chance)'));
 					source.trySetStatus('par', target);
 				}
 			}
@@ -823,6 +817,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		inherit: true,
 		onModifySpe(spe, pokemon) {
 			if (this.field.isTerrain('electricterrain')) {
+				this.debug('Steadfast Electric Terrain Boost (1.5x)');
 				return this.chainModify(1.5);
 			}
 		},
@@ -855,13 +850,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		inherit: true,
 		onModifyAtk(atk, attacker, defender, move) {
 			if (move.type === 'Electric') {
-				this.debug('Transistor boost');
+				this.debug('Transistor boost by ' + (this.field.isUnlayeredTerrain('electricterrain') ? '1.6x' : '1.3x'));
 				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.6 : 1.3));
 			}
 		},
 		onModifySpA(atk, attacker, defender, move) {
 			if (move.type === 'Electric') {
-				this.debug('Transistor boost');
+				this.debug('Transistor boost by ' + (this.field.isUnlayeredTerrain('electricterrain') ? '1.6x' : '1.3x'));
 				return this.chainModify((this.field.isUnlayeredTerrain('electricterrain') ? 1.6 : 1.3));
 			}
 		},
@@ -909,9 +904,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
-			if (this.field.isTerrain('electricterrain')) {
+			if (this.field.isTerrain('electricterrain') && this.heal(pokemon.baseMaxhp / 16)) {
 				this.add('-message', `${pokemon.name} absorbed stray electricity!`);
-				this.heal(pokemon.baseMaxhp / 16);
 			}
 		},
 	},

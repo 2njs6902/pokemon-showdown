@@ -973,6 +973,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				return 5;
 			},
 			onSetStatus(status, target, source, effect) {
+				if (!this.field.isTerrain('electricterrain', target)) return;
 				if (status.id === 'slp' && target.isGrounded() && !target.isSemiInvulnerable()) {
 					if (effect.id === 'yawn' || (effect.effectType === 'Move' && !effect.secondaries)) {
 						this.add('-activate', target, 'move: Electric Terrain');
@@ -981,6 +982,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				}
 			},
 			onTryAddVolatile(status, target) {
+				if (!this.field.isTerrain('electricterrain', target)) return;
 				if (!target.isGrounded() || target.isSemiInvulnerable()) return;
 				if (status.id === 'yawn') {
 					this.add('-activate', target, 'move: Electric Terrain');
@@ -989,8 +991,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 			onBasePowerPriority: 6,
 			onBasePower(basePower, attacker, defender, move) {
-				if (move.type === 'Electric' && attacker.isGrounded() && !attacker.isSemiInvulnerable()) {
-					this.debug('electric terrain boost');
+				if (!this.field.isTerrain('electricterrain', attacker)) return;
+				if (move.type === 'Electric' && (attacker.isGrounded() || attacker.volatiles['magnetrise']) && !attacker.isSemiInvulnerable()) {
+					this.debug('electric terrain boost by ' + (this.field.isUnlayeredTerrain('electricterrain') ? '1.5x' : '1.3x'));
                     this.add('-message', 'The Electric Terrain strengthened the attack!');
 					return this.chainModify(this.field.isUnlayeredTerrain('electricterrain') ? 1.5 : 1.3);
 				}
@@ -1014,6 +1017,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					this.add('-fieldstart', 'move: Electric Terrain', ...durationArgs);
 				}
 				this.add('-message', 'The field is hyper-charged!');
+				if (this.field.getPseudoWeather('mudsport')) {
+					this.add('-message', 'The hyper-charged terrain shorted out!');
+				}
 			},
 			onFieldResidualOrder: 27,
 			onFieldResidualSubOrder: 7,
@@ -1817,6 +1823,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     mudsport: {
         inherit: true,
         isNonstandard: null,
+        condition: {
+            duration: 5,
+            onFieldStart(field, source) {
+                this.add('-fieldstart', 'move: Mud Sport', `[of] ${source}`);
+                if (this.field.terrain === 'electricterrain') {
+                    this.add('-message', 'The hyper-charged terrain shorted out!');
+                }
+            },
+            onBasePowerPriority: 1,
+            onBasePower(basePower, attacker, defender, move) {
+                if (move.type === 'Electric') {
+                    this.debug('mud sport weaken');
+                    return this.chainModify(0.33);
+                }
+            },
+            onFieldResidualOrder: 27,
+            onFieldResidualSubOrder: 4,
+            onFieldEnd() {
+                this.add('-fieldend', 'move: Mud Sport');
+            },
+        },
     },
     mysticalfire: {
         inherit: true,
@@ -1895,6 +1922,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         onModifyMove(move) {
             if (this.field.isUnlayeredTerrain('electricterrain')) {
+                this.debug('Parabolic Charge healing increased due to Electric Terrain');
                 move.drain = [3, 4];
             }
         },

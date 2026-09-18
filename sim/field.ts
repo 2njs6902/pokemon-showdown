@@ -177,7 +177,8 @@ export class Field {
 
 	effectiveTerrain(target?: Pokemon | Side | Battle) {
 		if (this.battle.event && !target) target = this.battle.event.target;
-		if (this.getPseudoWeather('mudsport') && this.terrain === 'electricterrain') return '';
+		if (this.battle.dex.currentMod === 'rejuvenation' &&
+			this.getPseudoWeather('mudsport') && this.terrain === 'electricterrain') return '';
 		return this.battle.runEvent('TryTerrain', target) ? this.terrain : '';
 	}
 
@@ -348,6 +349,9 @@ export class Field {
 			return false;
 		}
 		this.battle.runEvent('PseudoWeatherChange', source, source, status);
+		if (this.battle.dex.currentMod === 'rejuvenation' && status.id === 'mudsport') {
+			this.battle.eachEvent('TerrainChange');
+		}
 		return true;
 	}
 
@@ -362,6 +366,9 @@ export class Field {
 		if (!state) return false;
 		this.battle.singleEvent('FieldEnd', status, state, this);
 		delete this.pseudoWeather[status.id];
+		if (this.battle.dex.currentMod === 'rejuvenation' && status.id === 'mudsport') {
+			this.battle.eachEvent('TerrainChange');
+		}
 		return true;
 	}
 

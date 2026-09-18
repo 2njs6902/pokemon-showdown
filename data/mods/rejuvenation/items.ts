@@ -126,7 +126,244 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		num: 6909,
 		gen: 9,
 	},
-	
+	pluslecrest: {
+		name: "Plusle Crest",
+		spritenum: 0,
+		onModifyAtkPriority: 1,
+		onModifyAtk(atk, pokemon) {
+			const holder = this.effectState.target;
+
+			if (holder.baseSpecies.baseSpecies === 'Plusle' && (pokemon === holder || pokemon.isAlly(holder)) && this.getCategory(this.effectState.move) === 'Physical') {
+				this.debug('Plusle Crest Boost');
+				return this.chainModify(1.33);
+			}
+		},
+		itemUser: ["Plusle"],
+		num: 6910,
+		gen: 9,
+	},
+	minuncrest: {
+		name: "Minun Crest",
+		spritenum: 0,
+		onAnyModifyDamage(damage, source, target, move) {
+			const holder = this.effectState.target;
+
+			if (holder.baseSpecies.baseSpecies === 'Minun' && (target === holder || target.isAlly(holder)) && this.getCategory(move) === 'Physical') {
+				this.debug('Minun Crest weaken');
+				return this.chainModify(0.67);
+			}
+		},
+		itemUser: ["Minun"],
+		num: 6911,
+		gen: 9,
+	},
+	theivulcrest: {
+		name: "Thievul Crest",
+		spritenum: 0,
+		onStart(pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Thievul') return;
+
+			this.add('-message', `INSERT THIEVUL CREST MESSAGE HERE`);
+
+			for (const target of pokemon.adjacentFoes()) {
+				if (target.volatiles['substitute']) {
+					this.add('-immune', target);
+				} else {
+					this.boost({ spa: -1 }, target, pokemon, null, true);
+				}
+			}
+
+			this.boost({ spa: 1 }, pokemon);
+		},
+		itemUser: ["Thievul"],
+		num: 6912,
+		gen: 9,
+	},
+	simipourcrest: {
+		name: "Simipour Crest",
+		spritenum: 0,
+
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Simipour') return;
+
+			const noModifyType = [
+				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
+			];
+
+			if (move.type === 'Normal' && (!noModifyType.includes(move.id) || this.activeMove?.isMax) 
+				&& !(move.isZ && move.category !== 'Status') && !(move.name === 'Tera Blast' && pokemon.terastallized)) {
+				move.type = 'Grass';
+				move.typeChangerBoosted = this.effect;
+			}
+		},
+
+		// 20% Offense Boost + Grass STAB
+		onModifyAtk(atk, attacker, defender, move) {
+			let boost = 1.2;
+			if (move.type === 'Grass') boost *= 1.5;
+			return this.chainModify(boost);
+		},
+		onModifySpA(spa, attacker, defender, move) {
+			let boost = 1.2;
+			if (move.type === 'Grass') boost *= 1.5;
+			return this.chainModify(boost);
+		},
+
+		// Grass-type resistances
+		onSourceModifyAtkPriority: 5,
+		onSourceModifyAtk(atk, attacker, defender, move) {
+			if (defender.baseSpecies.baseSpecies === 'Simipour' 
+				&& ['Water', 'Electric', 'Grass', 'Ground'].includes(move.type)) {
+				return this.chainModify(0.5);
+			}
+		},
+		onSourceModifySpAPriority: 5,
+		onSourceModifySpA(spa, attacker, defender, move) {
+			if (defender.baseSpecies.baseSpecies === 'Simipour' 
+				&& ['Water', 'Electric', 'Grass', 'Ground'].includes(move.type)) {
+				return this.chainModify(0.5);
+			}
+		},
+
+		itemUser: ["Simipour"],
+		num: 6913,
+		gen: 9,
+	},
+	simisearcrest: {
+		name: "Simisear Crest",
+		spritenum: 0,
+
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Simisear') return;
+
+			const noModifyType = [
+				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
+			];
+
+			if (move.type === 'Normal' && (!noModifyType.includes(move.id) || this.activeMove?.isMax) 
+				&& !(move.isZ && move.category !== 'Status') && !(move.name === 'Tera Blast' && pokemon.terastallized)) {
+				move.type = 'Water';
+				move.typeChangerBoosted = this.effect;
+			}
+		},
+
+		// 20% Offense Boost + Water STAB
+		onModifyAtk(atk, attacker, defender, move) {
+			let boost = 1.2;
+			if (move.type === 'Water') boost *= 1.5;
+			return this.chainModify(boost);
+		},
+		onModifySpA(spa, attacker, defender, move) {
+			let boost = 1.2;
+			if (move.type === 'Water') boost *= 1.5;
+			return this.chainModify(boost);
+		},
+
+		// Water-type resistances
+		onSourceModifyAtkPriority: 5,
+		onSourceModifyAtk(atk, attacker, defender, move) {
+			if (defender.baseSpecies.baseSpecies === 'Simisear' 
+				&& ['Water', 'Fire', 'Ice', 'Steel'].includes(move.type)) {
+				return this.chainModify(0.5);
+			}
+		},
+		onSourceModifySpAPriority: 5,
+		onSourceModifySpA(spa, attacker, defender, move) {
+			if (defender.baseSpecies.baseSpecies === 'Simisear' 
+				&& ['Water', 'Fire', 'Ice', 'Steel'].includes(move.type)) {
+				return this.chainModify(0.5);
+			}
+		},
+
+		itemUser: ["Simisear"],
+		num: 6914,
+		gen: 9,
+	},
+	simisagecrest: {
+		name: "Simisage Crest",
+		spritenum: 0,
+
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Simisage') return;
+
+			const noModifyType = [
+				'judgment', 'multiattack', 'naturalgift', 'revelationdance', 'technoblast', 'terrainpulse', 'weatherball',
+			];
+
+			if (move.type === 'Normal' && (!noModifyType.includes(move.id) || this.activeMove?.isMax) 
+				&& !(move.isZ && move.category !== 'Status') && !(move.name === 'Tera Blast' && pokemon.terastallized)) {
+				move.type = 'Fire';
+				move.typeChangerBoosted = this.effect;
+			}
+		},
+
+		// 20% Offense Boost + Fire STAB
+		onModifyAtk(atk, attacker, defender, move) {
+			let boost = 1.2;
+			if (move.type === 'Fire') boost *= 1.5;
+			return this.chainModify(boost);
+		},
+		onModifySpA(spa, attacker, defender, move) {
+			let boost = 1.2;
+			if (move.type === 'Fire') boost *= 1.5;
+			return this.chainModify(boost);
+		},
+
+		// Fire-type resistances
+		onSourceModifyAtkPriority: 5,
+		onSourceModifyAtk(atk, attacker, defender, move) {
+			if (defender.baseSpecies.baseSpecies === 'Simisage' 
+				&& ['Bug', 'Fairy', 'Fire', 'Grass', 'Ice', 'Steel'].includes(move.type)) {
+				return this.chainModify(0.5);
+			}
+		},
+		onSourceModifySpAPriority: 5,
+		onSourceModifySpA(spa, attacker, defender, move) {
+			if (defender.baseSpecies.baseSpecies === 'Simisage' 
+				&& ['Bug', 'Fairy', 'Fire', 'Grass', 'Ice', 'Steel'].includes(move.type)) {
+				return this.chainModify(0.5);
+			}
+		},
+
+		itemUser: ["Simisage"],
+		num: 6915,
+		gen: 9,
+	},
+	noctowlcrest: {
+		name: "Noctowl Crest",
+		spritenum: 0,
+		onModifyDefPriority: 5,
+		onModifyDef(def, pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Noctowl') return;
+			return this.chainModify(1.3);
+		},
+		onDamagingHit(damage, target, source, effect) {
+			if (target.baseSpecies.baseSpecies !== 'Noctowl') return;
+			this.boost({ spd: 1 });
+		},
+		num: 6916,
+		gen: 9,
+	},
+	ariadoscrest: {
+		name: "Ariados Crest",
+		spritenum: 0,
+		onModifySpePriority: 5,
+		onModifySpe(spe, pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Ariados') return;
+			return this.chainModify(1.5);
+		},
+		onModifyCritRatio(critRatio, source, target) {
+			if (source.baseSpecies.baseSpecies !== 'Ariados') return;
+			let slowed = false;
+			if (target.boosts['spe'] < 0) slowed = true;
+			if (target && (slowed || ['psn', 'tox'].includes(target.status))) return 5;
+		},
+		num: 6917,
+		gen: 9,
+	},
 	
 	absorbbulb: {
 		inherit: true,

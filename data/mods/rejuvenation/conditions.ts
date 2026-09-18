@@ -372,6 +372,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Electric' || move.additionalTypes?.includes('Electric')) {
+				this.debug('Shelter reducing damage from Electric-type move');
 				return this.chainModify(0.5);
 			}
 		},
