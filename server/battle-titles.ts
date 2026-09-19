@@ -1,5 +1,6 @@
 /** Server-authorized, account-exclusive battle titles. */
 import { FS } from '../lib';
+import { toID } from '../sim/dex-data';
 
 export const BATTLE_TITLES: { [id: string]: string } = {
 	rebornphoenix: 'Reborn Phoenix',

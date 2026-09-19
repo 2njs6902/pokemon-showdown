@@ -1,5 +1,6 @@
 /** Server-authorized custom name colors used only in battles and their replays. */
 import { FS } from '../lib';
+import { toID } from '../sim/dex-data';
 
 const COLORS_FILE = 'config/battle-name-colors.json';
 
