@@ -3252,6 +3252,7 @@ export class Battle {
 			side = new Side(options.name || `Player ${slotNum + 1}`, this, slotNum, team);
 			if (options.avatar) side.avatar = `${options.avatar}`;
 			if (options.title) side.title = toID(options.title);
+			if (options.nameColor && /^[0-9A-F]{6}$/i.test(options.nameColor)) side.nameColor = options.nameColor.toUpperCase();
 			this.sides[slotNum] = side;
 		} else {
 			// edit player
@@ -3270,13 +3271,20 @@ export class Battle {
 				side.title = toID(options.title);
 				didSomething = true;
 			}
+			if (options.nameColor !== undefined) {
+				const nameColor = /^[0-9A-F]{6}$/i.test(options.nameColor) ? options.nameColor.toUpperCase() : '';
+				if (side.nameColor !== nameColor) {
+					side.nameColor = nameColor;
+					didSomething = true;
+				}
+			}
 		}
 		if (options.team && typeof options.team !== 'string') {
 			options.team = Teams.pack(options.team);
 		}
 		if (!didSomething) return;
 		this.inputLog.push(`>player ${slot} ` + JSON.stringify(options));
-		this.add('player', side.id, side.name, side.avatar, options.rating || '', side.title);
+		this.add('player', side.id, side.name, side.avatar, options.rating || '', side.title, side.nameColor);
 
 		// Start the battle if it's ready to start
 		if (this.sides.every(playerSide => !!playerSide) && !this.started) this.start();

@@ -418,6 +418,8 @@ interface PlayerOptions {
 	avatar?: string;
 	/** Server-authorized battle title ID; never supplied by a player's team. */
 	title?: string;
+	/** Server-authorized six-digit hex color used for the player's name in battle. */
+	nameColor?: string;
 	rating?: number;
 	team?: PokemonSet[] | string | null;
 	seed?: PRNGSeed;

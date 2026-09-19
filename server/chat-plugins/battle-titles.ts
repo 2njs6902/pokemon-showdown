@@ -1,4 +1,5 @@
 import { BATTLE_TITLES, battleTitles } from '../battle-titles';
+import { sendBattleCosmetics } from '../battle-cosmetics';
 
 function titleID(text: string) {
 	const id = toID(text);
@@ -23,6 +24,7 @@ export const commands: Chat.ChatCommands = {
 			if (!target.trim()) return this.parse('/help battletitle');
 			if (title && !Object.prototype.hasOwnProperty.call(BATTLE_TITLES, title)) return this.errorReply('Unknown title. Use /battletitle list.');
 			if (!battleTitles.select(user.id, title)) return this.errorReply('You have not been granted that title.');
+			sendBattleCosmetics(user);
 			this.sendReply(`Battle title set to ${BATTLE_TITLES[title] || 'None'}. This applies to future battles.`);
 		},
 		grant(target) {
@@ -33,6 +35,8 @@ export const commands: Chat.ChatCommands = {
 			if (!userid || !title || extra !== undefined) return this.parse('/help battletitle');
 			if (!Object.prototype.hasOwnProperty.call(BATTLE_TITLES, title)) return this.errorReply('Unknown title. Use /battletitle list.');
 			battleTitles.grant(userid, title);
+			const targetUser = Users.get(userid);
+			if (targetUser) sendBattleCosmetics(targetUser);
 			this.globalModlog('BATTLE TITLE GRANT', userid, title);
 			this.sendReply(`Granted ${BATTLE_TITLES[title]} to ${userid}. The player must log into that account to display it.`);
 		},
@@ -44,6 +48,8 @@ export const commands: Chat.ChatCommands = {
 			if (!userid || !title || extra !== undefined) return this.parse('/help battletitle');
 			if (!Object.prototype.hasOwnProperty.call(BATTLE_TITLES, title)) return this.errorReply('Unknown title. Use /battletitle list.');
 			battleTitles.revoke(userid, title);
+			const targetUser = Users.get(userid);
+			if (targetUser) sendBattleCosmetics(targetUser);
 			this.globalModlog('BATTLE TITLE REVOKE', userid, title);
 			this.sendReply(`Revoked ${BATTLE_TITLES[title]} from ${userid}. This applies to future battles.`);
 		},
