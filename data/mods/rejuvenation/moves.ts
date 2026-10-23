@@ -989,15 +989,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					return null;
 				}
 			},
-			onBasePowerPriority: 6,
-			onBasePower(basePower, attacker, defender, move) {
-				if (!this.field.isTerrain('electricterrain', attacker)) return;
-				if (move.type === 'Electric' && (attacker.isGrounded() || attacker.volatiles['magnetrise']) && !attacker.isSemiInvulnerable()) {
-					this.debug('electric terrain boost by ' + (this.field.isUnlayeredTerrain('electricterrain') ? '1.5x' : '1.3x'));
-                    this.add('-message', 'The Electric Terrain strengthened the attack!');
-					return this.chainModify(this.field.isUnlayeredTerrain('electricterrain') ? 1.5 : 1.3);
-				}
-			},
 			onFieldStart(field, source, effect) {
 			    if (this.field.isField('frozendimensionalfield')) return;
 				let minimumDuration = 5;
@@ -1016,7 +1007,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				} else {
 					this.add('-fieldstart', 'move: Electric Terrain', ...durationArgs);
 				}
-				this.add('-message', 'The field is hyper-charged!');
+				this.add('-message', 'An electric current ran across the battlefield!');
 				if (this.field.getPseudoWeather('mudsport')) {
 					this.add('-message', 'The hyper-charged terrain shorted out!');
 				}
@@ -1025,6 +1016,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onFieldResidualSubOrder: 7,
 			onFieldEnd() {
 				this.add('-fieldend', 'move: Electric Terrain');
+                this.add('-message', 'The electricity disappeared from the battlefield.');
 			},
 		},
 	},
@@ -1225,6 +1217,47 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
+	grassyterrain: {
+        inherit: true,
+		condition: {
+			effectType: 'Terrain',
+			duration: 5,
+			durationCallback(source, effect) {
+				if (source?.hasItem('terrainextender')) {
+					return 8;
+				}
+				return 5;
+			},
+			onBasePower(basePower, attacker, defender, move) {
+				const weakenedMoves = ['earthquake', 'bulldoze', 'magnitude'];
+				if (weakenedMoves.includes(move.id) && defender.isGrounded() && !defender.isSemiInvulnerable()) {
+					this.debug('move weakened by grassy terrain');
+					return this.chainModify(0.5);
+				}
+			},
+			onFieldStart(field, source, effect) {
+				if (effect?.effectType === 'Ability') {
+					this.add('-fieldstart', 'move: Grassy Terrain', '[from] ability: ' + effect.name, `[of] ${source}`);
+				} else {
+					this.add('-fieldstart', 'move: Grassy Terrain');
+				}
+			},
+			onResidualOrder: 5,
+			onResidualSubOrder: 2,
+			onResidual(pokemon) {
+				if (pokemon.isGrounded() && !pokemon.isSemiInvulnerable()) {
+					this.heal(pokemon.baseMaxhp / 16, pokemon, pokemon);
+				} else {
+					this.debug(`Pokemon semi-invuln or not grounded; Grassy Terrain skipped`);
+				}
+			},
+			onFieldResidualOrder: 27,
+			onFieldResidualSubOrder: 7,
+			onFieldEnd() {
+				this.add('-fieldend', 'move: Grassy Terrain');
+			},
+		},
+	},
     gravapple: {
         inherit: true,
         onBasePower() {
@@ -1661,31 +1694,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					return null;
 				}
 			},
-			onBasePowerPriority: 6,
-			onBasePower(basePower, attacker, defender, move) {
-				const windMoves = [
-					'bleakwindstorm', 'defog', 'gust', 'hurricane', 'razorwind',
-					'supersonicskystrike', 'tailwind', 'twister', 'whirlwind',
-				];
-				const corrosiveMoves = ['clearsmog', 'corrosivegas', 'poisongas', 'smog'];
-				const corrosion = (this.field.terrainState as any).corrosionCounter || 0;
-				if (
-					windMoves.includes(move.id) || move.id === 'acidownpour' ||
-					(corrosiveMoves.includes(move.id) && corrosion + 1 >= 2)
-				) {
-					return this.chainModify(1.3);
-				}
-				if (move.type === 'Dragon') {
-					this.debug('misty terrain weaken');
-                    this.add('-message', 'The Misty Terrain weakened the attack!');
-					return this.chainModify(0.5);
-				}
-                if (move.type === 'Fairy') {
-                    this.debug('misty terrain strengthen');
-                    this.add('-message', 'The Misty Terrain strengthened the attack!');
-                    return this.chainModify(this.field.isUnlayeredTerrain('mistyterrain') ? 1.5 : 1.3);
-                }
-			},
 			onModifySpDPriority: 6,
             onModifySpD(spd, pokemon) {
                 if (this.field.isUnlayeredTerrain('mistyterrain') && pokemon.types.includes('Fairy')) {
@@ -1706,7 +1714,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					this.add('-fieldstart', 'move: Misty Terrain', duration);
 				}
 				(this.field.terrainState as any).corrosionCounter = 0;
-				this.add('-message', 'Mist settles on the field');
+				this.add('-message', 'Mist swirled around the battlefield!');
 			},
 			onAfterMove(source, target, move) {
 				if (!this.field.isTerrain('mistyterrain')) return;
@@ -1739,6 +1747,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			onFieldResidualSubOrder: 7,
 			onFieldEnd() {
 				this.add('-fieldend', 'Misty Terrain');
+				this.add('-message', 'The mist disappeared from the battlefield.');
 			},
 		},
 	},
@@ -2264,7 +2273,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 // else if (this.field.isTerrain('psychicterrain')) {
                 //     move = 'psychic';
                 // }
-                break;
+                else {
+                    pokemon.addVolatile('shelterdefault');
+                }
             }
 
         },
@@ -2608,11 +2619,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	tectonicrage: {
 		inherit: true,
 		isNonstandard: null,
-		onBasePower() {
-			if (this.field.isTerrain('electricterrain')) {
-				return this.chainModify(1.3);
-			}
-		},
 		onAfterHit(target, source) {
 			if (source.hp && this.field.isTerrain('electricterrain')) {
 				this.field.clearTerrain();

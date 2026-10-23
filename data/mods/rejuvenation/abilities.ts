@@ -273,7 +273,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (!pokemon.hp) return;
 			for (const target of pokemon.foes()) {
 				if (!target.hp || target.hasType('Fire')) continue;
-				if (this.field.isField('forestfield')) {
+				if (this.field.isField('forestfield') || this.field.isUnlayeredTerrain('grassyterrain')) {
 					this.damage(target.baseMaxhp / 6, target, pokemon);
 				} else {
 					this.damage(target.baseMaxhp / (target.status === 'brn' ? 8 : 16), target, pokemon);
@@ -284,6 +284,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		name: "Wildfire",
 		rating: 3,
 		num: 6911,
+	},
+	cottondown: {
+		inherit: true,
+		onDamagingHit(damage, target) {
+			let activated = false;
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon === target || pokemon.fainted) continue;
+				if (!activated) {
+					this.add('-ability', target, 'Cotton Down');
+					activated = true;
+				}
+				this.boost({ spe: this.field.isUnlayeredTerrain('grassyterrain') ? -2 : -1 }, pokemon, target, null, true);
+			}
+		},
 	},
 	junglebeat: {
 		onModifyMove(move, pokemon) {
@@ -465,6 +479,29 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	grassysurge: {
+		inherit: true,
+		onStart(source) {
+			if (this.field.setTerrain('grassyterrain', source, this.effect)) {
+				this.field.terrainState.duration = source.hasItem('amplifiedrock') ? 8 : 5;
+			}
+		},
+	},
+	harvest: {
+		inherit: true,
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			if (this.field.isUnlayeredTerrain('grassyterrain') ||
+				this.field.isWeather(['sunnyday', 'desolateland']) || this.randomChance(1, 2)) {
+				if (pokemon.hp && !pokemon.item && this.dex.items.get(pokemon.lastItem).isBerry) {
+					pokemon.setItem(pokemon.lastItem);
+					pokemon.lastItem = '';
+					this.add('-item', pokemon, pokemon.getItem(), '[from] ability: Harvest');
+				}
+			}
+		},
+	},
 	gulpmissile: {
 		inherit: true,
 		onSourceTryPrimaryHit(target, source, effect) {
@@ -509,11 +546,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	leafguard: {
 		inherit: true,
 		onSetStatus(status, target, source, effect) {
-			if (['sunnyday', 'desolateland'].includes(target.effectiveWeather()) || this.field.isField('forestfield')) {
+			if (['sunnyday', 'desolateland'].includes(target.effectiveWeather()) ||
+				this.field.isField('forestfield') || this.field.isUnlayeredTerrain('grassyterrain')) {
 				if ((effect as Move)?.status) {
 					this.add('-immune', target, '[from] ability: Leaf Guard');
 				}
 				return false;
+			}
+		},
+		onTryAddVolatile(status, target) {
+			if (status.id === 'yawn' && (['sunnyday', 'desolateland'].includes(target.effectiveWeather()) ||
+				this.field.isField('forestfield') || this.field.isUnlayeredTerrain('grassyterrain'))) {
+				this.add('-immune', target, '[from] ability: Leaf Guard');
+				return null;
 			}
 		},
 	},
@@ -656,16 +701,42 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	overgrow: {
 		inherit: true,
 		onModifyAtk(atk, attacker, defender, move) {
-			if (move.type === 'Grass' && (attacker.hp <= attacker.maxhp / 3 || this.field.isField('forestfield'))) {
+			if (move.type === 'Grass' && (attacker.hp <= attacker.maxhp / 3 ||
+				this.field.isField('forestfield') || this.field.isUnlayeredTerrain('grassyterrain'))) {
 				this.debug('Overgrow boost');
 				return this.chainModify(1.5);
 			}
 		},
 		onModifySpA(atk, attacker, defender, move) {
-			if (move.type === 'Grass' && (attacker.hp <= attacker.maxhp / 3 || this.field.isField('forestfield'))) {
+			if (move.type === 'Grass' && (attacker.hp <= attacker.maxhp / 3 ||
+				this.field.isField('forestfield') || this.field.isUnlayeredTerrain('grassyterrain'))) {
 				this.debug('Overgrow boost');
 				return this.chainModify(1.5);
 			}
+		},
+	},
+	powerspot: {
+		inherit: true,
+		onAllyBasePowerPriority: 22,
+		onAllyBasePower(basePower, attacker) {
+			if (attacker !== this.effectState.target) {
+				return this.chainModify(this.field.isUnlayeredTerrain('psychicterrain') ? 1.5 : [5325, 4096]);
+			}
+		},
+	},
+	psychicsurge: {
+		inherit: true,
+		onStart(source) {
+			if (this.field.setTerrain('psychicterrain', source, this.effect)) {
+				this.field.terrainState.duration = source.hasItem('amplifiedrock') ? 8 : 5;
+			}
+		},
+	},
+	purepower: {
+		inherit: true,
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk) {
+			if (!this.field.isTerrain('psychicterrain')) return this.chainModify(2);
 		},
 	},
 	pixilate: {
@@ -770,6 +841,43 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (this.field.isField('forestfield')) {
 				this.add('-message', `${pokemon.name} drank tree sap to recover!`);
 				this.heal(pokemon.baseMaxhp / 16);
+			}
+		},
+	},
+	seedsower: {
+		inherit: true,
+		onDamagingHit(damage, target) {
+			if (this.field.setTerrain('grassyterrain', target, this.effect)) {
+				this.field.terrainState.duration = target.hasItem('amplifiedrock') ? 8 : 5;
+			}
+		},
+	},
+	zenmode: {
+		inherit: true,
+		onStart(pokemon) {
+			if (this.field.isUnlayeredTerrain('psychicterrain') &&
+				pokemon.baseSpecies.baseSpecies === 'Darmanitan' && !pokemon.transformed) {
+				pokemon.addVolatile('zenmode');
+			}
+		},
+		onTerrainChange(pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Darmanitan' || pokemon.transformed) return;
+			if (this.field.isUnlayeredTerrain('psychicterrain')) {
+				pokemon.addVolatile('zenmode');
+			} else if (pokemon.hp > pokemon.maxhp / 2 && pokemon.volatiles['zenmode']) {
+				pokemon.removeVolatile('zenmode');
+			}
+		},
+		onResidualOrder: 29,
+		onResidual(pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Darmanitan' || pokemon.transformed) return;
+			if ((this.field.isUnlayeredTerrain('psychicterrain') || pokemon.hp <= pokemon.maxhp / 2) &&
+				!['Zen', 'Galar-Zen'].includes(pokemon.species.forme)) {
+				pokemon.addVolatile('zenmode');
+			} else if (!this.field.isUnlayeredTerrain('psychicterrain') && pokemon.hp > pokemon.maxhp / 2 &&
+				['Zen', 'Galar-Zen'].includes(pokemon.species.forme)) {
+				pokemon.addVolatile('zenmode');
+				pokemon.removeVolatile('zenmode');
 			}
 		},
 	},

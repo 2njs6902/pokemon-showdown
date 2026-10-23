@@ -20,20 +20,6 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			this.add('-fieldstart', 'Forest Field', `[duration] ${duration}`);
 			this.add('-message', 'The field is abound with trees.');
 		},
-		onBasePower(basePower, attacker, defender, move) {
-			const counter = (this.field.fieldState as any).waterCounter || 0;
-			if (move.type === 'Grass') {
-				this.debug('forest field boost');
-				this.add('-message', 'The forestry strengthened the attack!');
-				return this.chainModify([5325, 4096]);
-			}
-			if (move.type === 'Bug' && move.category === 'Special') {
-				this.debug('forest field boost');
-				return this.chainModify([5325, 4096]);
-			}
-			if (move.id === 'surf' && counter + 1 >= 3) return this.chainModify([13, 10]);
-			if (move.id === 'muddywater' && counter + 2 >= 3) return this.chainModify([13, 10]);
-		},
 		onAfterMove(source, target, move) {
 			let amount = 0;
 			if (move.id === 'surf') amount = 1;
@@ -89,22 +75,6 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 
 			this.add('-message', `${pokemon.name}'s Speed sank...!`);
 			this.boost({ spe: trapped ? -2 : -1 }, pokemon, null, this.dex.conditions.get('swampfieldspeed'));
-		},
-		onBasePower(basePower, attacker, defender, move) {
-			switch (move.type) {
-			case 'Bug':
-				this.add('-message', 'Bugs are swarming everywhere!');
-				return this.chainModify([5325, 4096]);
-			case 'Grass':
-				this.add('-message', 'Thick mangroves line the area!');
-				return this.chainModify([5325, 4096]);
-			case 'Water':
-				this.add('-message', 'The dampness strengthened the attack!');
-				return this.chainModify([5325, 4096]);
-			case 'Fire':
-				this.add('-message', 'The dampness weakened the flame...');
-				return this.chainModify([3277, 4096]);
-			}
 		},
 		onFieldStart() {
 			this.field.fieldState.waterCounter = 0;
@@ -164,10 +134,6 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		},
 		onBasePower(basePower, attacker, defender, move) {
 			let modifier = 1;
-			if (move.type === 'Fire') {
-				this.add('-message', 'The toxic mist caught flame!');
-				modifier *= 1.5;
-			}
 			if (['appleacid', 'bubble', 'bubblebeam', 'sparklingaria', 'acidspray', 'clearsmog', 'smog'].includes(move.id)) {
 				this.add('-message', 'The poison strengthened the attack!');
 				modifier *= 1.5;
@@ -179,14 +145,6 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			if (attacker.hasAbility('corrosion')) modifier *= 1.5;
 			if (attacker.hasAbility('toxicboost') && move.category === 'Physical') modifier *= 1.5;
 
-			const transitionMoves = [
-				'gravity', 'seedflare', 'bleakwindstorm', 'defog', 'gust', 'hurricane',
-				'razorwind', 'tailwind', 'twister', 'whirlwind', 'supersonicskystrike',
-				'burningjealousy', 'eruption', 'explosion', 'firepledge', 'flameburst',
-				'heatwave', 'incinerate', 'lavaplume', 'mindblown', 'searingshot',
-				'selfdestruct', 'infernooverdrive',
-			];
-			if (transitionMoves.includes(move.id)) modifier *= 1.3;
 			if (modifier !== 1) return this.chainModify(modifier);
 		},
 		onFieldResidualOrder: 28,
@@ -287,6 +245,11 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		onFieldStart() {
 			this.add('-fieldstart', 'Corrosive Field', `[duration] ${this.field.fieldState.duration || 0}`);
 		},
+		onAfterMove(source, target, move) {
+			if (!['purify', 'seedflare'].includes(move.id)) return;
+			this.field.clearField();
+			this.field.setTerrain('grassyterrain', source, move);
+		},
 		onFieldEnd() {
 			this.add('-fieldend', 'Corrosive Field');
 		},
@@ -385,12 +348,35 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			}
 		},
 	},
+	desertfield: {
+		name: "Desert Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Desert Field', `[duration] ${this.field.fieldState.duration || 0}`);
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Desert Field');
+		},
+	},
+	sheltergrassy: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (move.type === 'Grass' || move.additionalTypes?.includes('Grass')) return this.chainModify(0.5);
+		},
+	},
 	sheltermisty: {
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Fairy' || move.additionalTypes?.includes('Fairy')) {
 				return this.chainModify(0.5);
 			}
+		},
+	},
+	shelterpsychic: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (move.type === 'Psychic' || move.additionalTypes?.includes('Psychic')) return this.chainModify(0.5);
 		},
 	},
 	sheltercorrosivemist: {

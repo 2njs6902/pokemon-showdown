@@ -89,14 +89,14 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		onSwitchInPriority: -1,
 		onStart(pokemon) {
 			if (!pokemon.ignoringItem() && (
-				this.field.isUnlayeredTerrain(['electricterrain', 'mistyterrain']) ||
+				this.field.isUnlayeredTerrain(['electricterrain', 'grassyterrain', 'mistyterrain']) ||
 				this.field.isField('corrosivemistfield')
 			)) {
 				pokemon.useItem();
 			}
 		},
 		onTerrainChange(pokemon) {
-			if (this.field.isUnlayeredTerrain(['electricterrain', 'mistyterrain'])) {
+			if (this.field.isUnlayeredTerrain(['electricterrain', 'grassyterrain', 'mistyterrain'])) {
 				pokemon.useItem();
 			}
 		},
@@ -115,10 +115,41 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 				this.boost({ spd: 1 }, pokemon);
 				pokemon.addVolatile('wish');
 				break;
+			case 'grassyterrain':
+				this.boost({ def: 1 }, pokemon);
+				pokemon.addVolatile('ingrain');
+				break;
 			}
 		},
 		num: 6908,
 		gen: 9,
+	},
+	magicalseed: {
+		name: "Magical Seed",
+		spritenum: 0,
+		fling: { basePower: 10 },
+		onSwitchInPriority: -1,
+		onStart(pokemon) {
+			if (!pokemon.ignoringItem() && this.field.isUnlayeredTerrain('psychicterrain')) pokemon.useItem();
+		},
+		onTerrainChange(pokemon) {
+			if (this.field.isUnlayeredTerrain('psychicterrain')) pokemon.useItem();
+		},
+		onUse(pokemon) {
+			this.boost({ spa: 2 }, pokemon);
+			pokemon.addVolatile('confusion');
+		},
+		num: 6918,
+		gen: 9,
+	},
+	bigroot: {
+		inherit: true,
+		onTryHealPriority: 1,
+		onTryHeal(damage, target, source, effect) {
+			if (['drain', 'leechseed', 'ingrain', 'aquaring', 'strengthsap'].includes(effect.id)) {
+				return this.chainModify(this.field.isUnlayeredTerrain('grassyterrain') ? 1.6 : [5324, 4096]);
+			}
+		},
 	},
 	everstone: {
 		name: "Everstone",

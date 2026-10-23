@@ -2,6 +2,275 @@
 
 import type { Learnset } from "../sim/dex-species";
 
+interface RejuvenationTransition {
+	moves: string[];
+	multiplier?: number;
+	willTrigger?: (battle: Battle, move: ActiveMove) => boolean;
+}
+
+const REJUVENATION_FIELD_TRANSITIONS: Partial<Record<string, RejuvenationTransition[]>> = {
+	forestfield: [
+		{
+			moves: ['surf'],
+			multiplier: 1.3,
+			willTrigger(battle) {
+				const counter = (battle.field.fieldState as any).waterCounter || 0;
+				return counter + 1 >= 3;
+			},
+		},
+		{
+			moves: ['muddywater'],
+			multiplier: 1.3,
+			willTrigger(battle) {
+				const counter = (battle.field.fieldState as any).waterCounter || 0;
+				return counter + 2 >= 3;
+			},
+		},
+	],
+
+	corrosivemistfield: [
+		{
+			moves: [
+				'seedflare',
+				'bleakwindstorm', 'gust', 'hurricane', 'razorwind',
+				'twister',
+				'burningjealousy', 'eruption', 'explosion', 'firepledge',
+				'flameburst', 'heatwave', 'incinerate', 'lavaplume',
+				'mindblown', 'searingshot', 'selfdestruct',
+				'infernooverdrive', 'supersonicskystrike',
+			],
+			multiplier: 1.3,
+		},
+	],
+};
+
+const REJUVENATION_TERRAIN_TRANSITIONS: Partial<Record<string, RejuvenationTransition[]>> = {
+	mistyterrain: [
+		{
+			moves: [
+				'bleakwindstorm', 'gust', 'hurricane',
+				'razorwind', 'twister', 'supersonicskystrike',
+			],
+			multiplier: 1.3,
+		},
+		{
+			moves: ['acidownpour'],
+			multiplier: 1.3,
+		},
+		{
+			moves: ['clearsmog', 'corrosivegas', 'poisongas', 'smog'],
+			multiplier: 1.3,
+			willTrigger(battle) {
+				const counter = (battle.field.terrainState as any).corrosionCounter || 0;
+				return counter + 1 >= 2;
+			},
+		},
+	],
+	electricterrain: [
+		{
+			moves: ['tectonicrage'],
+			multiplier: 1.3,
+		},
+	],
+};
+
+function getRejuvenationTransitionMultiplier(
+	battle: Battle,
+	move: ActiveMove
+): number | undefined {
+	if (move.category === 'Status') return;
+
+	const transitions: RejuvenationTransition[] = [];
+
+	const activeField = battle.field.field;
+	if (activeField) {
+		transitions.push(
+			...(REJUVENATION_FIELD_TRANSITIONS[activeField] || [])
+		);
+	}
+
+	const activeTerrain = battle.field.effectiveTerrain();
+	if (activeTerrain) {
+		transitions.push(
+			...(REJUVENATION_TERRAIN_TRANSITIONS[activeTerrain] || [])
+		);
+	}
+
+	for (const transition of transitions) {
+		if (!transition.moves.includes(move.id)) continue;
+
+		if (
+			transition.willTrigger &&
+			!transition.willTrigger(battle, move)
+		) {
+			continue;
+		}
+
+		return transition.multiplier;
+	}
+
+	return;
+}
+
+interface RejuvenationTypeBoost {
+	multiplier: number;
+	message?: string;
+}
+
+function moveHasRejuvenationType(move: ActiveMove, type: string) {
+	return move.type === type || move.additionalTypes?.includes(type) || false;
+}
+
+function getRejuvenationFieldTypeBoost(
+	battle: Battle,
+	attacker: Pokemon,
+	defender: Pokemon,
+	move: ActiveMove
+): RejuvenationTypeBoost | undefined {
+	switch (battle.field.field) {
+	case 'forestfield':
+		if (moveHasRejuvenationType(move, 'Grass')) {
+			return {
+				multiplier: 1.3,
+				message: 'The forestry strengthened the attack!',
+			};
+		}
+		if (
+			moveHasRejuvenationType(move, 'Bug') &&
+			move.category === 'Special'
+		) {
+			return {
+				multiplier: 1.3,
+				message: 'The forestry strengthened the attack!',
+			};
+		}
+		break;
+
+	case 'swampfield':
+		if (moveHasRejuvenationType(move, 'Bug')) {
+			return {
+				multiplier: 1.3,
+				message: 'Bugs are swarming everywhere!',
+			};
+		}
+		if (moveHasRejuvenationType(move, 'Grass')) {
+			return {
+				multiplier: 1.3,
+				message: 'Thick mangroves line the area!',
+			};
+		}
+		if (moveHasRejuvenationType(move, 'Water')) {
+			return {
+				multiplier: 1.3,
+				message: 'The dampness strengthened the attack!',
+			};
+		}
+		if (moveHasRejuvenationType(move, 'Fire')) {
+			return {
+				multiplier: 0.8,
+				message: 'The dampness weakened the flame...',
+			};
+		}
+		break;
+
+	case 'corrosivemistfield':
+		if (moveHasRejuvenationType(move, 'Fire')) {
+			return {
+				multiplier: 1.5,
+				message: 'The toxic mist caught flame!',
+			};
+		}
+		break;
+	}
+
+	return;
+}
+
+function getRejuvenationTerrainTypeBoost(
+	battle: Battle,
+	attacker: Pokemon,
+	defender: Pokemon,
+	move: ActiveMove
+): RejuvenationTypeBoost | undefined {
+	const terrain = battle.field.effectiveTerrain(attacker);
+	if (!terrain) return;
+
+	const isOverlay = !!battle.field.field;
+
+	switch (terrain) {
+	case 'electricterrain':
+		if (
+			moveHasRejuvenationType(move, 'Electric') &&
+			(attacker.isGrounded() || attacker.volatiles['magnetrise']) &&
+			!attacker.isSemiInvulnerable()
+		) {
+			return {
+				multiplier: isOverlay ? 1.3 : 1.5,
+				message: 'The Electric Terrain strengthened the attack!',
+			};
+		}
+		break;
+
+	case 'grassyterrain':
+		if (
+			moveHasRejuvenationType(move, 'Grass') &&
+			attacker.isGrounded() &&
+			!attacker.isSemiInvulnerable()
+		) {
+			return {
+				multiplier: isOverlay ? 1.3 : 1.5,
+				message: 'The Grassy Terrain strengthened the attack!',
+			};
+		}
+
+		// This effect only belongs to unlayered Grassy Terrain.
+		if (
+			!isOverlay &&
+			moveHasRejuvenationType(move, 'Fire') &&
+			defender.isGrounded() &&
+			!defender.isSemiInvulnerable()
+		) {
+			return {
+				multiplier: 1.5,
+				message: 'The Grassy Terrain strengthened the flames!',
+			};
+		}
+		break;
+
+	case 'mistyterrain':
+		if (moveHasRejuvenationType(move, 'Fairy')) {
+			return {
+				multiplier: isOverlay ? 1.3 : 1.5,
+				message: 'The Misty Terrain strengthened the attack!',
+			};
+		}
+
+		// The Dragon reduction is only on unlayered Misty Terrain.
+		if (!isOverlay && moveHasRejuvenationType(move, 'Dragon')) {
+			return {
+				multiplier: 0.5,
+				message: 'The Misty Terrain weakened the attack!',
+			};
+		}
+		break;
+
+	case 'psychicterrain':
+		if (
+			moveHasRejuvenationType(move, 'Psychic') &&
+			attacker.isGrounded() &&
+			!attacker.isSemiInvulnerable()
+		) {
+			return {
+				multiplier: isOverlay ? 1.3 : 1.5,
+				message: 'The Psychic Terrain strengthened the attack!',
+			};
+		}
+		break;
+	}
+
+	return;
+}
+
 // The list of formats is stored in config/formats.js
 export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 
@@ -13,7 +282,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		name: 'Rejuvenation',
 		desc: "The ruleset for the Pokemon Challanges Discord Rejuvenation Tournament.",
 		ruleset: [
-			'HP Percentage Mod', 'Cancel Mod', 'Endless Battle Clause', 'Rejuvenation Obtainable', 'Terastal Clause'
+			'HP Percentage Mod', 'Cancel Mod', 'Endless Battle Clause', 'Rejuvenation Obtainable', 'Terastal Clause', 'Rejuvenation Field Transition Boost', 'Rejuvenation Field Type Boosts',
 		],
 	},
 	rejuvenationobtainable: {
@@ -130,6 +399,107 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			'move: Wring Out',
 		],
 	},
+
+	rejuvenationfieldtypeboosts: {
+		effectType: 'Rule',
+		name: 'Rejuvenation Field Type Boosts',
+
+		onBasePower(basePower, attacker, defender, move) {
+			const fieldBoost = getRejuvenationFieldTypeBoost(
+				this, attacker, defender, move
+			);
+			const terrainBoost = getRejuvenationTerrainTypeBoost(
+				this, attacker, defender, move
+			);
+
+			if (!fieldBoost && !terrainBoost) return;
+
+			//Debug
+			const fieldMultiplier = fieldBoost?.multiplier ?? 1;
+			const terrainMultiplier = terrainBoost?.multiplier ?? 1;
+
+			const debugText =
+				`TYPE BOOST TEST: field=${fieldMultiplier}x, ` +
+				`terrain=${terrainMultiplier}x, ` +
+				`move=${move.name}, ` +
+				`types=${[move.type, ...(move.additionalTypes || [])].join('/')}`;
+
+			this.debug(debugText);
+			this.add('-message', debugText);
+
+			let multiplier = 1;
+
+			if (fieldBoost && terrainBoost) {
+				if (
+					fieldBoost.multiplier > 1 &&
+					terrainBoost.multiplier > 1
+				) {
+					// Rejuvenation does not multiply two type-based boosts.
+					// It uses the larger one, with a minimum result of 1.5x.
+					multiplier = Math.max(
+						1.5,
+						fieldBoost.multiplier,
+						terrainBoost.multiplier
+					);
+				} else {
+					// Reductions and boosts still combine normally.
+					multiplier =
+						fieldBoost.multiplier * terrainBoost.multiplier;
+				}
+			} else {
+				multiplier =
+					fieldBoost?.multiplier ??
+					terrainBoost?.multiplier ??
+					1;
+			}
+
+			/*
+			 * Rejuvenation displays the underlying field's type message
+			 * when both the field and overlay supplied modifiers.
+			 */
+			const message = fieldBoost?.message ?? terrainBoost?.message;
+			if (message) this.add('-message', message);
+
+			this.debug(
+				`Rejuvenation combined field/terrain type modifier: ${multiplier}x`
+			);
+
+			//Debug
+			const resultText =
+				`TYPE BOOST RESULT: ${multiplier}x ` +
+				`(${fieldBoost && terrainBoost &&
+					fieldBoost.multiplier > 1 &&
+					terrainBoost.multiplier > 1
+					? 'larger type boost with 1.5x minimum'
+					: 'normal multiplication'})`;
+
+			this.debug(resultText);
+			this.add('-message', resultText);
+
+			return this.chainModify(multiplier);
+		},
+	},
+
+	rejuvenationfieldtransitionboost: {
+		effectType: 'Rule',
+		name: 'Rejuvenation Field Transition Boost',
+
+		onBasePower(basePower, attacker, defender, move) {
+			const multiplier =
+				getRejuvenationTransitionMultiplier(this, move);
+
+			if (!multiplier) return;
+
+			const debugText =
+				`TRANSITION BOOST TEST: ${move.name} received ${multiplier}x`;
+
+			this.debug(debugText);
+			this.add('-message', debugText);
+
+			return this.chainModify(multiplier);
+		},
+	},
+
 	nonrejuvmons: {
 		effectType: 'ValidatorRule',
 		name: 'Non-Rejuvenation Pokemon',
