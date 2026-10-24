@@ -425,7 +425,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				`types=${[move.type, ...(move.additionalTypes || [])].join('/')}`;
 
 			this.debug(debugText);
-			this.add('-message', debugText);
 
 			let multiplier = 1;
 
@@ -474,7 +473,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 					: 'normal multiplication'})`;
 
 			this.debug(resultText);
-			this.add('-message', resultText);
 
 			return this.chainModify(multiplier);
 		},
@@ -494,7 +492,6 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				`TRANSITION BOOST TEST: ${move.name} received ${multiplier}x`;
 
 			this.debug(debugText);
-			this.add('-message', debugText);
 
 			return this.chainModify(multiplier);
 		},

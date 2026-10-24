@@ -764,8 +764,8 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	},
 	inexorable: {
 		name: "Inexorable",
-		desc: "The power of this Pokemon's Dragon moves are multiplied by 1.5 if it is the first to move in a turn.",
-		shortDesc: "This Pokemon's Dragon moves have 1.5x power if it is the first to move in a turn.",
+		desc: "All moves deal 30% more damage agaisnt foes acting after this pokemon.",
+		shortDesc: "This Pokemon's moves deal 1.3x power if moving before target.",
 	},
 	infiltrator: {
 		name: "Infiltrator",

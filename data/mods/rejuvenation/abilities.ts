@@ -130,7 +130,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 			if (boosted) {
 				this.debug('Inexorable boost');
-				return this.chainModify([5325, 4096]);
+				return this.chainModify(1.3);
 			}
 		},
 		flags: {},

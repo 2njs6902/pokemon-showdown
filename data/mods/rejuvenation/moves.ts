@@ -77,14 +77,6 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		num: 6905,
 		accuracy: 100,
 		basePower: 90,
-		basePowerCallback(pokemon, target, move) {
-			// You can't get here unless the pursuit succeeds
-			if (target.beingCalledBack || target.switchFlag) {
-				this.debug('Pursuit damage boost');
-				return move.basePower * 2;
-			}
-			return move.basePower;
-		},
 		category: "Physical",
 		name: "Vile Assault",
 		pp: 15,
@@ -92,8 +84,8 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		flags: { contact: 1, protect: 1, mirror: 1, metronome: 1 },
 		beforeTurnCallback(pokemon) {
 			for (const target of pokemon.foes()) {
-				target.addVolatile('pursuit');
-				const data = target.volatiles['pursuit'];
+                target.addVolatile('vileassault');
+                const data = target.volatiles['vileassault'];
 				if (!data.sources) {
 					data.sources = [];
 				}
@@ -112,7 +104,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				for (const source of this.effectState.sources) {
 					if (!source.isAdjacent(pokemon) || !this.queue.cancelMove(source) || !source.hp) continue;
 					if (!alreadyAdded) {
-						this.add('-activate', pokemon, 'move: Pursuit');
+                        this.add('-activate', pokemon, 'move: Vile Assault');
 						alreadyAdded = true;
 					}
 					// Run through each action in queue to check if the Pursuit user is supposed to Mega Evolve this turn.
@@ -133,7 +125,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 							}
 						}
 					}
-					this.actions.runMove('pursuit', source, source.getLocOf(pokemon));
+					this.actions.runMove('vileassault', source, source.getLocOf(pokemon));
 				}
 			},
 		},
@@ -509,6 +501,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 return this.chainModify(1.5);
             }
         },
+    },
+    appleacid: {
+        inherit: true,
+        basePower: 90,
     },
     aquaring: {
         inherit: true,
@@ -1966,6 +1962,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         zMove: { boost: { atk: 1 } },
     },
+    poweruppunch: {
+        inherit: true,
+        zMove: { boost: { atk: 1 } },
+    },
     psychicfangs: {
         inherit: true,
 		onTryHit(pokemon) {
@@ -2119,6 +2119,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
+	revelationdance: {
+        inherit: true,
+		basePower: 100,
+	},
     revivalblessing: {
         inherit: true,
 		zMove: { effect: 'heal' },
