@@ -600,6 +600,9 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	crustle: {
 		tier: "RU",
 	},
+	sigilyph: {
+		tier: "RU",
+	},
 	yamask: {
 		tier: "LC",
 	},

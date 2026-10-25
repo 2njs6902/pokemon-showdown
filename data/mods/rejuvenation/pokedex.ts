@@ -4356,7 +4356,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		baseSpecies: "Kommo-o",
 		forme: "Aevium",
 		types: ["Dragon", "Poison"],
-		baseStats: { hp: 95, atk: 125, def: 125, spa: 95, spd: 95, spe: 65 },
+		baseStats: { hp: 100, atk: 130, def: 130, spa: 80, spd: 90, spe: 70 },
 		abilities: { 0: "Analytic", 1: "Inexorable", H: "Overcoat" },
 		heightm: 1.6,
 		weightkg: 78.2,
