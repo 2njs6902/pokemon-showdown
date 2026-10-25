@@ -51154,6 +51154,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			torment: ["9M"],
 			toxic: ["9L28"],
 			toxicspikes: ["9T"],
+			trailblaze: ["9T"],
 			venoshock: ["9M"],
 			waterfall: ["9M"],
 			waterpulse: ["9T"],
