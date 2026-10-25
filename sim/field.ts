@@ -311,9 +311,13 @@ export class Field {
 	isField(field: string | string[], target?: Pokemon | Side | Battle) {
 		const ourField = this.effectiveField(target);
 		if (!Array.isArray(field)) {
-			return ourField === toID(field);
+			const fieldID = toID(field);
+			if (ourField === 'narcissafield' && fieldID === 'hauntedfield') return true;
+			return ourField === fieldID;
 		}
-		return field.map(toID).includes(ourField);
+		const fieldIDs = field.map(toID);
+		if (ourField === 'narcissafield' && fieldIDs.includes(toID('hauntedfield'))) return true;
+		return fieldIDs.includes(ourField);
 	}
 	
 	getField() {

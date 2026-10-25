@@ -1,3 +1,7 @@
+function moveHasType(move: ActiveMove, type: string) {
+	return move.type === type || !!move.additionalTypes?.includes(type);
+}
+
 export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDataTable = {
 	concertvenue: {
 		name: "Concert Venue",
@@ -94,6 +98,313 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		},
 		onFieldEnd() {
 			this.add('-fieldend', 'Frozen Dimensional Field');
+		},
+	},
+	hauntedfield: {
+		name: "Haunted Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Haunted Field', `[duration] ${this.field.fieldState.duration || 0}`);
+			this.add('-message', 'The field is haunted!');
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon?.hasItem('magicalseed') && !pokemon.ignoringItem()) pokemon.useItem();
+			}
+		},
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+			if (['flameburst', 'inferno', 'flamecharge', 'firespin'].includes(move.id)) {
+				move.additionalTypes.push('Ghost');
+			}
+			if (moveHasType(move, 'Ghost')) move.ignoreImmunity = { Ghost: true };
+			if (['willowisp', 'hypnosis'].includes(move.id)) move.accuracy = 90;
+		},
+		onEffectiveness(typeMod, target, type, move) {
+			if (type === 'Normal' && moveHasType(move, 'Ghost')) return 0;
+			if (move.id === 'spiritbreak' && type === 'Ghost') return 1;
+			if (move.additionalTypes?.includes('Ghost')) {
+				return typeMod + this.dex.getEffectiveness('Ghost', type);
+			}
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			let modifier = 1;
+			const boostedMoves = [
+				'flameburst', 'inferno', 'flamecharge', 'firespin', 'burningjealousy',
+				'torchsong', 'bitterblade', 'boneclub', 'bonerush', 'bonemerang', 'astonish',
+			];
+			if (boostedMoves.includes(move.id)) {
+				modifier *= 1.5;
+				const messages: Record<string, string> = {
+					flameburst: "Will-o'-wisps joined the attack!",
+					inferno: "Will-o'-wisps joined the attack!",
+					flamecharge: "Will-o'-wisps joined the attack!",
+					firespin: "Will-o'-wisps joined the attack!",
+					burningjealousy: "Will-o'-wisps joined the attack!",
+					torchsong: 'A dirge for the dead...',
+					bitterblade: "Will-o'-wisps joined the attack!",
+					boneclub: 'Spooky scary skeletons!',
+					bonerush: 'Spooky scary skeletons!',
+					bonemerang: 'Spooky scary skeletons!',
+					astonish: 'Boo!',
+				};
+				this.add('-message', messages[move.id]);
+			}
+			if (moveHasType(move, 'Ghost')) {
+				modifier *= 1.5;
+				this.add('-message', 'The evil aura powered up the attack!');
+			}
+			if (modifier !== 1) return this.chainModify(modifier);
+		},
+		onFieldResidualOrder: 28,
+		onFieldResidual() {
+			for (const pokemon of this.getAllActive()) {
+				if (!pokemon?.hp || pokemon.hasType('Ghost')) continue;
+				if (pokemon.status !== 'slp' && !pokemon.hasAbility('comatose')) continue;
+				this.add('-message', `${pokemon.name}'s dream is corrupted by the evil spirits!`);
+				this.damage(pokemon.baseMaxhp / 16, pokemon);
+			}
+		},
+		onAfterMove(source, target, move) {
+			if (['judgment', 'originpulse', 'purify', 'sacredfire'].includes(move.id)) {
+				this.add('-message', 'The evil spirits have been exorcised!');
+				this.field.setField('blessedfield', source, move);
+				return;
+			}
+			if (['flash', 'dazzlinggleam'].includes(move.id)) {
+				this.add('-message', 'The evil spirits have been forced back!');
+				this.field.clearField();
+			}
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Haunted Field');
+		},
+	},
+	narcissafield: {
+		name: "Narcissa Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Narcissa Field', `[duration] ${this.field.fieldState.duration || 0}`);
+			this.add('-message', 'The field is haunted!');
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon?.hasItem('magicalseed') && !pokemon.ignoringItem()) pokemon.useItem();
+			}
+		},
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+			if (['flameburst', 'inferno', 'flamecharge', 'firespin'].includes(move.id)) {
+				move.additionalTypes.push('Ghost');
+			}
+			if (moveHasType(move, 'Ghost')) move.ignoreImmunity = { Ghost: true };
+			if (['willowisp', 'hypnosis'].includes(move.id)) move.accuracy = 90;
+		},
+		onEffectiveness(typeMod, target, type, move) {
+			if (type === 'Normal' && moveHasType(move, 'Ghost')) return 0;
+			if (move.id === 'spiritbreak' && type === 'Ghost') return 1;
+			if (move.additionalTypes?.includes('Ghost')) {
+				return typeMod + this.dex.getEffectiveness('Ghost', type);
+			}
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			let modifier = 1;
+			const boostedMoves = [
+				'flameburst', 'inferno', 'flamecharge', 'firespin', 'burningjealousy',
+				'torchsong', 'bitterblade', 'boneclub', 'bonerush', 'bonemerang', 'astonish',
+			];
+			if (boostedMoves.includes(move.id)) {
+				modifier *= 1.5;
+				const messages: Record<string, string> = {
+					flameburst: "Will-o'-wisps joined the attack!",
+					inferno: "Will-o'-wisps joined the attack!",
+					flamecharge: "Will-o'-wisps joined the attack!",
+					firespin: "Will-o'-wisps joined the attack!",
+					burningjealousy: "Will-o'-wisps joined the attack!",
+					torchsong: 'A dirge for the dead...',
+					bitterblade: "Will-o'-wisps joined the attack!",
+					boneclub: 'Spooky scary skeletons!',
+					bonerush: 'Spooky scary skeletons!',
+					bonemerang: 'Spooky scary skeletons!',
+					astonish: 'Boo!',
+				};
+				this.add('-message', messages[move.id]);
+			}
+			if (moveHasType(move, 'Ghost')) {
+				modifier *= 1.5;
+				this.add('-message', 'The evil aura powered up the attack!');
+			}
+			if (modifier !== 1) return this.chainModify(modifier);
+		},
+		onFieldResidualOrder: 28,
+		onFieldResidual() {
+			for (const pokemon of this.getAllActive()) {
+				if (!pokemon?.hp || pokemon.hasType('Ghost')) continue;
+				if (pokemon.status !== 'slp' && !pokemon.hasAbility('comatose')) continue;
+				this.add('-message', `${pokemon.name}'s dream is corrupted by the evil spirits!`);
+				this.damage(pokemon.baseMaxhp / 16, pokemon);
+			}
+		},
+		onAfterMove(source, target, move) {
+			if (['judgment', 'originpulse', 'purify', 'sacredfire'].includes(move.id)) {
+				this.add('-message', 'The evil spirits have been exorcised!');
+				this.field.setField('blessedfield', source, move);
+				return;
+			}
+			if (['flash', 'dazzlinggleam'].includes(move.id)) {
+				this.add('-message', 'The evil spirits have been forced back!');
+				this.field.setField('forestfield', source, move);
+			}
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Narcissa Field');
+		},
+	},
+	blessedfield: {
+		name: "Blessed Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Blessed Field', `[duration] ${this.field.fieldState.duration || 0}`);
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Blessed Field');
+		},
+	},
+	rainbowfield: {
+		name: "Rainbow Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart(field, source, effect) {
+			this.add('-fieldstart', 'Rainbow Field', `[duration] ${this.field.fieldState.duration || 0}`);
+			if (!['firepledge', 'waterpledge', 'raindance', 'sunnyday'].includes(effect?.id || '')) {
+				this.add('-message', 'What does it mean?');
+			}
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon?.hasItem('magicalseed') && !pokemon.ignoringItem()) pokemon.useItem();
+			}
+		},
+		onModifyMove(move) {
+			if (move.category === 'Special' && move.type === 'Normal') {
+				(move as any).rainbowNormal = true;
+				const types = this.dex.types.all().filter(type => (
+					type.exists && !['Normal', 'Stellar'].includes(type.name)
+				));
+				move.type = this.sample(types).name;
+			}
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			let modifier = 1;
+			const boostedMoves = [
+				'silverwind', 'mysticalfire', 'dragonpulse', 'triattack', 'sacredfire',
+				'firepledge', 'waterpledge', 'grasspledge', 'aurorabeam', 'mirrorbeam',
+				'judgment', 'relicsong', 'hiddenpower', 'secretpower', 'weatherball',
+				'mistball', 'heartstamp', 'moonblast', 'zenheadbutt', 'sparklingaria',
+				'fleurcannon', 'prismaticlaser', 'twinkletackle', 'oceanicoperetta',
+				'solarbeam', 'solarblade', 'dazzlinggleam', 'luminacrash',
+			];
+			if (boostedMoves.includes(move.id)) {
+				this.add('-message', 'The attack was rainbow-charged!');
+				modifier *= 1.5;
+			}
+			if (['darkpulse', 'shadowball', 'nightdaze', 'neverendingnightmare'].includes(move.id)) {
+				this.add('-message', 'The rainbow softened the attack...');
+				modifier *= 0.5;
+			}
+			if ((move as any).rainbowNormal) {
+				this.add('-message', 'The rainbow energized the attack!');
+				modifier *= 1.5;
+			}
+			if (modifier !== 1) return this.chainModify(modifier);
+		},
+		onModifySecondaries(secondaries, target, source) {
+			for (const secondary of secondaries) {
+				if (!secondary.chance) continue;
+				if (secondary.volatileStatus === 'flinch' && source.hasAbility('serenegrace')) continue;
+				secondary.chance = Math.min(100, secondary.chance * 2);
+			}
+		},
+		onFieldResidualOrder: 28,
+		onFieldResidual() {
+			for (const pokemon of this.getAllActive()) {
+				if (!pokemon?.hp) continue;
+				if (pokemon.hasAbility('cloudnine')) {
+					const stats: BoostID[] = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy', 'evasion'];
+					const available = stats.filter(stat => pokemon.boosts[stat] < 6);
+					if (available.length) {
+						const boost: SparseBoostsTable = {};
+						boost[this.sample(available)] = 1;
+						this.boost(boost, pokemon, pokemon, this.dex.abilities.get('cloudnine'));
+					}
+				}
+				if (pokemon.status === 'slp' || pokemon.hasAbility('comatose')) {
+					if (this.heal(pokemon.baseMaxhp / 16, pokemon)) {
+						this.add('-message', `${pokemon.name} recovered health in its peaceful sleep!`);
+					}
+				}
+			}
+		},
+		onWeatherChange() {
+			if (!this.field.isWeather(['sandstorm', 'hail', 'snow'])) return;
+			this.add('-message', 'The weather blocked out the rainbow!');
+			this.field.clearField();
+		},
+		onAfterMove(source, target, move) {
+			if (move.id === 'lightthatburnsthesky') {
+				this.add('-message', 'The rainbow was consumed!');
+				this.field.clearField();
+			} else if (move.id === 'sandsearstorm') {
+				this.add('-message', 'The sandstorm blocked out the rainbow!');
+				this.field.clearField();
+			}
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Rainbow Field');
+		},
+	},
+	rainbowterrain: {
+		name: "Rainbow Terrain",
+		effectType: 'Terrain',
+		duration: 4,
+		onFieldStart() {
+			this.add('-fieldstart', 'Rainbow Terrain', `[duration] ${this.field.terrainState.duration || 0}`);
+		},
+		onModifyMove(move) {
+			if (move.category === 'Special' && move.type === 'Normal') {
+				(move as any).rainbowNormal = true;
+				const types = this.dex.types.all().filter(type => (
+					type.exists && !['Normal', 'Stellar'].includes(type.name)
+				));
+				move.type = this.sample(types).name;
+			}
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			let modifier = 1;
+			const boostedMoves = [
+				'silverwind', 'mysticalfire', 'dragonpulse', 'triattack', 'sacredfire',
+				'firepledge', 'waterpledge', 'grasspledge', 'aurorabeam', 'mirrorbeam',
+				'judgment', 'relicsong', 'hiddenpower', 'secretpower', 'weatherball',
+				'mistball', 'heartstamp', 'moonblast', 'zenheadbutt', 'sparklingaria',
+				'fleurcannon', 'prismaticlaser', 'twinkletackle', 'oceanicoperetta',
+				'solarbeam', 'solarblade', 'dazzlinggleam', 'luminacrash',
+			];
+			if (boostedMoves.includes(move.id)) {
+				this.add('-message', 'The attack was rainbow-charged!');
+				modifier *= 1.5;
+			}
+			if ((move as any).rainbowNormal) {
+				this.add('-message', 'The rainbow energized the attack!');
+				modifier *= 1.3;
+			}
+			if (modifier !== 1) return this.chainModify(modifier);
+		},
+		onModifySecondaries(secondaries, target, source) {
+			for (const secondary of secondaries) {
+				if (!secondary.chance) continue;
+				if (secondary.volatileStatus === 'flinch' && source.hasAbility('serenegrace')) continue;
+				secondary.chance = Math.min(100, secondary.chance * 2);
+			}
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Rainbow Terrain');
 		},
 	},
 	corrosivemistfield: {
@@ -265,6 +576,140 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			this.add('-fieldend', 'Underwater Field');
 		},
 	},
+	icyfield: {
+		name: "Icy Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Icy Field', `[duration] ${this.field.fieldState.duration || 0}`);
+			this.add('-message', 'The field is covered in ice.');
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Icy Field');
+		},
+	},
+	murkwatersurfacefield: {
+		name: "Murkwater Surface Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Murkwater Surface Field', `[duration] ${this.field.fieldState.duration || 0}`);
+			this.add('-message', 'The water is tainted...');
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Murkwater Surface Field');
+		},
+	},
+	watersurfacefield: {
+		name: "Water Surface Field",
+		effectType: 'Field',
+		duration: 0,
+		onResidualOrder: 28,
+		onResidual(pokemon) {
+			if (pokemon.removeVolatile('tarshot')) {
+				this.add('-message', `The tar washed off ${pokemon.name} in the water!`);
+			}
+		},
+		onFieldStart() {
+			this.field.fieldState.pollutionCounter = 0;
+			const duration = this.field.fieldState.duration;
+			this.add('-fieldstart', 'Water Surface Field', `[duration] ${duration}`);
+			this.add('-message', 'The water\'s surface is calm.');
+
+			let removedSpikes = false;
+			for (const side of this.sides) {
+				if (side.removeSideCondition('spikes')) removedSpikes = true;
+				if (side.removeSideCondition('toxicspikes')) removedSpikes = true;
+			}
+			if (removedSpikes) {
+				this.add('-message', '...The spikes sank into the water and vanished!');
+			}
+
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon?.hasItem('elementalseed') && !pokemon.ignoringItem()) {
+					pokemon.useItem();
+				}
+			}
+		},
+		onModifyMove(move) {
+			if (move.id === 'shoreup') move.type = 'Water';
+		},
+		onTryHit(target, source, move) {
+			if (moveHasType(move, 'Ground')) {
+				this.add('-message', '...But there was no solid ground to attack from!');
+				return null;
+			}
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			let modifier = 1;
+			if ([
+				'whirlpool', 'surf', 'muddywater', 'dive', 'sludgewave',
+				'octazooka', 'originpulse', 'hydrovortex', 'tripledive',
+			].includes(move.id)) {
+				modifier *= 1.2;
+				this.add('-message', move.id === 'sludgewave' ?
+					'Poison spread through the water!' : 'The attack rode the current!');
+			}
+			if (moveHasType(move, 'Water')) {
+				modifier *= 1.5;
+				this.add('-message', 'The water strengthened the attack!');
+			}
+			if (defender.isGrounded() && moveHasType(move, 'Electric')) {
+				modifier *= 1.5;
+				this.add('-message', 'The water conducted the attack!');
+			}
+			if (defender.isGrounded() && moveHasType(move, 'Fire')) {
+				modifier *= 0.5;
+				this.add('-message', 'The water deluged the attack...');
+			}
+			if (attacker.hasAbility('propellertail') && move.priority > 0) {
+				modifier *= 1.5;
+			}
+
+			if (modifier !== 1) return this.chainModify(modifier);
+		},
+		onAfterMove(source, target, move) {
+			if (['gravity', 'dive', 'anchorshot', 'gravapple', 'tripledive'].includes(move.id)) {
+				if (['gravity', 'gravapple'].includes(move.id)) {
+					this.add('-message', 'The battle sank into the depths!');
+				} else {
+					this.add('-message', 'The battle was pulled underwater!');
+				}
+				this.field.setField('underwaterfield', source, move);
+				return;
+			}
+			if (['blizzard', 'glaciate', 'subzeroslammer'].includes(move.id)) {
+				this.add('-message', 'The water froze over!');
+				this.field.setField('icyfield', source, move);
+				return;
+			}
+			if (!['sludgewave', 'acidownpour'].includes(move.id)) return;
+
+			const state = this.field.fieldState as any;
+			state.pollutionCounter = (state.pollutionCounter || 0) + (move.id === 'acidownpour' ? 2 : 1);
+			if (state.pollutionCounter >= 2) {
+				this.add('-message', 'The water was polluted!');
+				this.field.setField('murkwatersurfacefield', source, move);
+			} else {
+				this.add('-message', 'Poison spread through the water!');
+			}
+		},
+		onModifySpe(spe, pokemon) {
+			if (
+				!pokemon.isGrounded() ||
+				pokemon.hasType('Water') ||
+				pokemon.hasAbility(['surgesurfer', 'swiftswim'])
+			) {
+				return;
+			}
+
+			this.debug('Water Surface Field Speed reduction (0.75x)');
+			return this.chainModify(0.75);
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Water Surface Field', '[message] The water\'s surface calms down.');
+		},
+	},
 	swampfieldspeed: {
 		name: "Swamp Field Speed",
 		effectType: "Condition",
@@ -294,6 +739,12 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			let divisor = this.effectState.boundDivisor;
 			if (this.effectState.sourceEffect.id === 'infestation' && this.field.isField('forestfield')) {
 				divisor = 6;
+			}
+			if (this.effectState.sourceEffect.id === 'whirlpool' && this.field.isField('watersurfacefield')) {
+				divisor = this.effectState.boundDivisor === 6 ? 4 : 6;
+			}
+			if (this.effectState.sourceEffect.id === 'firespin' && this.field.isField('hauntedfield')) {
+				divisor = this.effectState.boundDivisor === 6 ? 4 : 6;
 			}
 
 			this.damage(pokemon.baseMaxhp / divisor);
@@ -379,6 +830,18 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			if (move.type === 'Psychic' || move.additionalTypes?.includes('Psychic')) return this.chainModify(0.5);
 		},
 	},
+	shelterhaunted: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (moveHasType(move, 'Ghost')) return this.chainModify(0.5);
+		},
+	},
+	shelterrainbow: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (moveHasType(move, 'Dragon')) return this.chainModify(0.5);
+		},
+	},
 	sheltercorrosivemist: {
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
@@ -388,6 +851,14 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		},
 	},
 	shelterswamp: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (move.type === 'Water' || move.additionalTypes?.includes('Water')) {
+				return this.chainModify(0.5);
+			}
+		},
+	},
+	shelterwatersurface: {
 		duration: 1,
 		onSourceModifyDamage(damage, source, target, move) {
 			if (move.type === 'Water' || move.additionalTypes?.includes('Water')) {

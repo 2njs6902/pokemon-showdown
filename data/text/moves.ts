@@ -16,8 +16,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	vileassault: {
 		name: "Vile Assault",
-		desc: "If the target Pokémon is switched out on the turn Vile Assault is used, the move's power doubles, and it will immediately be used before the target is switched out.",
-		shortDesc: "If a foe is switching out, hits it at 2x power.",
+		desc: "If the target Pokémon is switched out on the turn Vile Assault is used, it will immediately be used before the target is switched out.",
+		shortDesc: "If a foe is switching out, it hits before they leave.",
 	},
 	stackingshot: {
 		name: "Stacking Shot",
@@ -26,7 +26,7 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	etherealtempest: {
 		name: "Ethereal Tempest",
-		desc: "Deluge has negative priority and if the target had already damaged the user in the same turn, Deluge's power is doubled to 120.",
+		desc: "Ethereal Tempest deals damage and has a 20% chance to paralyze the target.",
 		shortDesc: "20% chance to paralyze the target.",
 	},
 	deluge: {
@@ -35,7 +35,7 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 		shortDesc: "Power doubles if user is damaged by the target.",
 	},
 	arenitewall: {
-		name: "Deluge",
+		name: "Arenite Wall",
 		desc: "For 5 turns, the user and its party members take 0.5x damage from super effective attacks, or 0.66x damage if in a Double Battle; Stacks with Reflect, Light Screen or Aurora Veil but only one of those 3 may apply to any given attack. Critical hits and Infiltrator do NOT ignore this effect. It is removed from the user's side if the user or an ally is successfully hit by Brick Break, Psychic Fangs, or Defog. Brick Break and Psychic Fangs remove the effect before damage is calculated. Lasts for 8 turns if the user is holding Light Clay. Fails unless the weather is Sandstorm.",
 		shortDesc: "For 5 turns, damage from super effective moves to allies halved. Sandstorm only.",
 		start: "  Arenite Wall made [TEAM] stronger against super effective moves!",

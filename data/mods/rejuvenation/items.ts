@@ -90,7 +90,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		onStart(pokemon) {
 			if (!pokemon.ignoringItem() && (
 				this.field.isUnlayeredTerrain(['electricterrain', 'grassyterrain', 'mistyterrain']) ||
-				this.field.isField('corrosivemistfield')
+				this.field.isField(['corrosivemistfield', 'watersurfacefield'])
 			)) {
 				pokemon.useItem();
 			}
@@ -101,6 +101,12 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			}
 		},
 		onUse(pokemon) {
+			if (this.field.isField('watersurfacefield')) {
+				this.boost({ spd: 1 }, pokemon);
+				pokemon.addVolatile('aquaring');
+				this.add('-message', `${pokemon.name} surrounded itself with a veil of water!`);
+				return;
+			}
 			if (this.field.isField('corrosivemistfield')) {
 				this.boost({ atk: 1, spa: 1 }, pokemon);
 				pokemon.trySetStatus('tox', pokemon, this.effect);
@@ -130,14 +136,33 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		fling: { basePower: 10 },
 		onSwitchInPriority: -1,
 		onStart(pokemon) {
-			if (!pokemon.ignoringItem() && this.field.isUnlayeredTerrain('psychicterrain')) pokemon.useItem();
+			if (
+				!pokemon.ignoringItem() &&
+				(
+					this.field.isUnlayeredTerrain('psychicterrain') ||
+					this.field.isField(['hauntedfield', 'rainbowfield'])
+				)
+			) {
+				pokemon.useItem();
+			}
 		},
 		onTerrainChange(pokemon) {
 			if (this.field.isUnlayeredTerrain('psychicterrain')) pokemon.useItem();
 		},
 		onUse(pokemon) {
-			this.boost({ spa: 2 }, pokemon);
-			pokemon.addVolatile('confusion');
+			if (this.field.isField('rainbowfield')) {
+				this.boost({ spa: 1 }, pokemon);
+				pokemon.side.addSlotCondition(pokemon, 'wish', pokemon);
+				this.add('-message', `A wish was made for ${pokemon.name}!`);
+				return;
+			}
+			if (this.field.isField('hauntedfield')) {
+				this.boost({ def: 1, spd: 1 }, pokemon);
+				pokemon.trySetStatus('brn', pokemon, this.effect);
+			} else {
+				this.boost({ spa: 2 }, pokemon);
+				pokemon.addVolatile('confusion');
+			}
 		},
 		num: 6918,
 		gen: 9,

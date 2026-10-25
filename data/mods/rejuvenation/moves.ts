@@ -5,6 +5,20 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			move.boosts = { def: this.field.isField('corrosivemistfield') ? 3 : 2 };
 		},
 	},
+	auroraveil: {
+		inherit: true,
+		onTry() {
+			return this.field.isField('rainbowfield') || this.field.isWeather(['hail', 'snow']);
+		},
+	},
+	bittermalice: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isField('hauntedfield') && move.secondary?.boosts) {
+				move.secondary.boosts.spa = -1;
+			}
+		},
+	},
     // ================ Info ===================
     // Up to date as of V14.0.20
     // ================ New Fields ===================
@@ -523,7 +537,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					}
 					return;
 				}
-                const boosted = this.field.isField('swampfield') || this.field.isUnlayeredTerrain('mistyterrain');
+                const boosted = this.field.isField('swampfield') || this.field.isField('watersurfacefield') || this.field.isUnlayeredTerrain('mistyterrain');
 				this.heal(pokemon.baseMaxhp / (boosted ? 8 : 16));
 			},
 		},
@@ -560,6 +574,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         onBasePower() {
             if (this.field.isTerrain('mistyterrain')) {
                 this.add('-message', 'The mist\'s energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+            else if (this.field.isTerrain('psychicterrain')) {
+                this.add('-message', 'The psychic energy strengthened the attack!');
                 return this.chainModify(1.5);
             }
         },
@@ -649,13 +667,31 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		zMove: { boost: { def: 1 } },
     },
+    calmmind: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                move.boosts = { spa: 2, spd: 2 };
+            }
+        },
+    },
     camouflage: {
         inherit: true,
         isNonstandard: null,
         onHit(target) {
             let newType = 'Normal';
+			if (this.field.isTerrain('rainbowterrain')) {
+				newType = 'Dragon';
+			} else {
 
             switch (this.field.field) {
+			case 'rainbowfield':
+				newType = 'Dragon';
+				break;
+			case 'hauntedfield':
+			case 'narcissafield':
+				newType = 'Ghost';
+				break;
 			case 'corrosivemistfield':
 				newType = 'Poison';
 				break;
@@ -663,6 +699,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 newType = 'Bug';
                 break;
             case 'swampfield':
+                newType = 'Water';
+                break;
+            case 'watersurfacefield':
                 newType = 'Water';
                 break;
 
@@ -678,11 +717,35 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 }
                 break;
             }
+			}
 
             if (target.getTypes().join() === newType || !target.setType(newType)) return false;
             this.add('-start', target, 'typechange', newType);
         },
     },
+	curse: {
+		inherit: true,
+		onHit(target, source) {
+			this.directDamage(
+				source.maxhp / (this.field.isField('hauntedfield') ? 4 : 2),
+				source,
+				source
+			);
+		},
+	},
+	destinybond: {
+		inherit: true,
+		onPrepareHit(pokemon) {
+			if (this.field.isField('hauntedfield')) return true;
+			return !pokemon.removeVolatile('destinybond');
+		},
+	},
+	firespin: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isField('hauntedfield')) move.target = 'allAdjacentFoes';
+		},
+	},
     captivate: {
         inherit: true,
         isNonstandard: null,
@@ -735,8 +798,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     cosmicpower: {
         inherit: true,
         onModifyMove(move) {
-            if (this.field.isUnlayeredTerrain('mistyterrain')) {
-                move.self = { boosts: { def: 2, spd: 2 } };
+			if (
+				this.field.isUnlayeredTerrain('mistyterrain') ||
+				this.field.isTerrain('psychicterrain') ||
+				this.field.isField('rainbowfield')
+			) {
+				move.boosts = { def: 2, spd: 2 };
             }
         },
     },
@@ -882,13 +949,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             if (attacker.hasAbility('gulpmissile') && attacker.species.name === 'Cramorant' && !attacker.transformed) {
                 let forme;
                 if (!this.field.isField('')) {
-                    forme = this.field.isField('swampfield') ? 'cramorantgulping' : attacker.hp <= attacker.maxhp / 2 ? 'cramorantgorging' : 'cramorantgulping';
+                    forme = this.field.isField('swampfield') || this.field.isField('watersurfacefield') || this.field.isField('underwaterfield') ? 'cramorantgulping' : attacker.hp <= attacker.maxhp / 2 ? 'cramorantgorging' : 'cramorantgulping';
                 } else if (this.field.isTerrain('electricterrain')) {
                     forme = 'cramorantgorging';
                 } else {
                     forme = attacker.hp <= attacker.maxhp / 2 ? 'cramorantgorging' : 'cramorantgulping';
                 }
                 attacker.formeChange(forme, move);
+            }
+            if (this.field.isField('watersurfacefield')) {
+                return;
             }
             this.add('-prepare', attacker, move.name);
             if (!this.runEvent('ChargeMove', attacker, defender, move)) {
@@ -1078,6 +1148,14 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         zMove: {basePower: 200},
     },
+    esperwing: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                move.self = { boosts: { spe: 2 } };
+            }
+        },
+    },
 	explosion: {
 		inherit: true,
 		onTryMove(pokemon, target, move) {
@@ -1120,6 +1198,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     flowershield: {
         inherit: true,
         isNonstandard: null,
+    },
+    focusblast: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('psychicterrain')) {
+                this.add('-message', 'The psychic energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        }
     },
     focuspunch: {
         inherit: true,
@@ -1206,6 +1293,47 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				this.field.fieldState.lastPledge = '';
 			} else {
 				this.field.fieldState.lastPledge = 'grasspledge';
+			}
+		},
+	},
+	firepledge: {
+		inherit: true,
+		onAfterMoveSecondarySelf(source, target, move) {
+			if (this.field.isField('frozendimensionalfield')) return;
+			if (this.field.fieldState.lastPledge === 'waterpledge') {
+				const duration = 4;
+				if (this.field.isTerrain('rainbowterrain')) {
+					this.field.terrainState.duration = Math.max(
+						this.field.terrainState.duration || 0,
+						duration
+					);
+					this.add(
+						'-fieldstart', 'Rainbow Terrain',
+						`[duration] ${this.field.terrainState.duration}`
+					);
+					this.add('-message', 'The pledges combined to refresh the rainbow!');
+				} else if (this.field.field && !this.field.isField('rainbowfield')) {
+					this.field.setTerrain('rainbowterrain', source, move);
+					this.add('-message', 'The pledges combined to form a rainbow!');
+				} else if (this.field.isField('rainbowfield')) {
+					if ((this.field.fieldState.duration || 0) <= 0) {
+						this.add('-message', 'The pledges combined!');
+					} else {
+						this.field.fieldState.duration = Math.max(
+							this.field.fieldState.duration || 0,
+							duration
+						);
+						this.add('-fieldstart', 'Rainbow Field', `[duration] ${this.field.fieldState.duration}`);
+						this.add('-message', 'The pledges combined to refresh the rainbow!');
+					}
+				} else {
+					this.field.setTemporaryField('rainbowfield', duration, source, move);
+					this.add('-message', 'The pledges combined to form a rainbow!');
+				}
+				this.field.fieldState.lastPledge = '';
+			} else {
+				this.field.fieldState.lastPledge = 'firepledge';
+				this.add('-message', `${move.name} lingers in the air...`);
 			}
 		},
 	},
@@ -1297,9 +1425,24 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+    hex: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('psychicterrain')) {
+                this.add('-message', 'The psychic energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     hiddenpower: {
         inherit: true,
         isNonstandard: null,
+        onBasePower() {
+            if (this.field.isTerrain('psychicterrain')) {
+                this.add('-message', 'The psychic energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        }
     },
 	hiddenpowernormal: {
 		num: 237,
@@ -1407,6 +1550,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     infernalparade: {
         inherit: true,
+		basePowerCallback(pokemon, target, move) {
+			if (this.field.isField('hauntedfield') || target.status || target.hasAbility('comatose')) {
+				return move.basePower * 2;
+			}
+			return move.basePower;
+		},
         zMove: {basePower: 160},
     },
 	ingrain: {
@@ -1464,6 +1613,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     kinesis: {
         inherit: true,
         isNonstandard: null,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                move.boosts = { accuracy: -2 };
+            }
+        },
     },
     kingsshield: {
         inherit: true,
@@ -1512,12 +1666,25 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             },
         },
     },
-    lifedew: {
+	lick: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isField('hauntedfield') && move.secondaries?.[0]) {
+				move.secondaries[0].chance = 100;
+			}
+		},
+	},
+	lifedew: {
         inherit: true,
 		zMove: { effect: 'heal' },
 		heal: undefined,
 		onHit(target, source) {
-			const success = !!this.heal(target.baseMaxhp / 4, target, source);
+            if (this.field.isField('watersurfacefield')) {
+                target.addVolatile('aquaring', source);
+            }
+			const amount = this.field.isField('rainbowfield') && target === source ?
+				target.baseMaxhp / 2 : target.baseMaxhp / 4;
+			const success = !!this.heal(amount, target, source);
 			if (success && this.field.isField('corrosivemistfield')) {
 				target.trySetStatus('psn', source);
 			}
@@ -1547,9 +1714,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 this.add('-message', 'The mist\'s energy strengthened the attack!');
                 return this.chainModify(1.5);
             }
+            else if (this.field.isTerrain('psychicterrain')) {
+                this.add('-message', 'The psychic energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
         },
     },
-    magicpower: {
+	magicpowder: {
+		inherit: true,
+		onHit(target, source, move) {
+			let success = false;
+			if (target.getTypes().join() !== 'Psychic' && target.setType('Psychic')) {
+				this.add('-start', target, 'typechange', 'Psychic');
+				success = true;
+			}
+			if (this.field.isField('hauntedfield') && target.trySetStatus('slp', source, move)) {
+				success = true;
+			}
+			if (!success) return false;
+		},
+	},
+	magicpower: {
         inherit: true,
         zMove: { boost: { spa: 1 } },
     },
@@ -1624,6 +1809,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         isNonstandard: null,
     },
+    meditate: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                move.boosts = { atk: 2, spa: 2 };
+			} else if (this.field.isField('rainbowfield')) {
+				move.boosts = { atk: 3 };
+            }
+        },
+    },
     mefirst: {
         inherit: true,
         isNonstandard: null,
@@ -1637,10 +1832,29 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				return false;
 			}
 		},
+        onBasePower() {
+            if (this.field.isTerrain('psychicterrain')) {
+                this.add('-message', 'The psychic energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
+    mindreader: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                move.self = { boosts: { spa: 2 } };
+            }
+        },
     },
     miracleeye: {
         inherit: true,
         isNonstandard: null,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                move.self = { boosts: { spa: 2 } };
+            }
+        },
     },
     mist: {
         inherit: true,
@@ -1747,6 +1961,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 		},
 	},
+    moonblast: {
+        inherit: true,
+        onBasePower() {
+            if (this.field.isTerrain('psychicterrain')) {
+                this.add('-message', 'The psychic energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+    },
     moongeistbeam: {
         inherit: true,
         onBasePower() {
@@ -1857,6 +2080,27 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 this.add('-message', 'The mist\'s energy strengthened the attack!');
                 return this.chainModify(1.5);
             }
+            else if (this.field.isTerrain('psychicterrain')) {
+                this.add('-message', 'The psychic energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        },
+
+    },
+    mysticalpower: {
+        inherit: true,
+        onModifyMove(move, pokemon) {
+            if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                move.self = { boosts: { spa: 2 } };
+            }
+        },
+    },
+    nastyplot: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                move.boosts = { spa: 3 };
+            }
         },
     },
     naturepower: {
@@ -1864,7 +2108,17 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         isNonstandard: null,
         onTryHit(target, pokemon) {
             let move = 'triattack';
+			if (this.field.isTerrain('rainbowterrain')) {
+				move = 'aurorabeam';
+			} else {
             switch (this.field.field) {
+			case 'rainbowfield':
+				move = 'aurorabeam';
+				break;
+			case 'hauntedfield':
+			case 'narcissafield':
+				move = 'phantomforce';
+				break;
 			case 'corrosivemistfield':
 				move = 'corrosivegas';
 				break;
@@ -1886,11 +2140,50 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 }
                 break;
             }
+			}
 
             this.actions.useMove(move, pokemon, { target });
             return null;
         },
     },
+	meanlook: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isField('hauntedfield')) move.target = 'allAdjacentFoes';
+		},
+	},
+	nightmare: {
+		inherit: true,
+		condition: {
+			inherit: true,
+			onStart(pokemon) {
+				if (this.field.isField('rainbowfield')) return false;
+				if (pokemon.status !== 'slp' && !pokemon.hasAbility('comatose')) return false;
+				this.add('-start', pokemon, 'Nightmare');
+			},
+			onResidualOrder: 11,
+			onResidual(pokemon) {
+				this.damage(pokemon.baseMaxhp / (this.field.isField('hauntedfield') ? 3 : 4));
+			},
+		},
+	},
+	nightshade: {
+		inherit: true,
+		damageCallback(pokemon) {
+			return this.field.isField('hauntedfield') ? Math.floor(pokemon.level * 1.5) : pokemon.level;
+		},
+	},
+	phantomforce: {
+		inherit: true,
+		onTryMove(attacker, defender, move) {
+			if (this.field.isField('hauntedfield')) return;
+			if (attacker.removeVolatile(move.id)) return;
+			this.add('-prepare', attacker, move.name);
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) return;
+			attacker.addVolatile('twoturnmove', defender);
+			return null;
+		},
+	},
 	naturesmadness: {
         inherit: true,
         isNonstandard: null,
@@ -1996,6 +2289,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             if (this.field.isField('forestfield')) {
                 this.add('-message', 'A tree slammed down!');
                 return this.chainModify(1.5);
+            }
+        },
+    },
+	ominouswind: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isField('hauntedfield') && move.secondaries?.[0]) {
+				move.secondaries[0].chance = 20;
+			}
+		},
+	},
+	psychup: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                move.self = { boosts: { spa: 2 } };
             }
         },
     },
@@ -2145,32 +2454,60 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
-    secretpower: {
+	scaryface: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isField('hauntedfield')) {
+				move.boosts = { spe: -3 };
+			}
+		},
+	},
+	secretpower: {
         inherit: true,
         isNonstandard: null,
         onModifyMove(move) {
             if (!this.field.field && this.field.isTerrain('')) return;
 
             move.secondaries = [];
+			if (this.field.isTerrain('rainbowterrain')) {
+				const effects = [
+					{ chance: 30, status: 'par' },
+					{ chance: 30, status: 'psn' },
+					{ chance: 30, status: 'brn' },
+					{ chance: 30, status: 'frz' },
+					{ chance: 30, status: 'slp' },
+				] as const;
+				move.secondaries.push(this.sample(effects));
+				return;
+			}
 
             switch (this.field.field) {
+			case 'rainbowfield': {
+				const effects = [
+					{ chance: 30, status: 'par' },
+					{ chance: 30, status: 'psn' },
+					{ chance: 30, status: 'brn' },
+					{ chance: 30, status: 'frz' },
+					{ chance: 30, status: 'slp' },
+				] as const;
+				move.secondaries.push(this.sample(effects));
+				break;
+			}
+			case 'hauntedfield':
+			case 'narcissafield':
+				move.secondaries.push({ chance: 30, volatileStatus: 'curse' });
+				break;
 			case 'corrosivemistfield':
 				move.secondaries.push({ chance: 30, status: 'psn' });
 				break;
             case 'forestfield':
-                move.secondaries.push({
-                    chance: 100,
-                    status: 'slp',
-                });
+                move.secondaries.push({ chance: 100, status: 'slp', });
                 break;
-
             case 'swampfield':
-                move.secondaries.push({
-                    chance: 30,
-                    boosts: {
-                        spe: -1,
-                    },
-                });
+                move.secondaries.push({ chance: 30, boosts: { spe: -1, }, });
+                break;
+            case 'watersurfacefield':
+                move.secondaries.push({ chance: 30, boosts: { spe: -1, }, });
                 break;
 
             default:
@@ -2202,6 +2539,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 break;
             }
         },
+        onBasePower() {
+            if (this.field.isTerrain('psychicterrain')) {
+                this.add('-message', 'The psychic energy strengthened the attack!');
+                return this.chainModify(1.5);
+            }
+        }
     },
     selfdestruct: {
         inherit: true,
@@ -2255,7 +2598,18 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     shelter: {
         inherit: true,
         onHit(pokemon) {
+			if (this.field.isTerrain('rainbowterrain')) {
+				pokemon.addVolatile('shelterrainbow');
+				return;
+			}
             switch (this.field.field) {
+			case 'rainbowfield':
+				pokemon.addVolatile('shelterrainbow');
+				break;
+			case 'hauntedfield':
+			case 'narcissafield':
+				pokemon.addVolatile('shelterhaunted');
+				break;
 			case 'corrosivemistfield':
 				pokemon.addVolatile('sheltercorrosivemist');
 				break;
@@ -2265,18 +2619,22 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             case 'swampfield':
                 pokemon.addVolatile('shelterswamp');
                 break;
+            case 'watersurfacefield':
+                pokemon.addVolatile('shelterwatersurface');
+                break;
             default:
-                if (this.field.isTerrain('electricterrain')) {
+                if (this.field.isUnlayeredTerrain('electricterrain')) {
                     pokemon.addVolatile('shelterelectric');
                 }
-                // } else if (this.field.isTerrain('grassyterrain')) {
-                //     move = 'energyball';
-                else if (this.field.isTerrain('mistyterrain')) {
+                else if (this.field.isUnlayeredTerrain('grassyterrain')) {
+                    pokemon.addVolatile('sheltergrassy');
+                }
+                else if (this.field.isUnlayeredTerrain('mistyterrain')) {
                     pokemon.addVolatile('sheltermisty');
                 }
-                // else if (this.field.isTerrain('psychicterrain')) {
-                //     move = 'psychic';
-                // }
+                else if (this.field.isUnlayeredTerrain('psychicterrain')) {
+                    pokemon.addVolatile('shelterpsychic');
+                }
                 else {
                     pokemon.addVolatile('shelterdefault');
                 }
@@ -2351,7 +2709,57 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
-    sleeppowder: {
+	shadowbone: {
+		inherit: true,
+		onBasePower() {
+			if (this.field.isField('hauntedfield')) {
+				this.add('-message', 'Spooky scary skeletons!');
+				return this.chainModify(1.2);
+			}
+		},
+	},
+	shadowforce: {
+		inherit: true,
+		onTryMove(attacker, defender, move) {
+			if (this.field.isField('hauntedfield')) return;
+			if (attacker.removeVolatile(move.id)) return;
+			this.add('-prepare', attacker, move.name);
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) return;
+			attacker.addVolatile('twoturnmove', defender);
+			return null;
+		},
+	},
+	solarbeam: {
+		inherit: true,
+		onTryMove(attacker, defender, move) {
+			if (this.field.isField('rainbowfield') || this.field.isTerrain('rainbowterrain')) return;
+			if (attacker.removeVolatile(move.id)) return;
+			this.add('-prepare', attacker, move.name);
+			if (['sunnyday', 'desolateland'].includes(attacker.effectiveWeather(undefined, true))) return;
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) return;
+			attacker.addVolatile('twoturnmove', defender);
+			return null;
+		},
+	},
+	solarblade: {
+		inherit: true,
+		onTryMove(attacker, defender, move) {
+			if (this.field.isField('rainbowfield') || this.field.isTerrain('rainbowterrain')) return;
+			if (attacker.removeVolatile(move.id)) return;
+			this.add('-prepare', attacker, move.name);
+			if (['sunnyday', 'desolateland'].includes(attacker.effectiveWeather(undefined, true))) return;
+			if (!this.runEvent('ChargeMove', attacker, defender, move)) return;
+			attacker.addVolatile('twoturnmove', defender);
+			return null;
+		},
+	},
+	sonicboom: {
+		inherit: true,
+		damageCallback() {
+			return this.field.isField('rainbowfield') ? 140 : 20;
+		},
+	},
+	sleeppowder: {
         inherit: true,
         onModifyMove(move, pokemon) {
             if (this.field.isField('swampfield')) {
@@ -2433,6 +2841,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
 	spikes: {
 		inherit: true,
+		onTry() {
+			if (this.field.isField('watersurfacefield')) {
+				this.add('-message', '...The spikes sank into the water and vanished!');
+				return null;
+			}
+		},
 		condition: {
 			inherit: true,
 			onSideStart(side, target) {
@@ -2465,7 +2879,48 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			},
 		},
 	},
-    springtidestorm: {
+	shoreup: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isField('watersurfacefield')) {
+				move.type = 'Water';
+			}
+		},
+	},
+	splash: {
+		inherit: true,
+		onTryHit(target, source) {
+			if (!this.field.isField('watersurfacefield')) {
+				this.add('-nothing');
+				return;
+			}
+
+			let success = false;
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon === source) continue;
+				if (this.boost({ accuracy: -1 }, pokemon, source)) {
+					success = true;
+				}
+			}
+			if (!success) {
+				this.add('-nothing');
+			}
+		},
+	},
+	spite: {
+		inherit: true,
+		onHit(target) {
+			let move: Move | ActiveMove | null = target.lastMove;
+			if (!move || move.isZ) return false;
+			if (move.isMax && move.baseMove) move = this.dex.moves.get(move.baseMove);
+
+			const amount = this.field.isField('hauntedfield') ? 6 : 4;
+			const ppDeducted = target.deductPP(move.id, amount);
+			if (!ppDeducted) return false;
+			this.add('-activate', target, 'move: Spite', move.name, ppDeducted);
+		},
+	},
+	springtidestorm: {
         inherit: true,
         onBasePower() {
             if (this.field.isTerrain('mistyterrain')) {
@@ -2612,6 +3067,13 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
     },
+	takeheart: {
+        inherit: true,
+		onHit(pokemon) {
+			const success = !!this.boost((this.field.isField('watersurfacefield') && pokemon.isGrounded()) ? { spa: 2, spd: 2 } : { spa: 1, spd: 1 });
+			return pokemon.cureStatus() || success;
+		},
+	},
     tarshot: {
         inherit: true,
         zMove: { boost: { spa: 2 } },
@@ -2624,12 +3086,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		isNonstandard: null,
 		onAfterHit(target, source) {
-			if (source.hp && this.field.isTerrain('electricterrain')) {
+			if (source.hp && this.field.isUnlayeredTerrain('electricterrain')) {
 				this.field.clearTerrain();
 			}
 		},
 		onAfterSubDamage(damage, target, source) {
-			if (source.hp && this.field.isTerrain('electricterrain')) {
+			if (source.hp && this.field.isUnlayeredTerrain('electricterrain')) {
 				this.field.clearTerrain();
 			}
 		},
@@ -2641,15 +3103,28 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	terrainpulse: {
         inherit: true,
 		onModifyType(move, pokemon) {
+			if (this.field.isTerrain('rainbowterrain')) {
+				move.type = 'Dragon';
+				return;
+			}
             switch (this.field.field) {
+				case 'rainbowfield':
+					move.type = 'Dragon';
+					break;
+				case 'hauntedfield':
+				case 'narcissafield':
+					move.type = 'Ghost';
+					break;
 				case 'corrosivemistfield':
 					move.type = 'Poison';
 					break;
                 case 'forestfield':
                     move.type = 'Bug';
                     break;
-
                 case 'swampfield':
+                    move.type = 'Water';
+                    break;
+                case 'watersurfacefield':
                     move.type = 'Water';
                     break;
 
@@ -2673,7 +3148,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             }
         },
 		onModifyMove(move, pokemon) {
-			if ((this.field.terrain && pokemon.isGrounded()) || this.field.isField('forestfield')) {
+			if (
+				this.field.isTerrain('rainbowterrain') ||
+				(this.field.terrain && pokemon.isGrounded()) ||
+				this.field.isField(['forestfield', 'hauntedfield', 'rainbowfield'])
+			) {
 				move.basePower *= 2;
 				this.debug('BP doubled in Terrain or Field');
 			}
@@ -2740,6 +3219,15 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			}
 		},
 	},
+	toxicspikes: {
+		inherit: true,
+		onTry() {
+			if (this.field.isField('watersurfacefield')) {
+				this.add('-message', '...The spikes sank into the water and vanished!');
+				return null;
+			}
+		},
+	},
     trickortreat: {
         inherit: true,
         isNonstandard: null,
@@ -2785,12 +3273,51 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		zMove: { effect: 'clearnegativeboost' },
     },
+	wavecrash: {
+        inherit: true,
+        onModifyMove(move) {
+            if (this.field.isField('watersurfacefield')) {
+                move.recoil = [25, 100];
+            }
+        },
+	},
 	waterpledge: {
 		inherit: true,
 		onAfterMoveSecondarySelf(source, target, move) {
 			if (this.field.isField('frozendimensionalfield')) return;
 
-			if (this.field.fieldState.lastPledge === 'grasspledge') {
+			if (this.field.fieldState.lastPledge === 'firepledge') {
+				const duration = 4;
+				if (this.field.isTerrain('rainbowterrain')) {
+					this.field.terrainState.duration = Math.max(
+						this.field.terrainState.duration || 0,
+						duration
+					);
+					this.add(
+						'-fieldstart', 'Rainbow Terrain',
+						`[duration] ${this.field.terrainState.duration}`
+					);
+					this.add('-message', 'The pledges combined to refresh the rainbow!');
+				} else if (this.field.field && !this.field.isField('rainbowfield')) {
+					this.field.setTerrain('rainbowterrain', source, move);
+					this.add('-message', 'The pledges combined to form a rainbow!');
+				} else if (this.field.isField('rainbowfield')) {
+					if ((this.field.fieldState.duration || 0) <= 0) {
+						this.add('-message', 'The pledges combined!');
+					} else {
+						this.field.fieldState.duration = Math.max(
+							this.field.fieldState.duration || 0,
+							duration
+						);
+						this.add('-fieldstart', 'Rainbow Field', `[duration] ${this.field.fieldState.duration}`);
+						this.add('-message', 'The pledges combined to refresh the rainbow!');
+					}
+				} else {
+					this.field.setTemporaryField('rainbowfield', duration, source, move);
+					this.add('-message', 'The pledges combined to form a rainbow!');
+				}
+				this.field.fieldState.lastPledge = '';
+			} else if (this.field.fieldState.lastPledge === 'grasspledge') {
 				const duration = source.hasItem('amplifiedrock') ? 7 : 4;
 
 				if (this.field.isField('swampfield')) {
@@ -2804,6 +3331,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				this.field.fieldState.lastPledge = '';
 			} else {
 				this.field.fieldState.lastPledge = 'waterpledge';
+				this.add('-message', `${move.name} lingers in the air...`);
 			}
 		},
 	},
@@ -2815,6 +3343,26 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         zMove: {basePower: 200},
     },
+	weatherball: {
+		inherit: true,
+		onModifyMove(move, pokemon) {
+			if (this.field.isField('rainbowfield')) {
+				move.basePower *= 2;
+				return;
+			}
+			switch (pokemon.effectiveWeather()) {
+			case 'sunnyday':
+			case 'desolateland':
+			case 'raindance':
+			case 'primordialsea':
+			case 'sandstorm':
+			case 'hail':
+			case 'snowscape':
+				move.basePower *= 2;
+				break;
+			}
+		},
+	},
     wildboltstorm: {
         inherit: true,
         onBasePower() {
@@ -2836,7 +3384,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		condition: {
 			onStart(pokemon, source) {
-				this.effectState.hp = (this.field.isUnlayeredTerrain('mistyterrain') ? source.maxhp*0.75 : source.maxhp / 2);
+				this.effectState.hp = (
+					this.field.isUnlayeredTerrain('mistyterrain') || this.field.isField('rainbowfield') ?
+						source.maxhp * 0.75 : source.maxhp / 2
+				);
 				this.effectState.startingTurn = this.getOverflowedTurnCount();
 				if (this.effectState.startingTurn === 255) {
 					this.hint(`In Gen 8+, Wish will never resolve when used on the ${this.turn}th turn.`);

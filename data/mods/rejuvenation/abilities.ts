@@ -4,6 +4,71 @@ function moveHasType(move: ActiveMove, type: string) {
 
 export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTable = {
 	//New Abilities
+	souleater: {
+		onTryHit(target, source, move) {
+			if (target !== source && moveHasType(move, 'Ghost')) {
+				if (!this.heal(target.baseMaxhp / 4)) {
+					this.add('-immune', target, '[from] ability: Soul Eater');
+				}
+				return null;
+			}
+		},
+		onResidualOrder: 8,
+		onResidual(pokemon) {
+			if (this.field.isField('hauntedfield')) {
+				this.heal(pokemon.baseMaxhp / 16, pokemon);
+			}
+		},
+		flags: { breakable: 1 },
+		name: "Soul Eater",
+		rating: 3.5,
+		num: 6913,
+	},
+	resuscitation: {
+		onBeforeFaint(pokemon) {
+			const zombieFormes: Partial<Record<string, string>> = {
+				parasaevium: 'Paras-Aevium-Zombie',
+				parasectaevium: 'Parasect-Aevium-Zombie',
+			};
+			const zombieForme = zombieFormes[pokemon.species.id];
+			if (!zombieForme) return;
+
+			this.add('-ability', pokemon, 'Resuscitation');
+			pokemon.formeChange(zombieForme, this.effect, true);
+			pokemon.hp = pokemon.maxhp;
+			this.add('-heal', pokemon, pokemon.getHealth, '[from] ability: Resuscitation');
+			this.add('-message', `${pokemon.name} was resuscitated!`);
+
+			if (this.field.isField('hauntedfield')) {
+				const restoredBoosts: SparseBoostsTable = {};
+				let stat: BoostID;
+				for (stat in pokemon.boosts) {
+					if (pokemon.boosts[stat] < 0) restoredBoosts[stat] = -pokemon.boosts[stat];
+				}
+				if (Object.keys(restoredBoosts).length) {
+					this.boost(restoredBoosts, pokemon, pokemon, this.effect);
+				}
+			}
+			return false;
+		},
+		flags: { cantsuppress: 1, notransform: 1 },
+		name: "Resuscitation",
+		rating: 4,
+		num: 6914,
+	},
+	baddreams: {
+		inherit: true,
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			if (!pokemon.hp || this.field.isField('rainbowfield')) return;
+			for (const target of pokemon.foes()) {
+				if (target.status === 'slp' || target.hasAbility('comatose')) {
+					this.damage(target.baseMaxhp / 8, target, pokemon);
+				}
+			}
+		},
+	},
 	pollenflight: {
 		onResidualOrder: 8,
 		onResidualSubOrder: 1,
@@ -106,7 +171,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					activated = true;
 				}
 
-				this.boost({ def: (this.field.isField('swampfield') ? -2 : -1) }, pokemon, target, null, true);
+				this.boost({ def: ((this.field.isField('swampfield') || this.field.isField('watersurfacefield')) ? -2 : -1) }, pokemon, target, null, true);
 			}
 		},
 		flags: {},
@@ -299,6 +364,16 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	cursedbody: {
+		inherit: true,
+		onDamagingHit(damage, target, source, move) {
+			if (source.volatiles['disable']) return;
+			if (move.isMax || move.flags['futuremove'] || move.id === 'struggle') return;
+			if ((!target.hp && this.field.isField('hauntedfield')) || this.randomChance(3, 10)) {
+				source.addVolatile('disable', target);
+			}
+		},
+	},
 	junglebeat: {
 		onModifyMove(move, pokemon) {
 			if (move.type === 'Grass') {
@@ -334,6 +409,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					source,
 					target
 				);
+			}
+		},
+	},
+	anticipation: {
+		inherit: true,
+		onStart(pokemon) {
+			if (this.field.isUnlayeredTerrain('psychicterrain')) {
+				this.boost({ spa: 2 }, pokemon);
+			}
+			else if (this.field.isTerrain('psychicterrain')) {
+				this.boost({ spa: 1 }, pokemon);
 			}
 		},
 	},
@@ -373,9 +459,13 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		onResidual(target) {
-			if (this.field.isField('swampfield') || this.field.isTerrain('mistyterrain')) {
+			if (this.field.isField('swampfield') || this.field.isField('watersurfacefield')) {
 				if (this.field.isField('swampfield')) this.add('-message', `${target.name}'s Dry Skin was healed by the murk!`);
-				else if (this.field.isTerrain('mistyterrain')) this.add('-message', `${target.name} was healed a little by the mist!`);
+					else if (this.field.isField('watersurfacefield')) this.add('-message', `${target.name} absorbed some of the water!`);
+				this.heal(target.baseMaxhp / 16, target);
+			}
+			if (this.field.isTerrain('mistyterrain')) {
+				this.add('-message', `${target.name} was healed a little by the mist!`);
 				this.heal(target.baseMaxhp / 16, target);
 			}
 		},
@@ -434,6 +524,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					this.add('-immune', target, '[from] ability: Flash Fire');
 				}
 				return null;
+			}
+		},
+	},
+	forewarn: {
+		inherit: true,
+		onStart(pokemon) {
+			if (this.field.isUnlayeredTerrain('psychicterrain')) {
+				this.boost({ spa: 2 }, pokemon);
+			}
+			else if (this.field.isTerrain('psychicterrain')) {
+				this.boost({ spa: 1 }, pokemon);
 			}
 		},
 	},
@@ -502,13 +603,27 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	hydration: {
+		inherit: true,
+		onResidual(pokemon) {
+			if ((pokemon.status && ['raindance', 'primordialsea'].includes(pokemon.effectiveWeather())) || (this.field.isField('watersurfacefield') && pokemon.isGrounded())) {
+				this.debug('hydration');
+				this.add('-activate', pokemon, 'ability: Hydration');
+				pokemon.cureStatus();
+			}
+		},
+		flags: {},
+		name: "Hydration",
+		rating: 1.5,
+		num: 93,
+	},
 	gulpmissile: {
 		inherit: true,
 		onSourceTryPrimaryHit(target, source, effect) {
 			if (effect?.id === 'surf' && source.hasAbility('gulpmissile') && source.species.name === 'Cramorant') {
 				let forme;
 				if (!this.field.isField('')) {
-					forme = this.field.isField('swampfield') ? 'cramorantgulping' : source.hp <= source.maxhp / 2 ? 'cramorantgorging' : 'cramorantgulping';
+					forme = this.field.isField('swampfield') || this.field.isField('watersurfacefield') || this.field.isField('underwaterfield') ? 'cramorantgulping' : source.hp <= source.maxhp / 2 ? 'cramorantgorging' : 'cramorantgulping';
 				} else if (this.field.isTerrain('electricterrain')) {
 					forme = 'cramorantgorging';
 				} else {
@@ -592,7 +707,10 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	marvelscale: {
 		inherit: true,
 		onModifyDef(def, pokemon) {
-			if (pokemon.status || this.field.isTerrain('mistyterrain')) {
+			if (
+				pokemon.status || this.field.isTerrain('mistyterrain') ||
+				this.field.isField('rainbowfield')
+			) {
 				return this.chainModify(1.5);
 			}
 		},
@@ -601,8 +719,18 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		inherit: true,
 			onTerrainChange(pokemon) {
 			let types;
+			if (this.field.isTerrain('rainbowterrain')) {
+				types = ['Dragon'];
+			} else {
 
 			switch (this.field.field) {
+			case 'rainbowfield':
+				types = ['Dragon'];
+				break;
+			case 'hauntedfield':
+			case 'narcissafield':
+				types = ['Ghost'];
+				break;
 			case 'corrosivemistfield':
 				types = ['Poison'];
 				break;
@@ -610,6 +738,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				types = ['Bug'];
 				break;
 			case 'swampfield':
+				types = ['Water'];
+				break;
+			case 'watersurfacefield':
 				types = ['Water'];
 				break;
 			default:
@@ -630,6 +761,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					types = pokemon.baseSpecies.types;
 				}
 			}
+			}
 			const oldTypes = pokemon.getTypes();
 			if (oldTypes.join() === types.join() || !pokemon.setType(types)) return;
 
@@ -642,6 +774,41 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			} else {
 				this.add('-activate', pokemon, 'ability: Mimicry');
 				this.add('-end', pokemon, 'typechange', '[silent]');
+			}
+		},
+	},
+	schooling: {
+		inherit: true,
+		onSwitchInPriority: -1,
+		onStart(pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Wishiwashi' || pokemon.transformed) return;
+
+			const waterSurfaceSchooling = this.field.isField('watersurfacefield') &&pokemon.isGrounded();
+
+			const shouldSchool = waterSurfaceSchooling || (pokemon.level >= 20 && pokemon.hp > pokemon.maxhp / 4);
+
+			if (shouldSchool) {
+				if (pokemon.species.id === 'wishiwashi') {
+					pokemon.formeChange('Wishiwashi-School');
+				}
+			} else if (pokemon.species.id === 'wishiwashischool') {
+				pokemon.formeChange('Wishiwashi');
+			}
+		},
+		onResidualOrder: 29,
+		onResidual(pokemon) {
+			if (pokemon.baseSpecies.baseSpecies !== 'Wishiwashi' || pokemon.transformed || !pokemon.hpPower) return;
+
+			const waterSurfaceSchooling = this.field.isField('watersurfacefield') && pokemon.isGrounded();
+
+			const shouldSchool = waterSurfaceSchooling || (pokemon.level >= 20 && pokemon.hp > pokemon.maxhp / 4);
+
+			if (shouldSchool) {
+				if (pokemon.species.id === 'wishiwashi') {
+					pokemon.formeChange('Wishiwashi-School');
+				}
+			} else if (pokemon.species.id === 'wishiwashischool') {
+				pokemon.formeChange('Wishiwashi');
 			}
 		},
 	},
@@ -715,12 +882,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	perishbody: {
+		inherit: true,
+		onDamagingHit(damage, target, source, move) {
+			if (!this.checkMoveMakesContact(move, source, target) || source.volatiles['perishsong']) return;
+			this.add('-ability', target, 'Perish Body');
+			source.addVolatile('perishsong');
+			target.addVolatile('perishsong');
+			if (this.field.isField('hauntedfield')) {
+				source.addVolatile('trapped', target, this.effect, 'trapper');
+			}
+		},
+	},
 	powerspot: {
 		inherit: true,
 		onAllyBasePowerPriority: 22,
 		onAllyBasePower(basePower, attacker) {
 			if (attacker !== this.effectState.target) {
-				return this.chainModify(this.field.isUnlayeredTerrain('psychicterrain') ? 1.5 : [5325, 4096]);
+				const boosted = this.field.isField('hauntedfield') ||
+					this.field.isUnlayeredTerrain('psychicterrain');
+				return this.chainModify(boosted ? 1.5 : [5325, 4096]);
 			}
 		},
 	},
@@ -798,7 +979,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onAnyModifyDamage(damage, source, target, move) {
 			const holder = this.effectState.target;
 			if (
-				moveHasType(move, 'Poison') && this.field.isTerrain('mistyterrain', target) &&
+				moveHasType(move, 'Poison') &&
+				(this.field.isTerrain('mistyterrain', target) || this.field.isField('rainbowfield')) &&
 				(target === holder || target.isAlly(holder))
 			) {
 				this.debug('Pastel Veil weakened a Poison-type attack in the mist');
@@ -806,8 +988,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	prismarmor: {
+		inherit: true,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (this.field.isField('rainbowfield') || target.getMoveHitData(move).typeMod > 0) {
+				return this.chainModify(0.75);
+			}
+		},
+	},
 	rattled: {
 		inherit: true,
+		onStart(pokemon) {
+			if (this.field.isField('hauntedfield')) {
+				this.boost({ spe: 1 }, pokemon);
+			}
+		},
 		onDamagingHit(damage, target, source, move) {
 			if (['Dark', 'Bug', 'Ghost'].some(type => moveHasType(move, type))) {
 				this.boost({ spe: 1 });
@@ -817,7 +1012,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (this.field.isField('swampfield')) {
 				this.boost({ spe: 1 });
 			}
-		}
+		},
 	},
 	sapsipper: {
 		inherit: true,
@@ -849,6 +1044,29 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onDamagingHit(damage, target) {
 			if (this.field.setTerrain('grassyterrain', target, this.effect)) {
 				this.field.terrainState.duration = target.hasItem('amplifiedrock') ? 8 : 5;
+			}
+		},
+	},
+	shadowtag: {
+		inherit: true,
+		onStart(pokemon) {
+			if (!this.field.isField('hauntedfield')) return;
+
+			for (const target of pokemon.foes()) {
+				if (!target.hp || !target.item) continue;
+				this.add('-item', target, target.getItem(), '[from] ability: Shadow Tag', `[of] ${pokemon}`);
+			}
+		},
+		onFoeTrapPokemon(pokemon) {
+			if (!pokemon.hasAbility('shadowtag') && pokemon.isAdjacent(this.effectState.target)) {
+				pokemon.tryTrap(true);
+			}
+		},
+		onFoeMaybeTrapPokemon(pokemon, source) {
+			if (!source) source = this.effectState.target;
+			if (!source || !pokemon.isAdjacent(source)) return;
+			if (!pokemon.hasAbility('shadowtag')) {
+				pokemon.maybeTrapped = true;
 			}
 		},
 	},
@@ -896,10 +1114,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	soulheart: {
 		inherit: true,
 		onAnyFaint() {
-			if (this.field.isUnlayeredTerrain('mistyterrain')) {
+			if (this.field.isUnlayeredTerrain('mistyterrain') || this.field.isField('rainbowfield')) {
 				this.boost({ spa: 1, spd: 1 }, this.effectState.target);
 			}
 			else this.boost({ spa: 1 }, this.effectState.target);
+		},
+	},
+	wonderskin: {
+		inherit: true,
+		onModifyAccuracyPriority: 10,
+		onModifyAccuracy(accuracy, target, source, move) {
+			if (move.category === 'Status' && typeof accuracy === 'number') {
+				return this.field.isField('rainbowfield') ? 0 : 50;
+			}
 		},
 	},
 	static: {
@@ -920,6 +1147,21 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.boost({ spe: 6 });
 			}
 		},
+		onResidualOrder: 29,
+		onResidual(pokemon) {
+			if (pokemon.activeTurns && this.field.isField('watersurfacefield')) {
+				this.boost({ spe: 1 }, pokemon);
+			}
+		},
+	},
+	wanderingspirit: {
+		inherit: true,
+		onResidualOrder: 29,
+		onResidual(pokemon) {
+			if (pokemon.activeTurns && this.field.isField('hauntedfield')) {
+				this.boost({ spe: -1 }, pokemon);
+			}
+		},
 	},
 	steadfast: {
 		inherit: true,
@@ -927,6 +1169,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (this.field.isTerrain('electricterrain')) {
 				this.debug('Steadfast Electric Terrain Boost (1.5x)');
 				return this.chainModify(1.5);
+			}
+		},
+	},
+	surgesurfer: {
+		inherit: true,
+		onModifySpe(spe, pokemon) {
+			if (this.field.isTerrain('electricterrain') || (this.field.isField('watersurfacefield') && pokemon.isGrounded())) {
+				return this.chainModify(2);
 			}
 		},
 	},
@@ -945,6 +1195,17 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	swiftswim: {
+		onModifySpe(spe, pokemon) {
+			if ((['raindance', 'primordialsea'].includes(pokemon.effectiveWeather())) || (this.field.isField('watersurfacefield') && pokemon.isGrounded())) {
+				return this.chainModify(2);
+			}
+		},
+		flags: {},
+		name: "Swift Swim",
+		rating: 3,
+		num: 33,
+	},
 	teravolt: {
 		inherit: true,
 		onModifyMove(move) {
@@ -953,6 +1214,26 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				move.ignoreImmunity = { Electric: true };
 			}
 		},
+	},
+	torrent: {
+		onModifyAtkPriority: 5,
+		onModifyAtk(atk, attacker, defender, move) {
+			if (move.type === 'Water' && (attacker.hp <= attacker.maxhp / 3 || (this.field.isField('watersurfacefield') && attacker.isGrounded()))) {
+				this.debug('Torrent boost');
+				return this.chainModify(1.5);
+			}
+		},
+		onModifySpAPriority: 5,
+		onModifySpA(atk, attacker, defender, move) {
+			if (move.type === 'Water' && (attacker.hp <= attacker.maxhp / 3 || (this.field.isField('watersurfacefield') && attacker.isGrounded()))) {
+				this.debug('Torrent boost');
+				return this.chainModify(1.5);
+			}
+		},
+		flags: {},
+		name: "Torrent",
+		rating: 2,
+		num: 67,
 	},
 	transistor: {
 		inherit: true,
@@ -1027,7 +1308,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
-			if (this.field.isField('swampfield')  && pokemon.isGrounded()) {
+			if ((this.field.isField('swampfield') || this.field.isField('watersurfacefield')) && pokemon.isGrounded()) {
 				this.boost({def: 2});
 			}
 		},
@@ -1045,6 +1326,48 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					this.add('-immune', target, '[from] ability: Water Absorb');
 				}
 				return null;
+			}
+		},
+		onResidualOrder: 28,
+		onResidualSubOrder: 2,
+		onResidual(pokemon) {
+			if (this.field.isField('watersurfacefield')) {
+				this.add('-message', `${pokemon.name} absorbed some of the water!`);
+				this.heal(pokemon.baseMaxhp / 16);
+			}
+		},
+	},
+	waterveil: {
+		inherit: true,
+		onUpdate(pokemon) {
+			// Water Veil's normal effect: immediately cure burn.
+			if (pokemon.status === 'brn') {
+				this.add('-activate', pokemon, 'ability: Water Veil');
+				pokemon.cureStatus();
+			}
+		},
+		onSetStatus(status, target, source, effect) {
+			// Water Veil's normal effect: prevent burn.
+			if (status.id !== 'brn') return;
+
+			if ((effect as Move)?.status) {
+				this.add('-immune', target, '[from] ability: Water Veil');
+			}
+			return false;
+		},
+		onResidualOrder: 5,
+		onResidualSubOrder: 3,
+		onResidual(pokemon) {
+			// Rejuvenation: cure regular status at the end of each turn.
+			if (
+				pokemon.status &&
+				(
+					this.field.isField('watersurfacefield') ||
+					this.field.isField('underwaterfield')
+				)
+			) {
+				this.add('-activate', pokemon, 'ability: Water Veil');
+				pokemon.cureStatus();
 			}
 		},
 	},

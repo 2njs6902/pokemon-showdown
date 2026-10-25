@@ -9,6 +9,41 @@ interface RejuvenationTransition {
 }
 
 const REJUVENATION_FIELD_TRANSITIONS: Partial<Record<string, RejuvenationTransition[]>> = {
+	hauntedfield: [
+		{
+			moves: ['judgment', 'originpulse', 'purify', 'sacredfire', 'flash', 'dazzlinggleam'],
+			multiplier: 1.3,
+		},
+	],
+	narcissafield: [
+		{
+			moves: ['judgment', 'originpulse', 'purify', 'sacredfire', 'flash', 'dazzlinggleam'],
+			multiplier: 1.3,
+		},
+	],
+	rainbowfield: [
+		{
+			moves: ['lightthatburnsthesky', 'sandsearstorm'],
+			multiplier: 1.3,
+		},
+	],
+	watersurfacefield: [
+		{
+			moves: [
+				'gravity', 'dive', 'anchorshot', 'gravapple', 'tripledive',
+				'blizzard', 'glaciate', 'subzeroslammer', 'acidownpour',
+			],
+			multiplier: 1.3,
+		},
+		{
+			moves: ['sludgewave'],
+			multiplier: 1.3,
+			willTrigger(battle) {
+				const counter = (battle.field.fieldState as any).pollutionCounter || 0;
+				return counter + 1 >= 2;
+			},
+		},
+	],
 	forestfield: [
 		{
 			moves: ['surf'],
@@ -481,6 +516,51 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 	rejuvenationfieldtransitionboost: {
 		effectType: 'Rule',
 		name: 'Rejuvenation Field Transition Boost',
+		onBegin() {
+			(this.effectState as any).previousWeather = this.field.weather;
+		},
+		onWeatherChange(target, source, sourceEffect) {
+			const state = this.effectState as any;
+			const currentWeather = this.field.weather;
+			if (state.checkedWeather === currentWeather) return;
+			state.checkedWeather = currentWeather;
+
+			const previousWeather = state.previousWeather;
+			state.previousWeather = currentWeather;
+			const weatherSource = this.field.weatherState.source;
+			const createdRainbow =
+				(previousWeather === 'sunnyday' && currentWeather === 'raindance') ||
+				(previousWeather === 'raindance' && currentWeather === 'sunnyday');
+			if (!createdRainbow) return;
+
+			let duration = this.field.weatherState.duration || 5;
+			if (
+				(currentWeather === 'raindance' && weatherSource?.hasItem('damprock')) ||
+				(currentWeather === 'sunnyday' && weatherSource?.hasItem('heatrock'))
+			) {
+				duration = 8;
+			}
+			if (this.field.isField('rainbowfield')) {
+				if ((this.field.fieldState.duration || 0) < duration) {
+					this.field.fieldState.duration = duration;
+				}
+				this.add('-message', 'The weather refreshed the rainbow!');
+				this.add('-fieldstart', 'Rainbow Field', `[duration] ${this.field.fieldState.duration}`);
+			} else if (this.field.isTerrain('rainbowterrain')) {
+				if ((this.field.terrainState.duration || 0) < duration) {
+					this.field.terrainState.duration = duration;
+				}
+				this.add('-message', 'The weather refreshed the rainbow!');
+				this.add('-fieldstart', 'Rainbow Terrain', `[duration] ${this.field.terrainState.duration}`);
+			} else if (this.field.field) {
+				this.add('-message', 'The weather created a rainbow!');
+				this.field.setTerrain('rainbowterrain', weatherSource || target, sourceEffect);
+				this.field.terrainState.duration = duration;
+			} else {
+				this.add('-message', 'The weather created a rainbow!');
+				this.field.setTemporaryField('rainbowfield', duration, weatherSource || target, sourceEffect);
+			}
+		},
 
 		onBasePower(basePower, attacker, defender, move) {
 			const multiplier =
