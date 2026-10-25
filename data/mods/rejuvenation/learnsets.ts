@@ -5671,7 +5671,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			{
 				generation: 9,
 				level: 1,
-				moves: ["destinybond", "tailslap", "bite"],
+				moves: ["glare", "destinybond", "tailslap", "bite"],
 			},
 		],
 	},
@@ -8355,6 +8355,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			thunderpunch: ["9T"],
 			wideguard: ["9E"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["willowisp", "uturn", "rockslide", "magnitude"],
+			},
+		],
 	},
 	graveleralola: {
 		learnset: {
@@ -12835,6 +12842,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			uproar: ["9T"],
 			zapcannon: ["9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["headlongrush", "slackoff", "rockslide", "protect"],
+			},
+		],
 	},
 	rhydon: {
 		learnset: {
@@ -22740,6 +22754,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			zapcannon: ["9M"],
 			zenheadbutt: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["extremespeed", "boomburst", "ancientpower", "coil"],
+			},
+		],
 	},
 	gligar: {
 		learnset: {
@@ -28770,6 +28791,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			whirlpool: ["9M"],
 			zenheadbutt: ["9L38", "9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["revelationdance", "appleacid", "naturepower", "raindance"],
+			},
+		],
 	},
 	lombre: {
 		learnset: {
@@ -29150,6 +29178,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			weatherball: ["9M"],
 			worryseed: ["9E", "9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["topsyturvy", "mysticalfire", "naturepower", "razorleaf"],
+			},
+		],
 	},
 	shiftry: {
 		learnset: {
@@ -33112,6 +33147,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			voltswitch: ["9M"],
 			wildcharge: ["9L40", "9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["matblock", "frostbreath", "flameburst", "voltswitch"],
+			},
+		],
 	},
 	manectric: {
 		learnset: {
@@ -34081,6 +34123,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			whirlpool: ["9L27", "9M"],
 			zenheadbutt: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["eruption", "toxic", "bounce", "waterspout"],
+			},
+		],
 	},
 	wailord: {
 		learnset: {
@@ -38223,6 +38272,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			worryseed: ["9T"],
 			zenheadbutt: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["shelter", "strengthsap", "fly", "leafblade"],
+			},
+		],
 	},
 	chimecho: {
 		learnset: {
@@ -38325,6 +38381,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			yawn: ["9L13"],
 			zenheadbutt: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["boomburst", "quiverdance", "recover", "psyshock"],
+			},
+		],
 	},
 	absol: {
 		learnset: {
@@ -42236,6 +42299,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			workup: ["9M"],
 			yawn: ["9L23"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["noretreat", "drainpunch", "aquastep", "rest"],
+			},
+		],
 	},
 	kricketot: {
 		learnset: {
@@ -43697,6 +43767,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			voltswitch: ["9M"],
 			wildcharge: ["9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["direclaw", "partingshot", "nuzzle", "charm"],
+			},
+		],
 	},
 	buizel: {
 		learnset: {
@@ -45569,6 +45646,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			waterpulse: ["9T"],
 			workup: ["9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["thrash", "swordsdance", "earthquake", "suckerpunch"],
+			},
+		],
 	},
 	chingling: {
 		learnset: {
@@ -46531,6 +46615,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			uturn: ["9M"],
 			workup: ["9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["earthpower", "boomburst", "nastyplot", "chatter"],
+			},
+		],
 	},
 	spiritomb: {
 		learnset: {
@@ -55608,6 +55699,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			workup: ["9L1", "9M"],
 			yawn: ["9E"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["dragondance", "nobleroar", "takedown", "crunch"],
+			},
+		],
 	},
 	stoutland: {
 		learnset: {
@@ -62934,6 +63032,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wonderroom: ["9L48", "9T"],
 			zenheadbutt: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["instruct", "voltswitch", "hiddenpower", "psybeam"],
+			},
+		],
 	},
 	duosion: {
 		learnset: {
@@ -64066,6 +64171,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			willowisp: ["9M"],
 			wringout: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["bittermalice", "pollenpuff", "brine", "recover"],
+			},
+		],
 	},
 	jellicent: {
 		learnset: {
@@ -67512,6 +67624,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			uturn: ["9M"],
 			whirlwind: ["9L36"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["shadowbone", "playrough", "wingattack", "foulplay"],
+			},
+		],
 	},
 	mandibuzz: {
 		learnset: {
@@ -75575,6 +75694,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wingattack: ["9L16"],
 			xscissor: ["9M"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["willowisp", "hex", "dragonpulse", "superfang"],
+			},
+		],
 	},
 	noivern: {
 		learnset: {
@@ -78035,6 +78161,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			workup: ["9M"],
 			zenheadbutt: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["jawlock", "octolock", "drainpunch", "crabhammer"],
+			},
+		],
 	},
 	crabominable: {
 		learnset: {
@@ -86993,6 +87126,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			wildcharge: ["9M"],
 			zenheadbutt: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["bulkup", "milkdrink", "rollout", "highhorsepower"],
+			},
+		],
 	},
 	chewtle: {
 		learnset: {
@@ -93685,6 +93825,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			yawn: ["9L27"],
 			zenheadbutt: ["9T"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["leechseed", "toxic", "stockpile", "earthquake"],
+			},
+		],
 	},
 	tarountula: {
 		learnset: {
@@ -96651,6 +96798,13 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			whirlpool: ["9M"],
 			wrap: ["9L8"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["flipturn", "zingzap", "tripleaxel", "afteryou"],
+			},
+		],
 	},
 	wugtrio: {
 		learnset: {
@@ -101921,5 +102075,12 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			// Shadow Pokemon Moves
 			scorchingsands: ["9S0"],
 		},
+		eventData: [
+			{
+				generation: 9,
+				level: 1,
+				moves: ["scorchingsands", "spikes", "recover", "muddywater"],
+			},
+		],
 	},
 };
