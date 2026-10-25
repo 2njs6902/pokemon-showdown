@@ -171,7 +171,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 					activated = true;
 				}
 
-				this.boost({ def: ((this.field.isField('swampfield') || this.field.isField('watersurfacefield')) ? -2 : -1) }, pokemon, target, null, true);
+				this.boost({ def: (this.field.isField(['swampfield', 'watersurfacefield', 'murkwatersurfacefield']) ? -2 : -1) }, pokemon, target, null, true);
 			}
 		},
 		flags: {},
@@ -568,7 +568,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onDamagingHit(damage, target, source, move) {
 			if (this.checkMoveMakesContact(move, source, target, true)) {
 				this.add('-ability', target, 'Gooey');
-				this.boost({ spe: (this.field.isField('swampfield') ? -2 : -1) }, source, target, null, true);
+				this.boost({ spe: (this.field.isField(['swampfield', 'murkwatersurfacefield']) ? -2 : -1) }, source, target, null, true);
 			}
 		},
 	},
@@ -743,6 +743,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			case 'watersurfacefield':
 				types = ['Water'];
 				break;
+			case 'murkwatersurfacefield':
+				types = ['Poison'];
+				break;
 			default:
 				switch (this.field.terrain) {
 				case 'electricterrain':
@@ -783,7 +786,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onStart(pokemon) {
 			if (pokemon.baseSpecies.baseSpecies !== 'Wishiwashi' || pokemon.transformed) return;
 
-			const waterSurfaceSchooling = this.field.isField('watersurfacefield') &&pokemon.isGrounded();
+			const waterSurfaceSchooling = this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded();
 
 			const shouldSchool = waterSurfaceSchooling || (pokemon.level >= 20 && pokemon.hp > pokemon.maxhp / 4);
 
@@ -797,9 +800,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		onResidualOrder: 29,
 		onResidual(pokemon) {
-			if (pokemon.baseSpecies.baseSpecies !== 'Wishiwashi' || pokemon.transformed || !pokemon.hpPower) return;
+			if (pokemon.baseSpecies.baseSpecies !== 'Wishiwashi' || pokemon.transformed || !pokemon.hp) return;
 
-			const waterSurfaceSchooling = this.field.isField('watersurfacefield') && pokemon.isGrounded();
+			const waterSurfaceSchooling = this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded();
 
 			const shouldSchool = waterSurfaceSchooling || (pokemon.level >= 20 && pokemon.hp > pokemon.maxhp / 4);
 
@@ -1175,7 +1178,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	surgesurfer: {
 		inherit: true,
 		onModifySpe(spe, pokemon) {
-			if (this.field.isTerrain('electricterrain') || (this.field.isField('watersurfacefield') && pokemon.isGrounded())) {
+			if (this.field.isTerrain('electricterrain') || (this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded())) {
 				return this.chainModify(2);
 			}
 		},
@@ -1197,7 +1200,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	swiftswim: {
 		onModifySpe(spe, pokemon) {
-			if ((['raindance', 'primordialsea'].includes(pokemon.effectiveWeather())) || (this.field.isField('watersurfacefield') && pokemon.isGrounded())) {
+			if ((['raindance', 'primordialsea'].includes(pokemon.effectiveWeather())) || (this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded())) {
 				return this.chainModify(2);
 			}
 		},
@@ -1308,7 +1311,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
-			if ((this.field.isField('swampfield') || this.field.isField('watersurfacefield')) && pokemon.isGrounded()) {
+			if (this.field.isField(['swampfield', 'watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded()) {
 				this.boost({def: 2});
 			}
 		},
@@ -1335,6 +1338,30 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				this.add('-message', `${pokemon.name} absorbed some of the water!`);
 				this.heal(pokemon.baseMaxhp / 16);
 			}
+		},
+	},
+	liquidooze: {
+		inherit: true,
+		onSourceTryHeal(damage, target, source, effect) {
+			const canOoze = ['drain', 'leechseed', 'strengthsap'];
+			if (!canOoze.includes(effect.id)) return;
+			this.damage(this.field.isField('murkwatersurfacefield') ? damage * 2 : damage);
+			return 0;
+		},
+	},
+	stench: {
+		inherit: true,
+		onModifyMovePriority: -1,
+		onModifyMove(move) {
+			if (move.category === 'Status') return;
+			if (!move.secondaries) move.secondaries = [];
+			for (const secondary of move.secondaries) {
+				if (secondary.volatileStatus === 'flinch') return;
+			}
+			move.secondaries.push({
+				chance: this.field.isField('murkwatersurfacefield') ? 20 : 10,
+				volatileStatus: 'flinch',
+			});
 		},
 	},
 	waterveil: {

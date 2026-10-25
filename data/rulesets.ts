@@ -44,6 +44,19 @@ const REJUVENATION_FIELD_TRANSITIONS: Partial<Record<string, RejuvenationTransit
 			},
 		},
 	],
+	murkwatersurfacefield: [
+		{
+			moves: ['whirlpool', 'purify', 'blizzard', 'glaciate', 'subzeroslammer'],
+			multiplier: 1.3,
+		},
+		{
+			moves: ['tidyup'],
+			willTrigger(battle) {
+				const counter = (battle.field.fieldState as any).cleaningCounter || 0;
+				return counter + 1 >= 2;
+			},
+		},
+	],
 	forestfield: [
 		{
 			moves: ['surf'],

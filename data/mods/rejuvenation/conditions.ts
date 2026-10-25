@@ -593,8 +593,128 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		effectType: 'Field',
 		duration: 0,
 		onFieldStart() {
+			this.field.fieldState.cleaningCounter = 0;
 			this.add('-fieldstart', 'Murkwater Surface Field', `[duration] ${this.field.fieldState.duration || 0}`);
 			this.add('-message', 'The water is tainted...');
+			let removedSpikes = false;
+			for (const side of this.sides) {
+				if (side.removeSideCondition('spikes')) removedSpikes = true;
+				if (side.removeSideCondition('toxicspikes')) removedSpikes = true;
+			}
+			if (removedSpikes) this.add('-message', '...The spikes sank into the water and vanished!');
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon?.hasItem('elementalseed') && !pokemon.ignoringItem()) pokemon.useItem();
+			}
+		},
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+			if (['mudbomb', 'mudslap', 'mudshot', 'mudbarrage', 'thousandwaves'].includes(move.id)) {
+				move.type = 'Water';
+			}
+			if (['mudbomb', 'mudslap', 'mudshot', 'mudbarrage', 'smackdown', 'thousandwaves', 'appleacid'].includes(move.id)) {
+				move.additionalTypes.push('Poison');
+			}
+			if (move.id === 'sludgewave') move.additionalTypes.push('Water');
+			if (move.id === 'shoreup') move.type = 'Water';
+			if (moveHasType(move, 'Water') && move.type !== 'Poison' && !move.additionalTypes.includes('Poison')) {
+				move.additionalTypes.push('Poison');
+			}
+		},
+		onEffectiveness(typeMod, target, type, move) {
+			let modifier = typeMod;
+			for (const additionalType of move.additionalTypes || []) {
+				modifier += this.dex.getEffectiveness(additionalType, type);
+			}
+			return modifier;
+		},
+		onTryHit(target, source, move) {
+			if (moveHasType(move, 'Ground')) {
+				this.add('-message', '...But there was no solid ground to attack from!');
+				return null;
+			}
+		},
+		onModifyCritRatio(critRatio, source, target) {
+			if (source.hasAbility('merciless') && source.isGrounded()) return 5;
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			let modifier = 1;
+			if ([
+				'mudbomb', 'mudslap', 'mudshot', 'mudbarrage', 'smackdown',
+				'acid', 'acidspray', 'brine', 'thousandwaves', 'appleacid',
+			].includes(move.id)) {
+				modifier *= 1.5;
+				this.add('-message', move.id === 'brine' ? 'Stinging!' : 'The toxic water strengthened the attack!');
+			}
+			if (moveHasType(move, 'Water') || moveHasType(move, 'Poison')) {
+				modifier *= 1.5;
+				this.add('-message', 'The toxic water strengthened the attack!');
+			}
+			if (defender.isGrounded() && moveHasType(move, 'Electric')) {
+				modifier *= 1.3;
+				this.add('-message', 'The toxic water conducted the attack!');
+			}
+			if (attacker.hasAbility('toxicboost') && attacker.isGrounded() && move.category === 'Physical') {
+				modifier *= 1.5;
+			}
+			if (modifier !== 1) return this.chainModify(modifier);
+		},
+		onAfterMove(source, target, move) {
+			if (['blizzard', 'glaciate', 'subzeroslammer'].includes(move.id)) {
+				this.add('-message', 'The toxic water froze over!');
+				this.field.setField('icyfield', source, move);
+				return;
+			}
+			if (!['whirlpool', 'purify', 'tidyup'].includes(move.id)) return;
+			const state = this.field.fieldState as any;
+			state.cleaningCounter = (state.cleaningCounter || 0) + (move.id === 'tidyup' ? 1 : 2);
+			if (state.cleaningCounter >= 2) {
+				this.add('-message', move.id === 'whirlpool' ?
+					'The maelstrom flushed out the poison!' : 'The attack cleared the waters!');
+				this.field.setField('watersurfacefield', source, move);
+			} else {
+				this.add('-message', 'Some sludge was tidied up!');
+			}
+		},
+		onModifySpe(spe, pokemon) {
+			if (
+				!pokemon.isGrounded() || pokemon.hasType('Water') ||
+				pokemon.hasAbility(['surgesurfer', 'swiftswim'])
+			) return;
+			return this.chainModify(0.75);
+		},
+		onFieldResidualOrder: 28,
+		onFieldResidual() {
+			let displayedDamageMessage = false;
+			for (const pokemon of this.getAllActive()) {
+				if (!pokemon || pokemon.fainted) continue;
+				if (
+					pokemon.isGrounded() && pokemon.hasType('Poison') &&
+					pokemon.hasAbility(['dryskin', 'waterabsorb']) &&
+					this.heal(pokemon.baseMaxhp / 8, pokemon)
+				) this.add('-message', `${pokemon.name} is healed by the poisoned water!`);
+				if (pokemon.isGrounded() && pokemon.hasAbility('poisonheal')) {
+					this.heal(pokemon.baseMaxhp / 8, pokemon);
+				}
+				if (pokemon.hasType(['Poison', 'Steel'])) continue;
+				if (pokemon.hasAbility([
+					'immunity', 'magicguard', 'pastelveil', 'poisonheal',
+					'surgesurfer', 'toxicboost', 'wonderguard',
+				])) continue;
+				const diving = pokemon.volatiles['twoturnmove']?.sourceEffect?.id === 'dive';
+				if (!pokemon.isGrounded() && !diving) continue;
+				let typeMod = 0;
+				for (const type of pokemon.getTypes()) typeMod += this.dex.getEffectiveness('Poison', type);
+				let damage = pokemon.baseMaxhp / 8 * (2 ** typeMod);
+				if (pokemon.hasAbility(['dryskin', 'flamebody', 'magmaarmor', 'waterabsorb'])) damage *= 2;
+				if (diving) damage *= 4;
+				if (diving) {
+					this.add('-message', `${pokemon.name} suffocated underneath the toxic water!`);
+				} else if (!displayedDamageMessage) {
+					this.add('-message', 'The Pokémon are hurt by the toxic water!');
+					displayedDamageMessage = true;
+				}
+				this.damage(damage, pokemon);
+			}
 		},
 		onFieldEnd() {
 			this.add('-fieldend', 'Murkwater Surface Field');

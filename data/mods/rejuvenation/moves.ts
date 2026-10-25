@@ -2,7 +2,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	acidarmor: {
 		inherit: true,
 		onModifyMove(move) {
-			move.boosts = { def: this.field.isField('corrosivemistfield') ? 3 : 2 };
+			move.boosts = { def: this.field.isField(['corrosivemistfield', 'murkwatersurfacefield']) ? 3 : 2 };
 		},
 	},
 	auroraveil: {
@@ -590,7 +590,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
 		zMove: {basePower: 160},
 		onBasePower(basePower, pokemon, target) {
-			if (this.field.isField('corrosivemistfield') || target.status === 'psn' || target.status === 'tox') {
+			if (this.field.isField(['corrosivemistfield', 'murkwatersurfacefield']) || target.status === 'psn' || target.status === 'tox') {
 				return this.chainModify(2);
 			}
 		},
@@ -704,6 +704,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             case 'watersurfacefield':
                 newType = 'Water';
                 break;
+			case 'murkwatersurfacefield':
+				newType = 'Poison';
+				break;
 
             default:
                 if (this.field.isUnlayeredTerrain('electricterrain')) {
@@ -1630,10 +1633,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				target.baseMaxhp * (this.field.isTerrain('grassyterrain') ? 2 / 3 : 1 / 2),
 				target, source
 			);
-			if (success && this.field.isField('corrosivemistfield')) {
-				target.trySetStatus('psn', source);
+			let poisoned = false;
+			if (this.field.isField(['corrosivemistfield', 'murkwatersurfacefield'])) {
+				poisoned = target.trySetStatus('psn', source);
 			}
-			return success;
+			return success || poisoned;
 		},
 	},
     leaftornado: {
@@ -2128,6 +2132,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             case 'swampfield':
                 move = 'muddywater';
                 break;
+			case 'murkwatersurfacefield':
+				move = 'sludgewave';
+				break;
             default:
                 if (this.field.isUnlayeredTerrain('electricterrain')) {
                     move = 'thunderbolt';
@@ -2498,6 +2505,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				move.secondaries.push({ chance: 30, volatileStatus: 'curse' });
 				break;
 			case 'corrosivemistfield':
+			case 'murkwatersurfacefield':
 				move.secondaries.push({ chance: 30, status: 'psn' });
 				break;
             case 'forestfield':
@@ -2611,6 +2619,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 				pokemon.addVolatile('shelterhaunted');
 				break;
 			case 'corrosivemistfield':
+			case 'murkwatersurfacefield':
 				pokemon.addVolatile('sheltercorrosivemist');
 				break;
             case 'forestfield':
@@ -2882,8 +2891,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	shoreup: {
 		inherit: true,
 		onModifyMove(move) {
-			if (this.field.isField('watersurfacefield')) {
+			if (this.field.isField(['watersurfacefield', 'murkwatersurfacefield'])) {
 				move.type = 'Water';
+			}
+		},
+		onAfterMove(pokemon) {
+			if (
+				this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) &&
+				pokemon.hasAbility('watercompaction')
+			) {
+				this.boost({ def: 2 }, pokemon, pokemon, this.dex.abilities.get('watercompaction'));
 			}
 		},
 	},
@@ -3077,6 +3094,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     tarshot: {
         inherit: true,
         zMove: { boost: { spa: 2 } },
+		onAfterHit(target, source, move) {
+			if (this.field.isField('murkwatersurfacefield')) {
+				target.trySetStatus('psn', source, move);
+			}
+		},
     },
     teatime: {
         inherit: true,
@@ -3127,6 +3149,9 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 case 'watersurfacefield':
                     move.type = 'Water';
                     break;
+				case 'murkwatersurfacefield':
+					move.type = 'Poison';
+					break;
 
                 default: {
                     if (!pokemon.isGrounded()) return;
@@ -3250,7 +3275,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         isNonstandard: null,
 		onHit(target, source, move) {
 			if (
-				this.field.isField('corrosivemistfield') ||
+				this.field.isField(['corrosivemistfield', 'murkwatersurfacefield']) ||
 				target.status === 'psn' || target.status === 'tox'
 			) {
 				return !!this.boost({ atk: -1, spa: -1, spe: -1 }, target, source, move);
@@ -3262,7 +3287,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		inherit: true,
 		onBasePower(basePower, source, target) {
 			if (
-				this.field.isField('corrosivemistfield') ||
+				this.field.isField(['corrosivemistfield', 'murkwatersurfacefield']) ||
 				target.status === 'psn' || target.status === 'tox'
 			) {
 				return this.chainModify(2);

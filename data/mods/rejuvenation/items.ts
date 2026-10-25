@@ -90,7 +90,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		onStart(pokemon) {
 			if (!pokemon.ignoringItem() && (
 				this.field.isUnlayeredTerrain(['electricterrain', 'grassyterrain', 'mistyterrain']) ||
-				this.field.isField(['corrosivemistfield', 'watersurfacefield'])
+				this.field.isField(['corrosivemistfield', 'watersurfacefield', 'murkwatersurfacefield'])
 			)) {
 				pokemon.useItem();
 			}
@@ -101,6 +101,13 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			}
 		},
 		onUse(pokemon) {
+			if (this.field.isField('murkwatersurfacefield')) {
+				this.boost({ spe: 1 }, pokemon);
+				pokemon.addVolatile('aquaring');
+				pokemon.trySetStatus('psn', pokemon, this.effect);
+				this.add('-message', `${pokemon.name} surrounded itself with a veil of water!`);
+				return;
+			}
 			if (this.field.isField('watersurfacefield')) {
 				this.boost({ spd: 1 }, pokemon);
 				pokemon.addVolatile('aquaring');

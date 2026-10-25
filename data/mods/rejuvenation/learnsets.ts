@@ -5564,6 +5564,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 		learnset: {
 			//Shadow Pokemon Moves
 			destinybond: ["9S0"],
+			glare: ["9S0"],
 			tailslap: ["9S0"],
 
 			aerialace: ["9M"],
@@ -8267,6 +8268,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	graveler: {
 		learnset: {
+			// Shadow Pokemon Moves
+			uturn: ["9S0"],
+			willowisp: ["9S0"],
+
 			arenitewall: ["9M"],
 			attract: ["9M"],
 			autotomize: ["9E"],
@@ -12731,6 +12736,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	rhyhorn: {
 		learnset: {
+			// Shadow Pokemon Moves
+			headlongrush: ["9S0"],
+			slackoff: ["9S0"],
+
 			aquatail: ["9T"],
 			arenitewall: ["9M"],
 			attract: ["9M"],
@@ -22613,6 +22622,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	dunsparce: {
 		learnset: {
+			// Shadow Pokemon Moves
+			boomburst: ["9S0"],
+			extremespeed: ["9S0"],
+
 			agility: ["9T"],
 			airslash: ["9M"],
 			amnesia: ["9T"],
@@ -28684,6 +28697,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	lotad: {
 		learnset: {
+			// Shadow Pokemon Moves
+			appleacid: ["9S0"],
+			revelationdance: ["9S0"],
+
 			absorb: ["9L3"],
 			astonish: ["9L1"],
 			attract: ["9M"],
@@ -29026,6 +29043,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	nuzleaf: {
 		learnset: {
+			// Shadow Pokemon Moves
+			mysticalfire: ["9S0"],
+			topsyturvy: ["9S0"],
+
 			absorb: ["9L1"],
 			aircutter: ["9T"],
 			amnesia: ["9T"],
@@ -33027,6 +33048,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	electrike: {
 		learnset: {
+			// Shadow Pokemon Moves
+			frostbreath: ["9S0"],
+			matblock: ["9S0"],
+
 			agility: ["9T"],
 			attract: ["9M"],
 			bite: ["9L20"],
@@ -33986,6 +34011,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	wailmer: {
 		learnset: {
+			// Shadow Pokemon Moves
+			eruption: ["9S0"],
+			toxic: ["9S0"],
+
 			amnesia: ["9L42", "9T"],
 			aquaring: ["9E"],
 			astonish: ["9L6"],
@@ -38101,6 +38130,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	tropius: {
 		learnset: {
+			// Shadow Pokemon Moves
+			shelter: ["9S0"],
+			strengthsap: ["9S0"],
+
 			aerialace: ["9M"],
 			aircutter: ["9T"],
 			airslash: ["9L36", "9M"],
@@ -38193,6 +38226,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	chimecho: {
 		learnset: {
+			// Shadow Pokemon Moves
+			boomburst: ["9S0"],
+			quiverdance: ["9S0"],
+
 			allyswitch: ["9E", "9T"],
 			astonish: ["9L1"],
 			attract: ["9M"],
@@ -42109,6 +42146,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	bibarel: {
 		learnset: {
+			// Shadow Pokemon Moves
+			aquastep: ["9S0"],
+			drainpunch: ["9S0"],
+			noretreat: ["9S0"],
+
 			amnesia: ["9L48"],
 			aquajet: ["9L1"],
 			aquatail: ["9E", "9T"],
@@ -43563,6 +43605,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	pachirisu: {
 		learnset: {
+			// Shadow Pokemon Moves
+			direclaw: ["9S0"],
+			partingshot: ["9S0"],
+
 			aerialace: ["9M"],
 			agility: ["9T"],
 			alluringvoice: ["9T"],
@@ -45441,6 +45487,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	purugly: {
 		learnset: {
+			// Shadow Pokemon Moves
+			earthquake: ["9S0"],
+			swordsdance: ["9S0"],
+			thrash: ["9S0"],
+
 			aerialace: ["9L17", "9M"],
 			assist: ["9T"],
 			assurance: ["9E"],
@@ -46423,6 +46474,9 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	chatot: {
 		learnset: {
+			// Shadow Pokemon Moves
+			earthpower: ["9S0"],
+
 			aerialace: ["9M"],
 			agility: ["9E"],
 			aircutter: ["9E"],
@@ -55488,6 +55542,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	herdier: {
 		learnset: {
+			// Shadow Pokemon Moves
+			dragondance: ["9S0"],
+			nobleroar: ["9S0"],
+
 			aerialace: ["9M"],
 			afteryou: ["9E", "9T"],
 			attract: ["9M"],
@@ -62794,6 +62852,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	solosis: {
 		learnset: {
+			// Shadow Pokemon Moves
+			instruct: ["9S0"],
+			voltswitch: ["9S0"],
+
 			acidarmor: ["9E"],
 			afteryou: ["9T"],
 			allyswitch: ["9L28", "9T"],
@@ -63928,6 +63990,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	frillish: {
 		learnset: {
+			// Shadow Pokemon Moves
+			bittermalice: ["9S0"],
+			pollenpuff: ["9S0"],
+
 			absorb: ["9L1"],
 			acidarmor: ["9E"],
 			attract: ["9M"],
@@ -67368,6 +67434,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	vullaby: {
 		learnset: {
+			// Shadow Pokemon Moves
+			playrough: ["9S0"],
+			shadowbone: ["9S0"],
+			wingattack: ["9S0"],
+
 			aerialace: ["9M"],
 			aircutter: ["9T"],
 			airslash: ["9L42", "9M"],
@@ -75429,6 +75500,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	noibat: {
 		learnset: {
+			// Shadow Pokemon Moves
+			hex: ["9S0"],
+			willowisp: ["9S0"],
+
 			absorb: ["9L1"],
 			acrobatics: ["9M"],
 			aerialace: ["9M"],
@@ -77881,6 +77956,10 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	crabrawler: {
 		learnset: {
+			// Shadow Pokemon Moves
+			jawlock: ["9S0"],
+			octolock: ["9S0"],
+
 			amnesia: ["9T"],
 			attract: ["9M"],
 			bodyslam: ["9T"],
@@ -86858,6 +86937,12 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	dubwool: {
 		learnset: {
+			// Shadow Pokemon Moves
+			bulkup: ["9S0"],
+			highhorsepower: ["9S0"],
+			milkdrink: ["9S0"],
+			rollout: ["9S0"],
+
 			agility: ["9T"],
 			attract: ["9M"],
 			batonpass: ["9T"],
@@ -93531,6 +93616,11 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	oinkologne: {
 		learnset: {
+			// Shadow Pokemon Moves
+			earthquake: ["9S0"],
+			leechseed: ["9S0"],
+			toxic: ["9S0"],
+
 			attract: ["9M"],
 			belch: ["9L54"],
 			bodypress: ["9T"],
@@ -96504,6 +96594,12 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 	},
 	wiglett: {
 		learnset: {
+			// Shadow Pokemon Moves
+			afteryou: ["9S0"],
+			flipturn: ["9S0"],
+			tripleaxel: ["9S0"],
+			zingzap: ["9S0"],
+
 			agility: ["9T"],
 			aquajet: ["9L12"],
 			attract: ["9M"],
@@ -101818,6 +101914,12 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			toxic: ["9L56", "9M"],
 			venoshock: ["9M"],
 			withdraw: ["9L8"],
+		},
+	},
+	gastrodon: {
+		learnset: {
+			// Shadow Pokemon Moves
+			scorchingsands: ["9S0"],
 		},
 	},
 };
