@@ -3,6 +3,27 @@ function moveHasType(move: ActiveMove, type: string) {
 }
 
 export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDataTable = {
+	brn: {
+		inherit: true,
+		onResidualOrder: 10,
+		onResidual(pokemon) {
+			this.damage(pokemon.baseMaxhp / (this.field.isField('icyfield') ? 32 : 16));
+		},
+	},
+	hail: {
+		inherit: true,
+		durationCallback(source) {
+			if (this.field.isField('icyfield') || source?.hasItem('icyrock')) return 8;
+			return 5;
+		},
+	},
+	snowscape: {
+		inherit: true,
+		durationCallback(source) {
+			if (this.field.isField('icyfield') || source?.hasItem('icyrock')) return 8;
+			return 5;
+		},
+	},
 	concertvenue: {
 		name: "Concert Venue",
 		effectType: 'Field',
@@ -570,7 +591,124 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		effectType: 'Field',
 		duration: 0,
 		onFieldStart() {
+			this.field.fieldState.pollutionCounter = 0;
 			this.add('-fieldstart', 'Underwater Field', `[duration] ${this.field.fieldState.duration || 0}`);
+			this.add('-message', 'Blub blub...');
+			this.field.clearTerrain();
+			this.field.clearWeather();
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon?.hasItem('elementalseed') && !pokemon.ignoringItem()) pokemon.useItem();
+			}
+		},
+		onAnySetWeather() {
+			return false;
+		},
+		onAnyTryMove(target, source, move) {
+			if (move.weather || move.terrain) {
+				this.add('-fail', source, move);
+				return null;
+			}
+		},
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+			if (['dragondarts', 'gravapple'].includes(move.id)) move.type = 'Water';
+			if (move.type === 'Ground' && !move.additionalTypes.includes('Water')) {
+				move.additionalTypes.push('Water');
+			}
+			if (moveHasType(move, 'Electric')) move.accuracy = true;
+		},
+		onEffectiveness(typeMod, target, type, move) {
+			if (type === 'Water' && moveHasType(move, 'Water')) return 0;
+			let modifier = typeMod;
+			for (const additionalType of move.additionalTypes || []) {
+				modifier += this.dex.getEffectiveness(additionalType, type);
+			}
+			return modifier;
+		},
+		onTryHit(target, source, move) {
+			if (moveHasType(move, 'Fire')) {
+				this.add('-message', '...But the attack was doused instantly!');
+				return null;
+			}
+			if (move.id === 'tarshot') {
+				this.add('-message', 'The tar washed off instantly!');
+				return null;
+			}
+			if (move.id === 'spicyextract') {
+				this.add('-message', 'The extract washed away!');
+				return null;
+			}
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			let modifier = 1;
+			if (moveHasType(move, 'Water')) {
+				modifier *= 1.5;
+				this.add('-message', 'The water strengthened the attack!');
+			}
+			if (moveHasType(move, 'Electric')) {
+				modifier *= 2;
+				this.add('-message', 'The water super-conducted the attack!');
+			}
+			if (['waterpulse', 'jetpunch'].includes(move.id)) {
+				modifier *= 1.5;
+				this.add('-message', 'Jet-streamed!');
+			}
+			if (['anchorshot', 'dragondarts'].includes(move.id)) {
+				modifier *= 2;
+				this.add('-message', 'From the depths!');
+			}
+			if (
+				move.category === 'Physical' && !moveHasType(move, 'Water') &&
+				!attacker.hasType('Water') &&
+				!attacker.hasAbility(['eelevate', 'steelworker', 'swiftswim'])
+			) modifier *= 0.5;
+			if (attacker.hasAbility('propellertail') && move.priority > 0) modifier *= 1.5;
+			if (modifier !== 1) return this.chainModify(modifier);
+		},
+		onModifySpe(spe, pokemon) {
+			if (pokemon.hasType('Water') || pokemon.hasAbility(['eelevate', 'steelworker', 'swiftswim'])) return;
+			return this.chainModify(0.5);
+		},
+		onAfterMove(source, target, move) {
+			if (['dive', 'skydrop', 'fly', 'bounce', 'shoreup', 'tripledive'].includes(move.id)) {
+				this.add('-message', 'The battle resurfaced!');
+				this.field.setField('watersurfacefield', source, move);
+				return;
+			}
+			if (!['sludgewave', 'acidownpour'].includes(move.id)) return;
+			const state = this.field.fieldState as any;
+			state.pollutionCounter = (state.pollutionCounter || 0) + (move.id === 'acidownpour' ? 2 : 1);
+			if (state.pollutionCounter < 2) {
+				this.add('-message', 'Poison spread through the water!');
+				return;
+			}
+			this.add('-message', 'The grime sank beneath the battlers!');
+			this.add('-message', 'The water was polluted!');
+			for (const pokemon of this.getAllActive()) {
+				if (
+					!pokemon || pokemon.fainted || pokemon.isSemiInvulnerable() ||
+					pokemon.hasType(['Poison', 'Steel'])
+				) continue;
+				this.damage(pokemon.hp, pokemon, source, move);
+			}
+			this.field.setField('murkwatersurfacefield', source, move);
+		},
+		onFieldResidualOrder: 28,
+		onFieldResidual() {
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon?.removeVolatile('tarshot')) {
+					this.add('-message', `The tar washed off ${pokemon.name} in the water!`);
+				}
+				if (!pokemon || pokemon.fainted || pokemon.hasType('Water')) continue;
+				if (pokemon.hasAbility(['waterabsorb', 'dryskin', 'stormdrain', 'swiftswim', 'magicguard'])) continue;
+				let typeMod = 0;
+				for (const type of pokemon.getTypes()) typeMod += this.dex.getEffectiveness('Water', type);
+				if (typeMod <= 0) continue;
+				let damage = pokemon.baseMaxhp / 8 * (2 ** typeMod);
+				if (pokemon.hasAbility(['magmaarmor', 'flamebody'])) damage *= 2;
+				this.add('-message', `${pokemon.name} struggled in the water!`);
+				this.damage(damage, pokemon);
+			}
 		},
 		onFieldEnd() {
 			this.add('-fieldend', 'Underwater Field');
@@ -581,8 +719,100 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 		effectType: 'Field',
 		duration: 0,
 		onFieldStart() {
+			this.field.fieldState.meltCounter = 0;
 			this.add('-fieldstart', 'Icy Field', `[duration] ${this.field.fieldState.duration || 0}`);
 			this.add('-message', 'The field is covered in ice.');
+			for (const pokemon of this.getAllActive()) {
+				if (pokemon?.hasItem('elementalseed') && !pokemon.ignoringItem()) pokemon.useItem();
+			}
+		},
+		onModifyMove(move) {
+			move.additionalTypes ??= [];
+			if (move.type === 'Rock' && !move.additionalTypes.includes('Ice')) {
+				move.additionalTypes.push('Ice');
+			}
+		},
+		onEffectiveness(typeMod, target, type, move) {
+			let modifier = typeMod;
+			for (const additionalType of move.additionalTypes || []) {
+				modifier += this.dex.getEffectiveness(additionalType, type);
+			}
+			return modifier;
+		},
+		onBasePower(basePower, attacker, defender, move) {
+			let modifier = 1;
+			if (moveHasType(move, 'Ice')) {
+				modifier *= 1.5;
+				this.add('-message', 'The cold strengthened the attack!');
+			}
+			if (moveHasType(move, 'Fire')) {
+				modifier *= 0.5;
+				this.add('-message', 'The cold softened the attack...');
+			}
+			if (['bittermalice', 'chillingwater'].includes(move.id)) {
+				modifier *= 1.5;
+				this.add('-message', 'The cold strengthened the attack!');
+			}
+			if (['scald', 'steameruption', 'hydrosteam'].includes(move.id)) {
+				modifier *= 0.5;
+				this.add('-message', 'The cold softened the attack...');
+			}
+			if (modifier !== 1) return this.chainModify(modifier);
+		},
+		onModifyDef(def, pokemon) {
+			if (pokemon.hasType('Ice') && this.field.isWeather('hail')) return this.chainModify(1.5);
+		},
+		onAfterMove(source, target, move) {
+			if (
+				source.hp && source.isGrounded() &&
+				((move.priority > 0 && move.category !== 'Status' && move.flags.contact) ||
+				['defensecurl', 'feint', 'lunge', 'iceball', 'rollout', 'steamroller', 'spinout', 'icespinner'].includes(move.id))
+			) this.boost({ spe: 1 }, source);
+
+			if (['scald', 'hydrosteam', 'matchagotcha', 'steameruption'].includes(move.id)) {
+				const state = this.field.fieldState as any;
+				state.meltCounter = (state.meltCounter || 0) + (move.id === 'steameruption' ? 2 : 1);
+				if (state.meltCounter < 2) {
+					this.add('-message', 'Parts of the ice melted!');
+					return;
+				}
+				this.add('-message', move.id === 'matchagotcha' ? 'The hot tea melted the ice!' : 'The hot water melted the ice!');
+				if (this.field.previousField && ['watersurfacefield', 'murkwatersurfacefield'].includes(this.field.previousField.id)) {
+					this.field.clearField();
+				} else {
+					this.field.setField('watersurfacefield', source, move);
+				}
+				return;
+			}
+			const waterUnderneath = this.field.previousField &&
+				['watersurfacefield', 'murkwatersurfacefield'].includes(this.field.previousField.id);
+			if (move.id === 'dive' && waterUnderneath) {
+				this.add('-message', 'The ice was broken from underneath!');
+				this.field.clearField();
+				return;
+			}
+			const quakeMoves = ['earthquake', 'bulldoze', 'magnitude', 'fissure', 'tectonicrage'];
+			if (quakeMoves.includes(move.id)) {
+				if (waterUnderneath) {
+					this.add('-message', 'The quake broke up the ice and revealed the water beneath!');
+					this.field.clearField();
+				} else {
+					let addedSpikes = false;
+					for (const side of this.sides) {
+						if (side.addSideCondition('spikes', source, move)) addedSpikes = true;
+					}
+					if (addedSpikes) this.add('-message', 'The quake broke up the ice into spiky pieces!');
+				}
+				return;
+			}
+			const igniteMoves = [
+				'heatwave', 'eruption', 'searingshot', 'flameburst', 'lavaplume', 'firepledge',
+				'mindblown', 'incinerate', 'infernooverdrive', 'burningjealousy',
+			];
+			if (igniteMoves.includes(move.id) || ['magmadrift', 'ragingfury'].includes(move.id)) {
+				this.add('-message', 'The ice melted away!');
+				this.field.clearField();
+			}
 		},
 		onFieldEnd() {
 			this.add('-fieldend', 'Icy Field');
@@ -860,7 +1090,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			if (this.effectState.sourceEffect.id === 'infestation' && this.field.isField('forestfield')) {
 				divisor = 6;
 			}
-			if (this.effectState.sourceEffect.id === 'whirlpool' && this.field.isField('watersurfacefield')) {
+			if (this.effectState.sourceEffect.id === 'whirlpool' && this.field.isField(['watersurfacefield', 'underwaterfield'])) {
 				divisor = this.effectState.boundDivisor === 6 ? 4 : 6;
 			}
 			if (this.effectState.sourceEffect.id === 'firespin' && this.field.isField('hauntedfield')) {
@@ -984,6 +1214,18 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			if (move.type === 'Water' || move.additionalTypes?.includes('Water')) {
 				return this.chainModify(0.5);
 			}
+		},
+	},
+	shelterunderwater: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (moveHasType(move, 'Water')) return this.chainModify(0.5);
+		},
+	},
+	sheltericy: {
+		duration: 1,
+		onSourceModifyDamage(damage, source, target, move) {
+			if (moveHasType(move, 'Ice')) return this.chainModify(0.5);
 		},
 	},
 };

@@ -90,7 +90,7 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 		onStart(pokemon) {
 			if (!pokemon.ignoringItem() && (
 				this.field.isUnlayeredTerrain(['electricterrain', 'grassyterrain', 'mistyterrain']) ||
-				this.field.isField(['corrosivemistfield', 'watersurfacefield', 'murkwatersurfacefield'])
+				this.field.isField(['corrosivemistfield', 'watersurfacefield', 'murkwatersurfacefield', 'icyfield', 'underwaterfield'])
 			)) {
 				pokemon.useItem();
 			}
@@ -101,6 +101,24 @@ export const Items: import('../../../sim/dex-items').ModdedItemDataTable = {
 			}
 		},
 		onUse(pokemon) {
+			if (this.field.isField('icyfield')) {
+				this.boost({ spe: 2 }, pokemon);
+				if (pokemon.isGrounded() && !pokemon.hasAbility('magicguard')) {
+					const layers = pokemon.side.sideConditions['spikes']?.layers || 0;
+					const divisors = [8, 8, 6, 4];
+					if (this.damage(pokemon.baseMaxhp / divisors[layers], pokemon)) {
+						this.add('-message', `${pokemon.name} was hurt by the icy spikes!`);
+					}
+				}
+				return;
+			}
+			if (this.field.isField('underwaterfield')) {
+				this.boost({ spe: 1 }, pokemon);
+				if (pokemon.setType('Water')) {
+					this.add('-start', pokemon, 'typechange', 'Water', '[from] item: Elemental Seed');
+				}
+				return;
+			}
 			if (this.field.isField('murkwatersurfacefield')) {
 				this.boost({ spe: 1 }, pokemon);
 				pokemon.addVolatile('aquaring');

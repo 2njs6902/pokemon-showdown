@@ -1166,14 +1166,17 @@ export class TeamValidator {
 		if (useStatPoints && !maxedIVs) {
 			problems.push(`${name}'s IVs are not maxed out, but this format requires all IVs to be 31.`);
 		}
-		for (const moveName of set.moves) {
+		for (const [moveIndex, moveName] of set.moves.entries()) {
 			const move = dex.moves.get(moveName);
 			if (move.id === 'hiddenpower' && (move.type !== 'Normal' || move.name !== 'Hidden Power')) {
-				if (!set.hpType || dex.currentMod === 'rejuvenation') {
+				if (!set.hpType) {
 					set.hpType = move.type;
 				} else if (set.hpType !== move.type && ruleTable.has('obtainablemisc')) {
-					problems.push(`${name}'s Hidden Power type ${set.hpType} is incompatible with Hidden Power ${move.type}`);
+					if (dex.currentMod !== 'rejuvenation') {
+						problems.push(`${name}'s Hidden Power type ${set.hpType} is incompatible with Hidden Power ${move.type}`);
+					}
 				}
+				if (dex.currentMod === 'rejuvenation') set.moves[moveIndex] = 'hiddenpower';
 			}
 		}
 		if (set.hpType && maxedIVs && ruleTable.has('obtainablemisc') && dex.currentMod !== 'rejuvenation') {

@@ -459,10 +459,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 		onResidual(target) {
-			if (this.field.isField('swampfield') || this.field.isField('watersurfacefield')) {
-				if (this.field.isField('swampfield')) this.add('-message', `${target.name}'s Dry Skin was healed by the murk!`);
-					else if (this.field.isField('watersurfacefield')) this.add('-message', `${target.name} absorbed some of the water!`);
-				this.heal(target.baseMaxhp / 16, target);
+			if (this.field.isField(['swampfield', 'watersurfacefield', 'underwaterfield'])) {
+				if (this.heal(target.baseMaxhp / 16, target)) {
+					if (this.field.isField('swampfield')) {
+						this.add('-message', `${target.name}'s Dry Skin was healed by the murk!`);
+					} else {
+						this.add('-message', `${target.name} absorbed some of the water!`);
+					}
+				}
 			}
 			if (this.field.isTerrain('mistyterrain')) {
 				this.add('-message', `${target.name} was healed a little by the mist!`);
@@ -603,10 +607,20 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	heatproof: {
+		inherit: true,
+		onDamage(damage, target, source, effect) {
+			if (effect?.id === 'brn' && !this.field.isField('icyfield')) return damage / 2;
+		},
+	},
 	hydration: {
 		inherit: true,
 		onResidual(pokemon) {
-			if ((pokemon.status && ['raindance', 'primordialsea'].includes(pokemon.effectiveWeather())) || (this.field.isField('watersurfacefield') && pokemon.isGrounded())) {
+			if (pokemon.status && (
+				['raindance', 'primordialsea'].includes(pokemon.effectiveWeather()) ||
+				this.field.isField('underwaterfield') ||
+				(this.field.isField('watersurfacefield') && pokemon.isGrounded())
+			)) {
 				this.debug('hydration');
 				this.add('-activate', pokemon, 'ability: Hydration');
 				pokemon.cureStatus();
@@ -619,6 +633,24 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	gulpmissile: {
 		inherit: true,
+		onDamagingHit(damage, target, source, move) {
+			if (!source.hp || !source.isActive || target.isSemiInvulnerable()) return;
+			if (!['cramorantgulping', 'cramorantgorging'].includes(target.species.id)) return;
+			let missileDamage = source.baseMaxhp / 4;
+			if (this.field.isField('underwaterfield')) {
+				let typeMod = 0;
+				for (const type of source.getTypes()) typeMod += this.dex.getEffectiveness('Water', type);
+				if (!this.dex.getImmunity('Water', source)) missileDamage = 0;
+				else missileDamage *= 2 ** typeMod;
+			}
+			if (missileDamage) this.damage(missileDamage, source, target);
+			if (target.species.id === 'cramorantgulping') {
+				this.boost({ def: -1 }, source, target, null, true);
+			} else {
+				source.trySetStatus('par', target, move);
+			}
+			target.formeChange('cramorant', move);
+		},
 		onSourceTryPrimaryHit(target, source, effect) {
 			if (effect?.id === 'surf' && source.hasAbility('gulpmissile') && source.species.name === 'Cramorant') {
 				let forme;
@@ -741,7 +773,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				types = ['Water'];
 				break;
 			case 'watersurfacefield':
+			case 'underwaterfield':
 				types = ['Water'];
+				break;
+			case 'icyfield':
+				types = ['Ice'];
 				break;
 			case 'murkwatersurfacefield':
 				types = ['Poison'];
@@ -786,7 +822,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onStart(pokemon) {
 			if (pokemon.baseSpecies.baseSpecies !== 'Wishiwashi' || pokemon.transformed) return;
 
-			const waterSurfaceSchooling = this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded();
+			const waterSurfaceSchooling = this.field.isField('underwaterfield') ||
+				(this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded());
 
 			const shouldSchool = waterSurfaceSchooling || (pokemon.level >= 20 && pokemon.hp > pokemon.maxhp / 4);
 
@@ -802,7 +839,8 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onResidual(pokemon) {
 			if (pokemon.baseSpecies.baseSpecies !== 'Wishiwashi' || pokemon.transformed || !pokemon.hp) return;
 
-			const waterSurfaceSchooling = this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded();
+			const waterSurfaceSchooling = this.field.isField('underwaterfield') ||
+				(this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded());
 
 			const shouldSchool = waterSurfaceSchooling || (pokemon.level >= 20 && pokemon.hp > pokemon.maxhp / 4);
 
@@ -1152,7 +1190,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		onResidualOrder: 29,
 		onResidual(pokemon) {
-			if (pokemon.activeTurns && this.field.isField('watersurfacefield')) {
+			if (pokemon.activeTurns && this.field.isField(['watersurfacefield', 'underwaterfield'])) {
 				this.boost({ spe: 1 }, pokemon);
 			}
 		},
@@ -1200,7 +1238,11 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	},
 	swiftswim: {
 		onModifySpe(spe, pokemon) {
-			if ((['raindance', 'primordialsea'].includes(pokemon.effectiveWeather())) || (this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded())) {
+			if (
+				['raindance', 'primordialsea'].includes(pokemon.effectiveWeather()) ||
+				this.field.isField('underwaterfield') ||
+				(this.field.isField(['watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded())
+			) {
 				return this.chainModify(2);
 			}
 		},
@@ -1221,14 +1263,14 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 	torrent: {
 		onModifyAtkPriority: 5,
 		onModifyAtk(atk, attacker, defender, move) {
-			if (move.type === 'Water' && (attacker.hp <= attacker.maxhp / 3 || (this.field.isField('watersurfacefield') && attacker.isGrounded()))) {
+			if (moveHasType(move, 'Water') && (attacker.hp <= attacker.maxhp / 3 || this.field.isField('underwaterfield') || (this.field.isField('watersurfacefield') && attacker.isGrounded()))) {
 				this.debug('Torrent boost');
 				return this.chainModify(1.5);
 			}
 		},
 		onModifySpAPriority: 5,
 		onModifySpA(atk, attacker, defender, move) {
-			if (move.type === 'Water' && (attacker.hp <= attacker.maxhp / 3 || (this.field.isField('watersurfacefield') && attacker.isGrounded()))) {
+			if (moveHasType(move, 'Water') && (attacker.hp <= attacker.maxhp / 3 || this.field.isField('underwaterfield') || (this.field.isField('watersurfacefield') && attacker.isGrounded()))) {
 				this.debug('Torrent boost');
 				return this.chainModify(1.5);
 			}
@@ -1311,7 +1353,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
-			if (this.field.isField(['swampfield', 'watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded()) {
+			if (this.field.isField('underwaterfield') || (this.field.isField(['swampfield', 'watersurfacefield', 'murkwatersurfacefield']) && pokemon.isGrounded())) {
 				this.boost({def: 2});
 			}
 		},
@@ -1334,9 +1376,58 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		onResidualOrder: 28,
 		onResidualSubOrder: 2,
 		onResidual(pokemon) {
-			if (this.field.isField('watersurfacefield')) {
-				this.add('-message', `${pokemon.name} absorbed some of the water!`);
-				this.heal(pokemon.baseMaxhp / 16);
+			if (this.field.isField(['watersurfacefield', 'underwaterfield'])) {
+				if (this.heal(pokemon.baseMaxhp / 16)) {
+					this.add('-message', `${pokemon.name} absorbed some of the water!`);
+				}
+			}
+		},
+	},
+	icebody: {
+		inherit: true,
+		onResidual(pokemon) {
+			if (this.field.isField('icyfield') && this.heal(pokemon.baseMaxhp / 16)) {
+				this.add('-message', `${pokemon.name} was healed a little by the ice!`);
+			}
+		},
+	},
+	icescales: {
+		inherit: true,
+		onEffectiveness(typeMod, target, type) {
+			if (this.field.isField('icyfield') && type === 'Ice' && target?.hasType('Ice') && typeMod > 0) return 0;
+		},
+	},
+	liquidvoice: {
+		inherit: true,
+		onModifyTypePriority: -1,
+		onModifyType(move, pokemon) {
+			if (move.flags.sound && !pokemon.volatiles['dynamax']) {
+				move.type = this.field.isField('icyfield') ? 'Ice' : 'Water';
+			}
+		},
+	},
+	refrigerate: {
+		inherit: true,
+		onBasePowerPriority: 23,
+		onBasePower(basePower, pokemon, target, move) {
+			if (move.typeChangerBoosted === this.effect) {
+				return this.chainModify(this.field.isField('icyfield') ? 1.5 : [4915, 4096]);
+			}
+		},
+	},
+	slushrush: {
+		inherit: true,
+		onModifySpe(spe, pokemon) {
+			if (this.field.isField('icyfield') || this.field.isWeather(['hail', 'snowscape'])) return this.chainModify(2);
+		},
+	},
+	snowcloak: {
+		inherit: true,
+		onModifyAccuracyPriority: -1,
+		onModifyAccuracy(accuracy) {
+			if (typeof accuracy !== 'number') return;
+			if (this.field.isField('icyfield') || this.field.isWeather(['hail', 'snowscape'])) {
+				return this.chainModify([3277, 4096]);
 			}
 		},
 	},

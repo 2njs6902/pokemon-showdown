@@ -44,6 +44,56 @@ const REJUVENATION_FIELD_TRANSITIONS: Partial<Record<string, RejuvenationTransit
 			},
 		},
 	],
+	underwaterfield: [
+		{
+			moves: ['dive', 'skydrop', 'fly', 'bounce', 'shoreup', 'tripledive', 'acidownpour'],
+			multiplier: 1.3,
+		},
+		{
+			moves: ['sludgewave'],
+			multiplier: 1.3,
+			willTrigger(battle) {
+				const counter = (battle.field.fieldState as any).pollutionCounter || 0;
+				return counter + 1 >= 2;
+			},
+		},
+	],
+	icyfield: [
+		{
+			moves: [
+				'earthquake', 'bulldoze', 'magnitude', 'fissure', 'tectonicrage',
+				'eruption', 'firepledge', 'flameburst', 'heatwave', 'incinerate', 'lavaplume',
+				'mindblown', 'searingshot', 'infernooverdrive', 'burningjealousy', 'magmadrift', 'ragingfury',
+			],
+			multiplier: 1.3,
+			willTrigger(battle, move) {
+				const waterUnderneath = battle.field.previousField &&
+					['watersurfacefield', 'murkwatersurfacefield'].includes(battle.field.previousField.id);
+				return !['earthquake', 'bulldoze', 'magnitude', 'fissure', 'tectonicrage'].includes(move.id) ||
+					!!waterUnderneath;
+			},
+		},
+		{
+			moves: ['dive'],
+			multiplier: 1.3,
+			willTrigger(battle) {
+				return !!battle.field.previousField &&
+					['watersurfacefield', 'murkwatersurfacefield'].includes(battle.field.previousField.id);
+			},
+		},
+		{
+			moves: ['steameruption'],
+			multiplier: 1.3,
+		},
+		{
+			moves: ['scald', 'hydrosteam', 'matchagotcha'],
+			multiplier: 1.3,
+			willTrigger(battle) {
+				const counter = (battle.field.fieldState as any).meltCounter || 0;
+				return counter + 1 >= 2;
+			},
+		},
+	],
 	murkwatersurfacefield: [
 		{
 			moves: ['whirlpool', 'purify', 'blizzard', 'glaciate', 'subzeroslammer'],

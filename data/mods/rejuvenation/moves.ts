@@ -8,7 +8,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	auroraveil: {
 		inherit: true,
 		onTry() {
-			return this.field.isField('rainbowfield') || this.field.isWeather(['hail', 'snow']);
+			return this.field.isField(['rainbowfield', 'icyfield']) || this.field.isWeather(['hail', 'snowscape']);
 		},
 	},
 	bittermalice: {
@@ -16,6 +16,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		onModifyMove(move) {
 			if (this.field.isField('hauntedfield') && move.secondary?.boosts) {
 				move.secondary.boosts.spa = -1;
+			}
+			if (this.field.isField('icyfield')) {
+				move.secondaries ??= [];
+				move.secondaries.push({ chance: 10, status: 'frz' });
 			}
 		},
 	},
@@ -537,7 +541,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 					}
 					return;
 				}
-                const boosted = this.field.isField('swampfield') || this.field.isField('watersurfacefield') || this.field.isUnlayeredTerrain('mistyterrain');
+				const boosted = this.field.isField(['swampfield', 'watersurfacefield', 'underwaterfield']) || this.field.isUnlayeredTerrain('mistyterrain');
 				this.heal(pokemon.baseMaxhp / (boosted ? 8 : 16));
 			},
 		},
@@ -702,8 +706,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 newType = 'Water';
                 break;
             case 'watersurfacefield':
+			case 'underwaterfield':
                 newType = 'Water';
                 break;
+			case 'icyfield':
+				newType = 'Ice';
+				break;
 			case 'murkwatersurfacefield':
 				newType = 'Poison';
 				break;
@@ -960,7 +968,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                 }
                 attacker.formeChange(forme, move);
             }
-            if (this.field.isField('watersurfacefield')) {
+            if (this.field.isField(['watersurfacefield', 'underwaterfield'])) {
                 return;
             }
             this.add('-prepare', attacker, move.name);
@@ -2139,6 +2147,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 			case 'murkwatersurfacefield':
 				move = 'sludgewave';
 				break;
+			case 'underwaterfield':
+				move = 'waterpulse';
+				break;
+			case 'icyfield':
+				move = 'icebeam';
+				break;
             default:
                 if (this.field.isUnlayeredTerrain('electricterrain')) {
                     move = 'thunderbolt';
@@ -2226,6 +2240,20 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     octolock: {
         inherit: true,
         zMove: { boost: { atk: 2 } },
+		condition: {
+			inherit: true,
+			onResidualOrder: 14,
+			onResidual(pokemon) {
+				const source = this.effectState.source;
+				if (source && (!source.isActive || source.fainted)) {
+					delete pokemon.volatiles['octolock'];
+					this.add('-end', pokemon, 'Octolock', '[partiallytrapped]', '[silent]');
+					return;
+				}
+				const amount = this.field.isField('underwaterfield') ? -2 : -1;
+				this.boost({ def: amount, spd: amount }, pokemon, source, this.dex.getActiveMove('octolock'));
+			},
+		},
     },
 	paraboliccharge: {
         inherit: true,
@@ -2521,6 +2549,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             case 'watersurfacefield':
                 move.secondaries.push({ chance: 30, boosts: { spe: -1, }, });
                 break;
+			case 'underwaterfield':
+				move.secondaries.push({ chance: 30, boosts: { atk: -1 } });
+				break;
+			case 'icyfield':
+				move.secondaries.push({ chance: 30, status: 'frz' });
+				break;
 
             default:
                 if (this.field.isUnlayeredTerrain('electricterrain')) {
@@ -2635,6 +2669,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
             case 'watersurfacefield':
                 pokemon.addVolatile('shelterwatersurface');
                 break;
+			case 'underwaterfield':
+				pokemon.addVolatile('shelterunderwater');
+				break;
+			case 'icyfield':
+				pokemon.addVolatile('sheltericy');
+				break;
             default:
                 if (this.field.isUnlayeredTerrain('electricterrain')) {
                     pokemon.addVolatile('shelterelectric');
@@ -3091,8 +3131,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	takeheart: {
         inherit: true,
 		onHit(pokemon) {
-			const success = !!this.boost((this.field.isField('watersurfacefield') && pokemon.isGrounded()) ? { spa: 2, spd: 2 } : { spa: 1, spd: 1 });
+			const boosted = this.field.isField('underwaterfield') ||
+				(this.field.isField('watersurfacefield') && pokemon.isGrounded());
+			const success = !!this.boost(boosted ? { spa: 2, spd: 2 } : { spa: 1, spd: 1 });
 			return pokemon.cureStatus() || success;
+		},
+	},
+	matchagotcha: {
+		inherit: true,
+		onModifyMove(move) {
+			if (this.field.isField('icyfield')) move.drain = [13, 20];
 		},
 	},
     tarshot: {
@@ -3151,8 +3199,12 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
                     move.type = 'Water';
                     break;
                 case 'watersurfacefield':
+				case 'underwaterfield':
                     move.type = 'Water';
                     break;
+				case 'icyfield':
+					move.type = 'Ice';
+					break;
 				case 'murkwatersurfacefield':
 					move.type = 'Poison';
 					break;
@@ -3305,10 +3357,16 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 	wavecrash: {
         inherit: true,
         onModifyMove(move) {
-            if (this.field.isField('watersurfacefield')) {
+			if (this.field.isField(['watersurfacefield', 'underwaterfield'])) {
                 move.recoil = [25, 100];
             }
         },
+	},
+	whirlpool: {
+		inherit: true,
+		onAfterHit(target, source) {
+			if (this.field.isField('underwaterfield')) target.addVolatile('confusion', source);
+		},
 	},
 	waterpledge: {
 		inherit: true,
