@@ -328,12 +328,43 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		pp: 10,
 		priority: 0,
 		flags: { protect: 1, mirror: 1, metronome: 1 },
+		beforeTurnCallback(source, target) {
+			if (!target) return;
+
+			const reflectedTypes = source.m.reflectorTypes as string[] | undefined;
+			const candidateTypes = [...new Set([...(reflectedTypes || []), 'Steel'])];
+			let bestType = 'Steel';
+			let bestDamage = -Infinity;
+			const savedSeed = this.prng.getSeed();
+			const savedLogLength = this.log.length;
+
+			for (const type of candidateTypes) {
+				// Compare every type with the same damage roll.
+				this.prng.setSeed(savedSeed);
+				this.log.splice(savedLogLength);
+
+				const testMove = this.dex.getActiveMove('mirrorbeam');
+				testMove.type = type;
+				testMove.willCrit = false;
+				const damage = this.actions.getDamage(source, target, testMove, true);
+				const numericDamage = typeof damage === 'number' ? damage : 0;
+
+				// Strictly greater preserves the tie order: reflected primary,
+				// reflected secondary, then Steel.
+				if (numericDamage > bestDamage) {
+					bestDamage = numericDamage;
+					bestType = type;
+				}
+			}
+
+			this.prng.setSeed(savedSeed);
+			this.log.splice(savedLogLength);
+			source.m.mirrorBeamType = { type: bestType, turn: this.turn };
+			this.debug(`Mirror Beam selected ${bestType} (${bestDamage} damage)`);
+		},
 		onModifyType(move, pokemon) {
-			const types = pokemon.getTypes();
-			let type = types[1];
-			if (type === 'Bird') type = '???';
-			if (type === '???' && types[0]) type = types[0];
-			move.type = type;
+			const selected = pokemon.m.mirrorBeamType as { type: string, turn: number } | undefined;
+			move.type = selected?.turn === this.turn ? selected.type : 'Steel';
 		},
 		target: "normal",
 		type: "Steel",
@@ -2396,48 +2427,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 
             this.add('-start', source, 'typechange', '[from] move: Reflect Type', `[of] ${target}`);
 
-            if (source.hasAbility('reflector')) {
-            /*
-            * Reflector users preserve their original typing.
-            *
-            * Do not use source.getTypes() here because it contains the old
-            * mirrored types. Use the stored pre-Reflector typing instead.
-            */
-            const baseTypes = source.m.reflectorBaseTypes as string[] | undefined;
-
-            /*
-            * This fallback matters if Reflector was obtained after switching
-            * in, such as through Skill Swap.
-            */
-            const preservedTypes = baseTypes ? [...baseTypes]: [...source.getTypes()].filter(type => {
-                const oldReflectedTypes = source.m.reflectorTypes as string[] | undefined;
-                return !oldReflectedTypes?.includes(type);
-            });
-
-            /*
-            * Replace the previous reflected types completely.
-            *
-            * Only target types absent from the user's preserved typing count
-            * as newly reflected types.
-            */
-            const newReflectedTypes: string[] = [];
-
-            for (const type of targetTypes) {
-                if (!preservedTypes.includes(type) && !newReflectedTypes.includes(type)) {
-                    newReflectedTypes.push(type);
-                }
-            }
-
-            source.m.reflectorBaseTypes = preservedTypes;
-            source.m.reflectorTypes = newReflectedTypes;
-
-            source.setType([...preservedTypes,...newReflectedTypes,]);
-
-            /*
-            * All copied types are already represented directly in the types
-            * array, so do not also retain one as addedType.
-            */
-            source.addedType = '';
+			if (source.hasAbility('reflector')) {
+				// Replace only Reflector's separately stored types. The user's
+				// ordinary typing remains unchanged.
+				source.m.reflectorTypes = [...new Set(target.types.filter(type => type !== '???'))];
+				this.add('-start', source, 'typechange', source.getTypes().join('/'));
             } else {
             /*
             * Pokémon without Reflector retain normal Reflect Type behavior:

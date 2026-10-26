@@ -714,6 +714,18 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 			this.add('-fieldend', 'Underwater Field');
 		},
 	},
+	cavefield: {
+		name: "Cave Field",
+		effectType: 'Field',
+		duration: 0,
+		onFieldStart() {
+			this.add('-fieldstart', 'Cave Field', `[duration] ${this.field.fieldState.duration || 0}`);
+			this.add('-message', 'The field is enclosed by a rocky cave.');
+		},
+		onFieldEnd() {
+			this.add('-fieldend', 'Cave Field');
+		},
+	},
 	icyfield: {
 		name: "Icy Field",
 		effectType: 'Field',
@@ -777,11 +789,7 @@ export const Conditions: import('../../../sim/dex-conditions').ModdedConditionDa
 					return;
 				}
 				this.add('-message', move.id === 'matchagotcha' ? 'The hot tea melted the ice!' : 'The hot water melted the ice!');
-				if (this.field.previousField && ['watersurfacefield', 'murkwatersurfacefield'].includes(this.field.previousField.id)) {
-					this.field.clearField();
-				} else {
-					this.field.setField('watersurfacefield', source, move);
-				}
+				this.field.clearField();
 				return;
 			}
 			const waterUnderneath = this.field.previousField &&

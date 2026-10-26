@@ -1488,8 +1488,8 @@ export const AbilitiesText: { [id: IDEntry]: AbilityText } = {
 	},
 	reflector: {
 		name: "Reflector",
-		desc: "Mirrors the opponent's types on entry, gaining these types. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used.",
-		shortDesc: "Mirrors the opponent's types on entry. Mirrored types resists moves of the same type. Reactivates if Reflect Type is used"
+		desc: "On switch-in, this Pokemon gains the opposing Pokemon's primary and secondary types. Each mirrored type also halves damage from attacks of that type. Reflect Type replaces the mirrored types without replacing this Pokemon's other types.",
+		shortDesc: "Gains the foe's types; attacks matching a mirrored type deal half damage.",
 	},
 	refrigerate: {
 		name: "Refrigerate",

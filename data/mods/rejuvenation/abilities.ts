@@ -179,30 +179,19 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		rating: 3,
 		num: 6909,
 	},
-	inexorable: {
-		onBasePowerPriority: 21, //Same as analytic (for now)
-		onBasePower(basePower, pokemon, target, move) {
-			if (move.type !== 'Dragon') return;
-
-			let boosted = true;
-			for (const target of this.getAllActive()) {
-				if (target === pokemon) continue;
-				// If the target pokemon moves BEFORE us, then you arent the first pokemon and therefore break
-				if (this.queue.willMove(target) && !this.queue.willMove(pokemon)) {
-					boosted = false;
-					break;
-				}
-			}
-			if (boosted) {
-				this.debug('Inexorable boost');
-				return this.chainModify(1.3);
-			}
-		},
-		flags: {},
-		name: "Inexorable",
-		rating: 4, //Fealt it was fitting
-		num: 6902,
+inexorable: {
+	onBasePowerPriority: 21,
+	onBasePower(basePower, pokemon, target, move) {
+		if (this.queue.willMove(target)) {
+			this.debug('Inexorable boost');
+			return this.chainModify(1.3);
+		}
 	},
+	flags: {},
+	name: "Inexorable",
+	rating: 4,
+	num: 6902,
+},
 	invigorate: {
 		onAnyTryHeal(damage, target, source, effect) {
 			const holder = this.effectState.target;
@@ -252,38 +241,36 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			let target = pokemon.foes()[0];
 
 			if (this.gameType === 'doubles') {
-			target =
-				pokemon.foes().find(foe => foe.position === pokemon.position) ||
-				pokemon.foes()[0];
+				target =
+					pokemon.foes().find(foe => foe.position === pokemon.position) ||
+					pokemon.foes()[0];
 			}
 
 			if (!target) return;
 
-			const originalTypes = [...pokemon.getTypes()];
-			const finalTypes = [...originalTypes];
-			const gainedTypes: string[] = [];
+			// Reflected types are separate from the user's ordinary typing.
+			// Soak can therefore replace the ordinary typing without removing them.
+			const reflectedTypes = [...new Set(target.types.filter(type => type !== '???'))];
+			pokemon.m.reflectorTypes = reflectedTypes;
 
-			for (const type of target.getTypes()) {
-			if (!originalTypes.includes(type)) {
-				finalTypes.push(type);
-				gainedTypes.push(type);
-			}
-			}
-
-			pokemon.m.reflectorTypes = gainedTypes;
-
-			this.add('-ability', pokemon, 'Reflector', '[of] ' + target);
-			pokemon.setType(finalTypes);
+			this.add('-ability', pokemon, 'Reflector', `[of] ${target}`);
+			const originalTypes = pokemon.types;
+			const gainedTypes = reflectedTypes.filter(type => !originalTypes.includes(type));
 			if (gainedTypes.length) {
-				this.add('-start', pokemon, 'typechange', finalTypes.join('/'));
+				this.add('-start', pokemon, 'typechange', pokemon.getTypes().join('/'));
 				this.add('-message', `${pokemon.name} gained the ${gainedTypes.join('/')} type${gainedTypes.length > 1 ? 's' : ''}!`);
 			}
 		},
-		onSourceModifyDamage(damage, attacker, defender, move) {
-			const gainedTypes =
-			defender.m.reflectorTypes as string[] | undefined;
+		onType(types, pokemon) {
+			const reflectedTypes = pokemon.m.reflectorTypes as string[] | undefined;
+			if (!reflectedTypes?.length) return;
 
-			const resistedType = gainedTypes?.find(type => moveHasType(move, type));
+			return [...new Set([...types, ...reflectedTypes])];
+		},
+		onSourceModifyDamage(damage, attacker, defender, move) {
+			const reflectedTypes = defender.m.reflectorTypes as string[] | undefined;
+
+			const resistedType = reflectedTypes?.find(type => moveHasType(move, type));
 
 			if (resistedType) {
 			this.debug(`Reflector resisted mirrored ${resistedType} typing`);
@@ -292,6 +279,9 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 		},
 		onEnd(pokemon) {
 			delete pokemon.m.reflectorTypes;
+			if (pokemon.hp) {
+				this.add('-start', pokemon, 'typechange', pokemon.getTypes().join('/'), '[silent]');
+			}
 		},
 		onSwitchOut(pokemon) {
 			delete pokemon.m.reflectorTypes;

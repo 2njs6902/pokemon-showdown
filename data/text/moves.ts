@@ -61,8 +61,8 @@ export const MovesText: { [id: IDEntry]: MoveText } = {
 	},
 	mirrorbeam: {
 		name: "Mirror Beam",
-		desc: "This move's type depends on the user's secondary type. If the user's primary type is typeless, this move's type is the user's secondary type if it has one, otherwise the added type from Forest's Curse or Trick-or-Treat. This move is typeless if the user's type is typeless alone.",
-		shortDesc: "Type varies based on the user's secondary type.",
+		desc: "At the start of the turn, this move becomes Steel type or one of the types stored by Reflector, whichever would deal the most damage to the target. Ties prioritize Reflector's stored primary type, then its stored secondary type, then Steel.",
+		shortDesc: "Becomes the reflected type or Steel type that deals the most damage.",
 	},
 	magmadrift: {
 		name: "Magma Drift",

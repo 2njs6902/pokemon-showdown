@@ -250,6 +250,20 @@ export class Field {
 			}
 			return false;
 		}
+		if (status.id === 'icyfield') {
+			const restorableFields = ['watersurfacefield', 'murkwatersurfacefield', 'cavefield'];
+			if (restorableFields.includes(prevField)) {
+				this.previousField = {
+					id: prevField,
+					state: prevFieldState,
+				};
+			} else {
+				this.previousField = {
+					id: 'cavefield' as ID,
+					state: this.battle.initEffectState({ id: 'cavefield' }),
+				};
+			}
+		}
 		this.battle.eachEvent('FieldChange', sourceEffect);
 		return true;
 	}
