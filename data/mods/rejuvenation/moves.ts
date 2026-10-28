@@ -1233,6 +1233,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         zMove: {effect: 'heal'},
     },
+	flameburst: {
+		inherit: true,
+		isNonstandard: null,
+	},
     flash: {
         inherit: true,
         isNonstandard: null,
@@ -2327,6 +2331,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
     poweruppunch: {
         inherit: true,
+		isNonstandard: null,
         zMove: { boost: { atk: 1 } },
     },
     psychicfangs: {

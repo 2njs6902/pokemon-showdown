@@ -182,7 +182,7 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 inexorable: {
 	onBasePowerPriority: 21,
 	onBasePower(basePower, pokemon, target, move) {
-		if (this.queue.willMove(target)) {
+		if (this.queue.willMove(target) || target.newlySwitched) {
 			this.debug('Inexorable boost');
 			return this.chainModify(1.3);
 		}

@@ -4357,7 +4357,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Aevium",
 		types: ["Dragon", "Poison"],
 		baseStats: { hp: 100, atk: 130, def: 130, spa: 80, spd: 90, spe: 70 },
-		abilities: { 0: "Analytic", 1: "Inexorable", H: "Overcoat" },
+		abilities: { 0: "Analytic", 1: "Inexorable" },
 		heightm: 1.6,
 		weightkg: 78.2,
 		color: "Gray",
