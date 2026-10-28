@@ -3567,7 +3567,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 	florgesrebornflower: {
 		num: 671,
 		name: "Florges-Reborn-Flower",
-		baseForme: "Florges",
+		baseSpecies: "Florges",
 		forme: "Reborn-Flower",
 		types: ["Fairy", "Fire"],
 		gender: "F",
@@ -4114,7 +4114,7 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		forme: "Aevium-Rocky",
 		types: ["Ghost", "Rock"],
 		baseStats: { hp: 85, atk: 75, def: 110, spa: 100, spd: 75, spe: 35 },
-		abilities: { 0: "Clear Body", H: "Solid Rock"},
+		abilities: { 0: "Clear Body", H: "Storm Drain"},
 		heightm: 1.3,
 		weightkg: 250,
 		color: "Brown",
