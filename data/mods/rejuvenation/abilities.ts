@@ -744,6 +744,17 @@ inexorable: {
 			}
 		},
 	},
+	libero: {
+		inherit: true,
+		onPrepareHit(source, target, move) {
+			if (move.hasBounced || move.flags['futuremove'] || move.sourceEffect === 'snatch' || move.callsMove) return;
+			const type = move.type;
+			if (type && type !== '???' && source.getTypes().join() !== type) {
+				if (!source.setType(type)) return;
+				this.add('-start', source, 'typechange', type, '[from] ability: Libero');
+			}
+		},
+	},
 	marvelscale: {
 		inherit: true,
 		onModifyDef(def, pokemon) {
@@ -876,12 +887,21 @@ inexorable: {
 	minus: {
 		inherit: true,
 		onModifySpA(spa, pokemon) {
-			if (this.field.isTerrain('electricterrain') || (pokemon.hasItem('minuncrest') && pokemon.baseSpecies.baseSpecies === 'Minun')) {
-				this.field.isTerrain('electricterrain') ? this.debug('Minus Electric Terrain Boost (1.5x)') : this.debug('Minus Crest Boost (1.5x)');
+			if (this.field.isTerrain('electricterrain')) {
+				this.debug('Minus boost: Electric Terrain (1.5x Sp. Atk)');
+				return this.chainModify(1.5);
+			}
+			if (pokemon.hasItem('minuncrest') && pokemon.baseSpecies.baseSpecies === 'Minun') {
+				this.debug('Minus boost: Minun Crest on the user (1.5x Sp. Atk)');
 				return this.chainModify(1.5);
 			}
 			for (const allyActive of pokemon.allies()) {
-				if (allyActive.hasAbility(['minus', 'plus']) || allyActive.hasItem('minuncrest')) {
+				if (allyActive.hasAbility(['minus', 'plus'])) {
+					this.debug(`Minus boost: allied ${allyActive.ability} ability (1.5x Sp. Atk)`);
+					return this.chainModify(1.5);
+				}
+				if (allyActive.hasItem('minuncrest')) {
+					this.debug('Minus boost: allied Minun Crest (1.5x Sp. Atk)');
 					return this.chainModify(1.5);
 				}
 			}
@@ -978,13 +998,34 @@ inexorable: {
 	plus: {
 		inherit: true,
 		onModifySpA(spa, pokemon) {
-			if (this.field.isTerrain('electricterrain') || (pokemon.hasItem('pluslecrest') && pokemon.baseSpecies.baseSpecies === 'Plusle')) {
+			if (this.field.isTerrain('electricterrain')) {
+				this.debug('Plus boost: Electric Terrain (1.5x Sp. Atk)');
+				return this.chainModify(1.5);
+			}
+			if (pokemon.hasItem('pluslecrest') && pokemon.baseSpecies.baseSpecies === 'Plusle') {
+				this.debug('Plus boost: Plusle Crest on the user (1.5x Sp. Atk)');
 				return this.chainModify(1.5);
 			}
 			for (const allyActive of pokemon.allies()) {
-				if (allyActive.hasAbility(['minus', 'plus']) || allyActive.hasItem('pluslecrest')) {
+				if (allyActive.hasAbility(['minus', 'plus'])) {
+					this.debug(`Plus boost: allied ${allyActive.ability} ability (1.5x Sp. Atk)`);
 					return this.chainModify(1.5);
 				}
+				if (allyActive.hasItem('pluslecrest')) {
+					this.debug('Plus boost: allied Plusle Crest (1.5x Sp. Atk)');
+					return this.chainModify(1.5);
+				}
+			}
+		},
+	},
+	protean: {
+		inherit: true,
+		onPrepareHit(source, target, move) {
+			if (move.hasBounced || move.flags['futuremove'] || move.sourceEffect === 'snatch' || move.callsMove) return;
+			const type = move.type;
+			if (type && type !== '???' && source.getTypes().join() !== type) {
+				if (!source.setType(type)) return;
+				this.add('-start', source, 'typechange', type, '[from] ability: Protean');
 			}
 		},
 	},

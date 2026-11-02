@@ -34118,7 +34118,7 @@ export const Learnsets: import('../../../sim/dex-species').ModdedLearnsetDataTab
 			waterfall: ["9M"],
 			watergun: ["9L12"],
 			waterpulse: ["9L18", "9T"],
-			waterspout: ["9L48"],
+			waterspout: ["9S0", "9L48"],
 			weatherball: ["9M"],
 			whirlpool: ["9L27", "9M"],
 			zenheadbutt: ["9T"],
