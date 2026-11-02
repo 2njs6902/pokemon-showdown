@@ -69,6 +69,24 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			}
 		},
 	},
+	competitive: {
+		inherit: true,
+		onAfterEachBoost(boost, target, source, effect) {
+			if ((!source || target.isAlly(source)) && effect?.id !== 'swampfieldspeed') return;
+			if (Object.values(boost).some(amount => amount < 0)) {
+				this.boost({ spa: 2 }, target, target, null, false, true);
+			}
+		},
+	},
+	defiant: {
+		inherit: true,
+		onAfterEachBoost(boost, target, source, effect) {
+			if ((!source || target.isAlly(source)) && effect?.id !== 'swampfieldspeed') return;
+			if (Object.values(boost).some(amount => amount < 0)) {
+				this.boost({ atk: 2 }, target, target, null, false, true);
+			}
+		},
+	},
 	pollenflight: {
 		onResidualOrder: 8,
 		onResidualSubOrder: 1,

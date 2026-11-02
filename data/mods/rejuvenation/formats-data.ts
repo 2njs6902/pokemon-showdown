@@ -537,6 +537,9 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	unfezant: {
 		tier: "RU",
 	},
+	unfezantaeviumf: {
+		tier: "RU",
+	},
 	roggenrola: {
 		tier: "LC",
 	},
