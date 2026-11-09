@@ -2752,7 +2752,6 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		name: "Unfezant-Aevium-F",
 		baseSpecies: "Unfezant",
 		forme: "Aevium-F",
-		changesFrom: "Unfezant-Aevium",
 		types: ["Rock", "Fighting"],
 		gender: "F",
 		baseStats: { hp: 80, atk: 115, def: 85, spa: 55, spd: 55, spe: 98 },

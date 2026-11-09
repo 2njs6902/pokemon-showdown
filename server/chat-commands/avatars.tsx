@@ -816,6 +816,10 @@ const LOCAL_AVATARS_MIGUEL_HORO = new Set([
 	'luxus - fairytail',
 ]);
 
+const LOCAL_AVATARS_OTHER = new Set([
+	'monokuma - danganronpa',
+]);
+
 for (const avatar of OFFICIAL_AVATARS_BELIOT419) OFFICIAL_AVATARS.add(avatar);
 for (const avatar of OFFICIAL_AVATARS_GNOMOWLADNY) OFFICIAL_AVATARS.add(avatar);
 for (const avatar of OFFICIAL_AVATARS_BRUMIRAGE) OFFICIAL_AVATARS.add(avatar);
@@ -907,6 +911,9 @@ export const commands: Chat.ChatCommands = {
 			}
 			if (LOCAL_AVATARS_MIGUEL_HORO.has(avatar)) {
 				this.sendReply(`|raw|(${this.tr`Artist: `}<a href="https://x.com/Miguel_Horo">Miguel Horo</a>)`);
+			}
+			if (LOCAL_AVATARS_OTHER.has(avatar)) {
+				this.sendReply(`|raw|(${this.tr`Artist: `}<a href="https://tenor.com/view/i-don't-know-idk-idk-about-that-gif-7336250873949261946">Unknown</a>)`);
 			}
 		}
 	},

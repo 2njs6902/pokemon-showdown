@@ -2369,6 +2369,7 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
     },
 	ominouswind: {
 		inherit: true,
+		isNonstandard: null,
 		onModifyMove(move) {
 			if (this.field.isField('hauntedfield') && move.secondaries?.[0]) {
 				move.secondaries[0].chance = 20;
