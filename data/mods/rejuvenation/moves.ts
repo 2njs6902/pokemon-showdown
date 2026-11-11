@@ -1233,6 +1233,11 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
         inherit: true,
         zMove: {effect: 'heal'},
     },
+	firstimpression: {
+		inherit: true,
+		isNonstandard: null,
+		basePower: 100,
+	},
 	flameburst: {
 		inherit: true,
 		isNonstandard: null,

@@ -448,14 +448,6 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	cherrim: {
 		tier: "RU",
 	},
-	shelloseast: {
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
-	gastrodoneast: {
-		isNonstandard: "Past",
-		tier: "Illegal",
-	},
 	buneary: {
 		tier: "LC",
 	},
