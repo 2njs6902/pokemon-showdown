@@ -2339,6 +2339,10 @@ export const Moves: import('../../../sim/dex-moves').ModdedMoveDataTable = {
 		isNonstandard: null,
         zMove: { boost: { atk: 1 } },
     },
+	protect: {
+		inherit: true,
+		pp: 5,
+	},
     psychicfangs: {
         inherit: true,
 		onTryHit(pokemon) {
